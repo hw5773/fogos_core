@@ -7,6 +7,7 @@ import FlexID.Locator;
 import FlexID.InterfaceType;
 import FogOSQoS.QoSInterpreter;
 import FogOSResource.MobilityDetector;
+import FogOSResource.Resource;
 import FogOSResource.ResourceReporter;
 import FogOSSecurity.Role;
 import FogOSSecurity.SecureFlexIDSession;
@@ -29,6 +30,7 @@ public class FogOSCore {
     private FlexIDFactory factory;
     private FlexID deviceID;
     private ContentStore store;
+    private ArrayList<Resource> resources;
     private MqttClient mqttClient;
     private HashMap<String, Queue<Message>> receivedMessages;
 
@@ -45,6 +47,10 @@ public class FogOSCore {
     private QoSInterpreter qosInterpreter;
 
     private static final String TAG = "FogOSCore";
+
+    public FogOSCore() {
+
+    }
 
     public FogOSCore(String path) {
         java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Start: Initialize FogOSCore");
@@ -135,6 +141,10 @@ public class FogOSCore {
             e.printStackTrace();
         }
         java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Finish: retrieveBrokerList()");
+    }
+
+    public ArrayList<Resource> getResources() {
+        return resources;
     }
 
     // Ping test and select the best FogOS broker
@@ -390,7 +400,7 @@ public class FogOSCore {
             ReplyMessage replyMessage;
             FlexID id;
             replyMessage = (ReplyMessage) generateMessage(MessageType.REPLY);
-            id = new FlexID("transit");
+            id = new FlexID("0x950FE925AA360933FCD2");
             java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "id 1: " + id + " / ID 1: " + new String(id.getIdentity()));
             replyMessage.addReplyEntry("대중교통 공익광고", "대중교통을 이용합시다!", id);
             id = new FlexID("public");
@@ -410,7 +420,7 @@ public class FogOSCore {
             ResponseMessage responseMessage;
             Locator locator = new Locator(InterfaceType.WIFI, "192.168.0.128", 3333);
             responseMessage = (ResponseMessage) generateMessage(MessageType.RESPONSE);
-            responseMessage.setPeerID(new FlexID(msg.getValueByAttr("id")));
+            responseMessage.setPeerID(new FlexID(msg.getValueByAttr("id").getValue()));
             responseMessage.getPeerID().setLocator(locator);
             receivedMessages.get(MessageType.RESPONSE.getTopic()).add(responseMessage);
             java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Make a test response message finished.");

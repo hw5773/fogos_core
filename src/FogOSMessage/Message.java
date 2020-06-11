@@ -1,6 +1,7 @@
 package FogOSMessage;
 import FlexID.FlexID;
 import FlexID.AttrValuePairs;
+import FlexID.Value;
 import FogOSCore.FogOSBroker;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
@@ -52,11 +53,12 @@ public abstract class Message {
         this.deviceID = deviceID;
     }
 
-    public void addAttrValuePair(String attr, String value) {
-        this.body.addAttrValuePair(attr, value);
+    public void addAttrValuePair(String attr, String value, String unit) {
+        Value val = new Value(value, unit);
+        this.body.addAttrValuePair(attr, val);
     }
 
-    public String getValueByAttr(String attr) {
+    public Value getValueByAttr(String attr) {
         return this.body.getValueByAttr(attr);
     }
 

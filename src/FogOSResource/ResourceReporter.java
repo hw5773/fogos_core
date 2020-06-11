@@ -1,6 +1,7 @@
 package FogOSResource;
 
 import FlexID.FlexID;
+import FlexID.Value;
 import FogOSCore.FogOSCore;
 import FogOSMessage.MapUpdateMessage;
 import FogOSMessage.Message;
@@ -8,6 +9,7 @@ import FogOSMessage.MessageType;
 import FogOSMessage.StatusMessage;
 import FogOSSecurity.SecureFlexIDSession;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.logging.Level;
@@ -15,7 +17,7 @@ import java.util.logging.Level;
 public class ResourceReporter implements Runnable {
     private FogOSCore core;
     private static final String TAG = "FogOSResourceReporter";
-    private LinkedList<String> statusIDList;
+    private LinkedList<Value> statusIDList;
     private final int PERIOD = 1000;
 
     public ResourceReporter(FogOSCore core) {
@@ -47,11 +49,21 @@ public class ResourceReporter implements Runnable {
         // TODO: Monitor resources (Please declare variables and assign values)
         // ex) double memUsage = ...;
 
+        // Prepare Resource related variables
+        ArrayList<Resource> resources = core.getResources();
+        Iterator<Resource> iterator = resources.iterator();
+        Resource resource;
+
         // Prepare a STATUS message
         Message msg = new StatusMessage(core.getDeviceID());
 
-        // TODO: Please add attributes with values
-        // ex) msg.addAttrValuePair("memUsage", memUsage.toString());
+        while (iterator.hasNext()) {
+            resource = iterator.next();
+            if (!resource.isOnDemand()) {
+                resource.monitorResource();
+                msg.addAttrValuePair(resource.getName(), resource.getCurr(), resource.getUnit());
+            }
+        }
 
         // Send the STATUS message
         msg.send(core.getBroker());
@@ -63,7 +75,7 @@ public class ResourceReporter implements Runnable {
         @Override
         public void run() {
             Message msg;
-            String statusID;
+            Value statusID;
             while (true) {
                 // Get the received message from the queue
                 msg = core.getReceivedMessage(MessageType.STATUS_ACK.getTopic());

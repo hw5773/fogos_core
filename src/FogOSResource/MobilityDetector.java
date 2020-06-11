@@ -1,6 +1,7 @@
 package FogOSResource;
 
 import FlexID.FlexID;
+import FlexID.Value;
 import FogOSCore.FogOSCore;
 import FogOSMessage.MapUpdateMessage;
 import FogOSMessage.Message;
@@ -18,7 +19,7 @@ public class MobilityDetector implements Runnable {
     private boolean mobilityHappend = false;
     private static final String TAG = "FogOSMobility";
     private HashMap<String, String> interfaceIPAddr;
-    private LinkedList<String> mapUpdateIDList;
+    private LinkedList<Value> mapUpdateIDList;
     private String prev, curr;
 
     public MobilityDetector(FogOSCore core) {
@@ -50,9 +51,9 @@ public class MobilityDetector implements Runnable {
                     if (sID.getLocator().getAddr().equals(prev)) {
                         sID.getLocator().setAddr(curr);
                         Message msg = new MapUpdateMessage(core.getDeviceID());
-                        msg.addAttrValuePair("locatorType", sID.getLocator().getType().toString());
-                        msg.addAttrValuePair("prevLocator", prev);
-                        msg.addAttrValuePair("nextLocator", curr);
+                        msg.addAttrValuePair("locatorType", sID.getLocator().getType().toString(), null);
+                        msg.addAttrValuePair("prevLocator", prev, null);
+                        msg.addAttrValuePair("nextLocator", curr, null);
                         mapUpdateIDList.add(msg.getValueByAttr("mapUpdateID"));
                         msg.send(core.getBroker());
                     }
@@ -111,7 +112,7 @@ public class MobilityDetector implements Runnable {
                 // Process the received message if any
                 if (msg != null) {
                     java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Start: Received MAP_UPDATE_ACK");
-                    mapUpdateID = msg.getValueByAttr("mapUpdateID");
+                    mapUpdateID = msg.getValueByAttr("mapUpdateID").getValue();
                     if (mapUpdateIDList.contains(mapUpdateID)) {
 
                     }

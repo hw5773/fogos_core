@@ -37,7 +37,7 @@ public class FlexIDFactory implements FlexIDFactoryInterface {
 
     @Override
     public FlexID getMyFlexID(FlexID peer) {
-        String identity = "0x5555";
+        String identity = "0x4A8FC943011CBAD86228";
         String addr = getLocalIpAddress();
         AttrValuePairs avps = new AttrValuePairs();
         Locator loc = new Locator(InterfaceType.WIFI, addr, 3332);

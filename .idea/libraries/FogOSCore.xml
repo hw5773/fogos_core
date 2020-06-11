@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="FogOSCore">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/FogOSCore.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/java-json.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/org.eclipse.paho.client.mqttv3-1.1.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/lib/FogOSCore.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/java-json.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -16,8 +16,8 @@ public class MapUpdateMessage extends Message {
 
     @Override
     public void init() {
-        this.addAttrValuePair("mapUpdateID", Integer.toString(random.nextInt()));
-        this.addAttrValuePair("flexID", getDeviceID().getStringIdentity());
+        this.addAttrValuePair("mapUpdateID", Integer.toString(random.nextInt()), null);
+        this.addAttrValuePair("flexID", getDeviceID().getStringIdentity(), null);
     }
 
     @Override

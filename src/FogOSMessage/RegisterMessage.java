@@ -47,9 +47,9 @@ public class RegisterMessage extends Message {
             }
             JSONArray relay = new JSONArray("[\"fh2gj1g\", \"d3hsv5a35\"]");
             String registerID= "0";
-            this.addAttrValuePair("registerList", registerList.toString());
-            this.addAttrValuePair("relay", relay.toString());
-            this.addAttrValuePair("registerID", registerID);
+            this.addAttrValuePair("registerList", registerList.toString(), null);
+            this.addAttrValuePair("relay", relay.toString(), null);
+            this.addAttrValuePair("registerID", registerID, null);
             broker.getMqttClient().publish(this.getMessageType().getTopic(), new MqttMessage(getStringFromHashTable(this.getAttrValueTable()).getBytes()));
         } catch (JSONException e) {
             e.printStackTrace();

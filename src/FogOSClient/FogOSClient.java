@@ -12,6 +12,10 @@ public class FogOSClient implements FogOSClientAPI {
     private FogOSCore core;
     private static final String TAG = "FogOSClient";
 
+    public FogOSClient() {
+        core = new FogOSCore();
+    }
+
     public FogOSClient(String path) {
         java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Start: Initialize FogOSClient");
         core = new FogOSCore(path);
@@ -24,7 +28,7 @@ public class FogOSClient implements FogOSClientAPI {
 
     public QueryMessage makeQueryMessage(String query) {
         QueryMessage queryMessage = (QueryMessage) core.generateMessage(MessageType.QUERY);
-        queryMessage.addAttrValuePair("keywords", query);
+        queryMessage.addAttrValuePair("keywords", query, null);
         return queryMessage;
     }
 
@@ -50,7 +54,7 @@ public class FogOSClient implements FogOSClientAPI {
         java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Start: makeRequestMessage()");
         RequestMessage requestMessage = (RequestMessage) core.generateMessage(MessageType.REQUEST);
         requestMessage.setPeerID(id);
-        requestMessage.addAttrValuePair("id", id.getStringIdentity());
+        requestMessage.addAttrValuePair("id", id.getStringIdentity(), null);
         java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Finish: makeRequestMessage()");
         return requestMessage;
     }

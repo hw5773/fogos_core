@@ -2,15 +2,30 @@ package FogOSSecurity;
 
 import FogOSSocket.FlexIDSession;
 
+/**
+ *  Implements an API for protocol manager
+ *  @author Hyeonmin Lee
+ */
 public class ProtocolManager {
     protected SecurityParameters securityParameters;
     protected FlexIDSession flexIDSession;
 
+    /**
+     * Construct the ProtocolManager
+     * @param securityParameters the security parameters
+     * @param flexIDSession the FLexID session
+     */
     public ProtocolManager(SecurityParameters securityParameters, FlexIDSession flexIDSession) {
         this.securityParameters = securityParameters;
         this.flexIDSession = flexIDSession;
     }
 
+    /**
+     * Convert a byte array to hex format
+     * @param a the byte array
+     * @param len the length of the byte array
+     * @return the hex format string
+     */
     static String byteArrayToHex(byte[] a, int len) {
         if (len < 0)
             len = a.length;

@@ -24,50 +24,49 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="66aa2718-903d-4b1d-9ae1-e96d274061e9" name="Default Changelist" comment="Add resources">
-      <change afterPath="$PROJECT_DIR$/.idea/artifacts/fogos_core_jar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/fogos_core.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/FogOSCore.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/org_eclipse_paho_client_mqttv3_1_1_0.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/FlexID/Value.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/FogOSProxy/FogProxy.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/FogOSResource/Resource.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/artifacts/FogOSCore_jar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/FogOSCore_jar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+    <list default="true" id="66aa2718-903d-4b1d-9ae1-e96d274061e9" name="Default Changelist" comment="Merge master branch with FogOSSecurity code">
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/java_json.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/fogos_core_jar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/fogos_core_jar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/fogos_core.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/fogos_core.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FogOSCore.iml" beforeDir="false" afterPath="$PROJECT_DIR$/FogOSCore.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/FogOSCore.jar" beforeDir="false" afterPath="$PROJECT_DIR$/lib/FogOSCore.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FlexID/AttrValuePairs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FlexID/AttrValuePairs.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FlexID/FlexIDFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FlexID/FlexIDFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FogOSClient/FogOSClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FogOSClient/FogOSClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FogOSCore/FogOSCore.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FogOSCore/FogOSCore.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FogOSMessage/JoinMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FogOSMessage/JoinMessage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FogOSMessage/MapUpdateMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FogOSMessage/MapUpdateMessage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FogOSMessage/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FogOSMessage/Message.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FogOSMessage/RegisterMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FogOSMessage/RegisterMessage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FogOSResource/MobilityDetector.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FogOSResource/MobilityDetector.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FogOSResource/ResourceReporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FogOSResource/ResourceReporter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/fogos_core/FogOSSecurity/ApplicationMessage.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/fogos_core/FogOSSecurity/ApplicationMessage.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/fogos_core/FogOSSecurity/ContentType.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/fogos_core/FogOSSecurity/ContentType.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/fogos_core/FogOSSecurity/HandshakeMessage.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/fogos_core/FogOSSecurity/HandshakeMessage.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/fogos_core/FogOSSecurity/HandshakeProtocolManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/fogos_core/FogOSSecurity/HandshakeProtocolManager.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/fogos_core/FogOSSecurity/ProtocolManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/fogos_core/FogOSSecurity/ProtocolManager.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/fogos_core/FogOSSecurity/ProtocolVersion.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/fogos_core/FogOSSecurity/ProtocolVersion.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/fogos_core/FogOSSecurity/Record$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/fogos_core/FogOSSecurity/Record$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/fogos_core/FogOSSecurity/Record.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/fogos_core/FogOSSecurity/Record.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/fogos_core/FogOSSecurity/RecordProtocolManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/fogos_core/FogOSSecurity/RecordProtocolManager.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/fogos_core/FogOSSecurity/Role.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/fogos_core/FogOSSecurity/Role.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/fogos_core/FogOSSecurity/SecureFlexIDSession.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/fogos_core/FogOSSecurity/SecureFlexIDSession.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/fogos_core/FogOSSecurity/SecurityMessage.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/fogos_core/FogOSSecurity/SecurityMessage.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/fogos_core/FogOSSecurity/SecurityParameters.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/fogos_core/FogOSSecurity/SecurityParameters.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/FogOSSecurity/ApplicationMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FogOSSecurity/ApplicationMessage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/FogOSSecurity/ContentType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FogOSSecurity/ContentType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/FogOSSecurity/HandshakeMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FogOSSecurity/HandshakeMessage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/FogOSSecurity/HandshakeProtocolManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FogOSSecurity/HandshakeProtocolManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/FogOSSecurity/ProtocolManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FogOSSecurity/ProtocolManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/FogOSSecurity/ProtocolVersion.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FogOSSecurity/ProtocolVersion.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/FogOSSecurity/Record.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FogOSSecurity/Record.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/FogOSSecurity/RecordProtocolManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FogOSSecurity/RecordProtocolManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/FogOSSecurity/Role.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FogOSSecurity/Role.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/FogOSSecurity/SecureFlexIDSession.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FogOSSecurity/SecureFlexIDSession.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/FogOSSecurity/SecurityMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FogOSSecurity/SecurityMessage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/FogOSSecurity/SecurityParameters.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FogOSSecurity/SecurityParameters.java" afterDir="false" />
     </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="FindInProjectRecents">
-    <findStrings>
-      <find>testQue</find>
-      <find>testQueryMessage</find>
-      <find>setready</find>
-      <find>setReady</find>
-      <find>fogos</find>
-      <find>2048</find>
-      <find>환호</find>
-      <find>circlu</find>
-      <find>JOIN</find>
-    </findStrings>
-  </component>
   <component name="Git.Settings">
+    <option name="PREVIOUS_COMMIT_AUTHORS">
+      <list>
+        <option value="hmlee &lt;min0921110@gmail.com&gt;" />
+      </list>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="JsBuildToolGruntFileManager" detection-done="true" sorting="DEFINITION_ORDER" />
@@ -76,12 +75,7 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-8" />
-    <option name="y" value="-8" />
-    <option name="width" value="1936" />
-    <option name="height" value="1056" />
-  </component>
+  <component name="ProjectId" id="1dTzSGIYguV36YI1M4bxyZLpXTV" />
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
       <profile-state>
@@ -166,16 +160,29 @@
     </entry>
   </component>
   <component name="PropertiesComponent">
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="android.sdk.path" value="$USER_HOME$/AppData/Local/Android/Sdk" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../fogos_mobility_client_app/app/libs/FogOSCore.jar" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/lib/java-json.jar!/" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
-    <property name="project.structure.last.edited" value="Artifacts" />
+    <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="settings.editor.selected.configurable" value="AndroidSdkUpdater" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
   </component>
   <component name="RunManager">
     <configuration name="jar making" type="JarApplication">
@@ -212,7 +219,17 @@
     <option name="version" value="1" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
-    <option name="oldMeFiltersMigrated" value="true" />
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Add resources" />
@@ -223,95 +240,5 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="760" y="419" key="git4idea.remote.GitConfigureRemotesDialog/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1591858850887" />
-  </component>
-  <component name="masterDetails">
-    <states>
-      <state key="ArtifactsStructureConfigurable.UI">
-        <settings>
-          <artifact-editor />
-          <last-edited>fogos_core:jar</last-edited>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-                <option value="0.5" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="FacetStructureConfigurable.UI">
-        <settings>
-          <last-edited>No facets are configured</last-edited>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="GlobalLibrariesConfigurable.UI">
-        <settings>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="JdkListConfigurable.UI">
-        <settings>
-          <last-edited>1.8</last-edited>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="ModuleStructureConfigurable.UI">
-        <settings>
-          <last-edited>fogos_core</last-edited>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-                <option value="0.6" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="ProjectJDKs.UI">
-        <settings>
-          <last-edited>1.8</last-edited>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="ProjectLibrariesConfigurable.UI">
-        <settings>
-          <last-edited>lib</last-edited>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-    </states>
   </component>
 </project>

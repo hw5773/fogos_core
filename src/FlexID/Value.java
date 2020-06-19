@@ -1,5 +1,7 @@
 package FlexID;
 
+import org.json.JSONObject;
+
 public class Value {
     private String value;
     private String unit;
@@ -7,6 +9,18 @@ public class Value {
     public Value(String value, String unit) {
         this.value = value;
         this.unit = unit;
+    }
+
+    @Override
+    public String toString() {
+        JSONObject ret = new JSONObject();
+        try {
+            ret.put("value", this.value);
+            ret.put("unit", this.unit);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ret.toString();
     }
 
     public String getValue() {

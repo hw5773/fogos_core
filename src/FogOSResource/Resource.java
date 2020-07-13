@@ -1,11 +1,14 @@
 package FogOSResource;
 
+import FlexID.FlexID;
+
 public abstract class Resource {
     private String name;        // The name of the resource
     private String max;         // The maximum value of the resource
     private String curr;        // The current value of the resource
     private String unit;        // The unit of the value
     private boolean onDemand;   // The flag whether to monitor the resource on-demand or not
+    private FlexID flexID;
 
     // Monitor the current status of this resource;
     public abstract void monitorResource();

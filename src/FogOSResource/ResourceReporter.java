@@ -51,22 +51,24 @@ public class ResourceReporter implements Runnable {
 
         // Prepare Resource related variables
         ArrayList<Resource> resources = core.getResources();
-        Iterator<Resource> iterator = resources.iterator();
-        Resource resource;
+        if (resources != null) {
+            Iterator<Resource> iterator = resources.iterator();
+            Resource resource;
 
-        // Prepare a STATUS message
-        Message msg = new StatusMessage(core.getDeviceID());
+            // Prepare a STATUS message
+            Message msg = new StatusMessage(core.getDeviceID());
 
-        while (iterator.hasNext()) {
-            resource = iterator.next();
-            if (!resource.isOnDemand()) {
-                resource.monitorResource();
-                msg.addAttrValuePair(resource.getName(), resource.getCurr(), resource.getUnit());
+            while (iterator.hasNext()) {
+                resource = iterator.next();
+                if (!resource.isOnDemand()) {
+                    resource.monitorResource();
+                    msg.addAttrValuePair(resource.getName(), resource.getCurr(), resource.getUnit());
+                }
             }
-        }
 
-        // Send the STATUS message
-        msg.send(core.getBroker());
+            // Send the STATUS message
+            msg.send(core.getBroker());
+        }
     }
 
     // The StatusACK message may not be needed but I prepared the following thread to process the received STATUS_ACK

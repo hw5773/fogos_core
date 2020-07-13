@@ -8,9 +8,13 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONObject;
 
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public abstract class Message {
+    private final String TAG = "FogOSMessage";
     MessageType messageType;
     FlexID deviceID;
     AttrValuePairs body;
@@ -64,8 +68,23 @@ public abstract class Message {
 
     public Hashtable getAttrValueTable(){ return this.body.getTable(); }
 
-    public String getStringFromHashTable(Hashtable hashtable) {
-        JSONObject jsonObject = new JSONObject(hashtable);
+    public String getStringFromHashTable(Hashtable<String, Value> hashtable) {
+        JSONObject jsonObject = new JSONObject();
+        Iterator<String> itr = hashtable.keySet().iterator();
+        String key;
+        Value val;
+
+        while (itr.hasNext()) {
+            key = itr.next();
+            val = hashtable.get(key);
+            try {
+                jsonObject.put(key, val.toString());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        Logger.getLogger(TAG).log(Level.INFO, "Result: " + jsonObject.toString());
         return jsonObject.toString();
     }
 

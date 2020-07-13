@@ -2,7 +2,11 @@ package FlexID;
 
 import org.json.JSONObject;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class Value {
+    private final String TAG = "FogOSValue";
     private String value;
     private String unit;
 

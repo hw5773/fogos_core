@@ -43,9 +43,17 @@ public class RegisterMessage extends Message {
         JSONArray registerList = new JSONArray();
         try {
             for (int i = 0; i < files.length; i++){
-                registerList.put(new JSONObject("{\"index\":\"" + i + "\", \"hash\":\"" + files[i].getName().hashCode() + "\", \"registerType\":\"Content\", \"category\":\"Video\"}"));
+                JSONObject tmp = new JSONObject();
+                tmp.put("index", i);
+                tmp.put("hash", files[i].getName().hashCode());
+                tmp.put("registerType", "Content");
+                tmp.put("category", "Video");
+                registerList.put(tmp);
             }
-            JSONArray relay = new JSONArray("[\"fh2gj1g\", \"d3hsv5a35\"]");
+            JSONArray relay = new JSONArray();
+            relay.put("fh2gj1g");
+            relay.put("d3hsv5a35");
+
             String registerID= "0";
             this.addAttrValuePair("registerList", registerList.toString(), null);
             this.addAttrValuePair("relay", relay.toString(), null);

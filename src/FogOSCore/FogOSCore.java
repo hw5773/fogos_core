@@ -11,6 +11,7 @@ import FogOSResource.Resource;
 import FogOSResource.ResourceReporter;
 import FogOSSecurity.Role;
 import FogOSSecurity.SecureFlexIDSession;
+import FogOSService.Service;
 import FogOSStore.ContentStore;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
@@ -25,12 +26,14 @@ import java.util.logging.Logger;
 public class FogOSCore {
     private final String cloudName = "www.versatile-cloud.com";
     private final int cloudPort = 3333;
+    private final String DEFAULT_CONTENT_STORE_PATH = "";
     private LinkedList<FogOSBroker> brokers;
     private FogOSBroker broker;
     private FlexIDFactory factory;
     private FlexID deviceID;
-    private ContentStore store;
+    private ContentStore contentStore;
     private ArrayList<Resource> resources;
+    private ArrayList<Service> services;
     private MqttClient mqttClient;
     private HashMap<String, Queue<Message>> receivedMessages;
 
@@ -49,16 +52,21 @@ public class FogOSCore {
     private static final String TAG = "FogOSCore";
 
     public FogOSCore() {
-
+        this.contentStore = new ContentStore(DEFAULT_CONTENT_STORE_PATH);
+        init();
     }
 
     public FogOSCore(String path) {
+        this.contentStore = new ContentStore(path);
+        init();
+    }
+
+    private void init() {
         java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Start: Initialize FogOSCore");
 
         retrieveBrokerList();
         broker = findBestFogOSBroker();
         java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Result: findBestFogOSBroker() " + broker.getName());
-        store = new ContentStore(path);
 
         sessionList = new LinkedList<>();
         initReceivedMessages();
@@ -90,7 +98,7 @@ public class FogOSCore {
         Message msg = new JoinMessage(deviceID);
         msg.test(broker); // This should be commented out after being generalized.
 
-        Message rmsg = new RegisterMessage(deviceID, store);
+        Message rmsg = new RegisterMessage(deviceID, this.contentStore);
         rmsg.test(broker);
 
         try {
@@ -344,7 +352,6 @@ public class FogOSCore {
                     Logger.getLogger(TAG).log(Level.INFO, "Mqtt: deliveryComplete");
                 }
             });
-
             mqttClient.connect(mqttConnectOptions);
             broker.setMqttClient(mqttClient);
         } catch (MqttSecurityException ex) {

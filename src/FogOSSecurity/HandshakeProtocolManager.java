@@ -47,20 +47,47 @@ public class HandshakeProtocolManager extends ProtocolManager {
         KeyAgreement ka = KeyAgreement.getInstance("ECDH");
         java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Start: doHandshake(): role: " + this.securityParameters.getRole().toString());
 
-        String str_pltPubkey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAihopLt8jzGC1Ss8F6/vCzNivWZQ+7V65dDgFqBQGRjiPTzgr/ERnp0lodn7UMezDsk2UHmN7XWQ3+Lc6klrpZk6UPPYNKwf7dhNXQTbvD35eACmK+DTcI6EpAa/ioAXnzaIP85U6G6rqex21kSj/NQXvhtA4zIh2IEgtsiyqrlBVbpkQmgI3JpOdiW+Eyx5MboymwGenbxJACoEHDAhJqPrvlkLoHn0+NZSGen1mtrFsz7dJBLMuRxbuYlMFHUsJcDAX21qxdQZL627nhZkZPXFB063xTCEN9CphfSvrcFeCGAYCb6IGrGwdU66o/112irn11vBgtVi4xUmlNSrslQIDAQAB";
-        String str_pltPrvkey = "MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCKGiku3yPMYLVKzwXr+8LM2K9ZlD7tXrl0OAWoFAZGOI9POCv8RGenSWh2ftQx7MOyTZQeY3tdZDf4tzqSWulmTpQ89g0rB/t2E1dBNu8Pfl4AKYr4NNwjoSkBr+KgBefNog/zlTobqup7HbWRKP81Be+G0DjMiHYgSC2yLKquUFVumRCaAjcmk52Jb4TLHkxujKbAZ6dvEkAKgQcMCEmo+u+WQugefT41lIZ6fWa2sWzPt0kEsy5HFu5iUwUdSwlwMBfbWrF1BkvrbueFmRk9cUHTrfFMIQ30KmF9K+twV4IYBgJvogasbB1Trqj/XXaKufXW8GC1WLjFSaU1KuyVAgMBAAECggEBAIPHQtT/B+HVxiiEM1pi+hcODQSleQZ4BO7pJjykHviSr+0f5JjrjR0L5yprC4A4NOTHMjdtJiKPpvklnjZZma2N/dXN0/LjwweAnRoVmThnlLsC6SC/D/DPr5l0hAO+ntqRcjc0hiYwiV7BkqfZPu0RpOY3entxG4biWPhTtuptQpvq/OQtT1zztsewLnqpi+uBcrHYeGT7jwede5347okhHAwHHzQyZcc7SKtAMNzaBmGBhVDVIB3+NvzuPyKFPfNgB43ByHViFxv7QtwFSlgmxKpwpYrjS5pINj704Z58lNz8OoCOuYkKdgmOR5UsJTN4OU8r0y4UEQwy+5XGjQECgYEA2t0FqEkYNMeVVBw3Z0mOug2UPFsLM20UuzGoDq0UC2njdg77nhqMw3dGAuff9CdmBz9YowvyzaVkHdeh7GCdBlVEA+l+QQiF5rv/5Ho1qonV8UJyGapcm4Z0inNnpWgn1WJ1iSR+MBKIVhMSu+nq97OIrB02XK5rzieTPBb0YBkCgYEAoYkJwnHy727MbWdtRkzE5KgcveSLu9ZJaj3klTmiWhMk0K+Doe7oakOO/1Zzi2VMXbCQAY+3CkJnxBWPN6YpxOl6sDuS7LXRAVdP+G/L8Q26TvUpkYBkf4nCvbGX3QZC6txVuVTLxG0jWSIifNaegCbyfQNbwQwaV9VWOi92j90CgYEAkYbvcRORRd8Duxa7/DDb93h5/ZvoGbzJUSNWhNOvBVvWRDT4OAudV4dihSIbNuRPojgLvvZ97yGvLWypHVysbH6bqCJEsgdxyZduMkTUlF3sZOxypAA0bbF8ombUHxbfjbJXRuZ+BYb9IoayKUMD2sqE8TTHZd8Qjdagvw7gVVkCgYAjQaW/qt87IxO7TTesgFT5Ezgyug9FkB+18IxThaDJyCPg6G3yihJwHw627EeLxTBFwqOrs5Jfyt6bDZmUq8+yCsOcc2Q+BfD4OfZaYwxAMJ7ZXOkVuNA2hfrbLEfZFeTFHhIXwUo4NRnh+nFMjgtKLTX/0xvTprCZOxb23CUkgQKBgE1AXW2IHrc96Xd18T18LmRdLCwSQjC/camBuUoX8AigOeY83zFbpFN7owPjeLbhC0U+GlgLZPRCLUe1WOfwrO6ZCS9+gZ4XjL+peIr/ADU59+j4uoDl7rEeJl/YTu6Gf9pTHZqvSjOQSCYK7XJElp7iAScDSYZx4w4wX3xMuxD4";
+        String str_pltPubkey = "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAElKA5aHtbGcdaxX/2Si9JnAtqcBLjAJiXJm9rNlsiJ3MItQd+3zIgB4bWCvzf3S0N2jkTLUiCKg3+PFj52DGcUQ==";
+        String str_pltPrvkey = "MEECAQAwEwYHKoZIzj0CAQYIKoZIzj0DAQcEJzAlAgEBBCDXAr2E5mZ+MtGFcMTkMTibvn2qDnNJZPPEELv4PvJ17w==";
 
-        start = Instant.now();
         byte[] byte_pltPubkey = Base64.getDecoder().decode(str_pltPubkey);
-        KeyFactory factory = KeyFactory.getInstance("RSA");
+        KeyFactory factory = KeyFactory.getInstance("EC");
         PublicKey platformPubkey = factory.generatePublic(new X509EncodedKeySpec(byte_pltPubkey));
 
         byte[] byte_pltPrvkey = Base64.getDecoder().decode(str_pltPrvkey);
         PrivateKey platformPrvkey = factory.generatePrivate(new PKCS8EncodedKeySpec(byte_pltPrvkey));
 
-        KeyPair myKeyPair = generateKeyPair(999);
+        start = Instant.now();
+
+        Instant start2 = Instant.now();
+        KeyPairGenerator kpg = KeyPairGenerator.getInstance("EC");
+        end = Instant.now();
+        timeElapsed = Duration.between(start2, end).toMillis();
+        System.out.println("----- A Time::: " + timeElapsed);
+
+        start2 = Instant.now();
+        kpg.initialize(256);
+        end = Instant.now();
+        timeElapsed = Duration.between(start2, end).toMillis();
+        System.out.println("----- B Time::: " + timeElapsed);
+
+        start2 = Instant.now();
+        KeyPair myKeyPair = kpg.generateKeyPair();
+        end = Instant.now();
+        timeElapsed = Duration.between(start2, end).toMillis();
+        System.out.println("----- C Time::: " + timeElapsed);
+
+        start2 = Instant.now();
         PrivateKey longPrvkey = myKeyPair.getPrivate();
+        end = Instant.now();
+        timeElapsed = Duration.between(start2, end).toMillis();
+        System.out.println("----- D Time::: " + timeElapsed);
+
+        start2 = Instant.now();
         PublicKey longPubkey = myKeyPair.getPublic();
+        end = Instant.now();
+        timeElapsed = Duration.between(start2, end).toMillis();
+        System.out.println("----- E Time::: " + timeElapsed);
 
         end = Instant.now();
         timeElapsed = Duration.between(start, end).toMillis();
@@ -87,6 +114,7 @@ public class HandshakeProtocolManager extends ProtocolManager {
         timeElapsed = Duration.between(start, end).toMillis();
         System.out.println("----- TIME Short-term Key Generation (ECDH)::: " + timeElapsed);
 
+        // client
         if (isServer == 0) {
             start = Instant.now();
 
@@ -102,7 +130,7 @@ public class HandshakeProtocolManager extends ProtocolManager {
             byte[] byte_shortPubkey = shortPubkey.getEncoded();
             String str_shortPubkey = Base64.getEncoder().encodeToString(byte_shortPubkey);
 
-            String msg = str_shortPubkey + "---Pad---" + str_longPubkey + "---Pad---" + str_sign + "---Pad---";
+            String msg = str_shortPubkey + "--Pad--" + str_longPubkey + "--Pad--" + str_sign + "--Pad--";
 
             end = Instant.now();
             timeElapsed = Duration.between(start, end).toMillis();
@@ -124,7 +152,7 @@ public class HandshakeProtocolManager extends ProtocolManager {
 
             start = Instant.now();
 
-            String[] parts = receivedMsg.split("---Pad---");
+            String[] parts = receivedMsg.split("--Pad--");
             String target_shortPubkey = parts[0];
             String target_longPubkey = parts[1];
             String target_sign = parts[2];
@@ -138,7 +166,7 @@ public class HandshakeProtocolManager extends ProtocolManager {
 
 
             byte[] byte_target_longPubkey = Base64.getDecoder().decode(target_longPubkey);
-            factory = KeyFactory.getInstance("RSA");
+            factory = KeyFactory.getInstance("EC");
             PublicKey decoded_target_longPubkey = factory.generatePublic(new X509EncodedKeySpec(byte_target_longPubkey));
 
             byte[] shared_secret = getSharedSecret(shortPrvkey, decoded_target_shortPubkey, ka);
@@ -164,7 +192,7 @@ public class HandshakeProtocolManager extends ProtocolManager {
             end = Instant.now();
             timeElapsed = Duration.between(start, end).toMillis();
 
-            msg = str_signed_secret + "---Pad---";
+            msg = str_signed_secret + "--Pad--";
             System.out.println("----- TIME INITIATOR Generate Last MSG & MASTER KEY::: " + timeElapsed);
 
             flexIDSession.send(msg.getBytes());
@@ -173,7 +201,7 @@ public class HandshakeProtocolManager extends ProtocolManager {
                 rcvd = flexIDSession.receive(buf);
             }
 
-        } else {
+        } else { // Server
             rcvd = -1;
             while (rcvd < 0) {
                 rcvd = flexIDSession.receive(buf);
@@ -184,7 +212,7 @@ public class HandshakeProtocolManager extends ProtocolManager {
 
             String receivedMsg = new String(buf);
 
-            String[] parts = receivedMsg.split("---Pad---");
+            String[] parts = receivedMsg.split("--Pad--");
             String target_shortPubkey = parts[0];
             String target_longPubkey = parts[1];
             String target_sign = parts[2];
@@ -199,7 +227,7 @@ public class HandshakeProtocolManager extends ProtocolManager {
 
             byte[] byte_target_longPubkey = Base64.getDecoder().decode(target_longPubkey);
 
-            factory = KeyFactory.getInstance("RSA");
+            factory = KeyFactory.getInstance("EC");
 
             PublicKey decoded_target_longPubkey = factory.generatePublic(new X509EncodedKeySpec(byte_target_longPubkey));
 
@@ -227,11 +255,13 @@ public class HandshakeProtocolManager extends ProtocolManager {
 
             String str_signed_secret = Base64.getEncoder().encodeToString(signed_secret);
 
-            String msg = str_shortPubkey + "---Pad---" + str_longPubkey + "---Pad---" + str_signed_secret + "---Pad---";
+            String msg = str_shortPubkey + "--Pad--" + str_longPubkey + "--Pad--" + str_signed_secret + "--Pad--";
 
             end = Instant.now();
             timeElapsed = Duration.between(start, end).toMillis();
             System.out.println("----- TIME RESPONDER 1::: " + timeElapsed);
+
+            start = Instant.now();
             // ------------------------------------------------------------------------------------------------------------------------
             flexIDSession.send(msg.getBytes());
             // ------------------------------------------------------------------------------------------------------------------------
@@ -241,11 +271,15 @@ public class HandshakeProtocolManager extends ProtocolManager {
                 rcvd = flexIDSession.receive(buf);
             }
             receivedMsg = new String(buf);
+
+            end = Instant.now();
+            timeElapsed = Duration.between(start, end).toMillis();
+            System.out.println("----- TIME Send/Receive::: " + timeElapsed);
             // ------------------------------------------------------------------------------------------------------------------------
 
             start = Instant.now();
 
-            parts = receivedMsg.split("---Pad---");
+            parts = receivedMsg.split("--Pad--");
             target_sign = parts[0];
             byte_target_sign = Base64.getDecoder().decode(target_sign);
 
@@ -262,7 +296,7 @@ public class HandshakeProtocolManager extends ProtocolManager {
             timeElapsed = Duration.between(start, end).toMillis();
             System.out.println("----- TIME RESPONDER 2::: " + timeElapsed);
 
-            msg = "HANDSHAKE DONE";
+            msg = "1";
             flexIDSession.send(msg.getBytes());
         }
 
@@ -272,7 +306,7 @@ public class HandshakeProtocolManager extends ProtocolManager {
     }
 
     private static byte[] sign(PrivateKey prvKey, byte[] data) throws InvalidKeyException, SignatureException, NoSuchAlgorithmException {
-        Signature signer = Signature.getInstance("SHA1withRSA");
+        Signature signer = Signature.getInstance("SHA256withECDSA");
         signer.initSign(prvKey);
         signer.update(data);
         byte[] signed = signer.sign();
@@ -280,7 +314,7 @@ public class HandshakeProtocolManager extends ProtocolManager {
     }
 
     private static boolean verifySign(PublicKey key, byte[] data, byte[] signature) throws NoSuchAlgorithmException, SignatureException, InvalidKeyException {
-        Signature signer = Signature.getInstance("SHA1withRSA");
+        Signature signer = Signature.getInstance("SHA256withECDSA");
         signer.initVerify(key);
         signer.update(data);
         return (signer.verify(signature));

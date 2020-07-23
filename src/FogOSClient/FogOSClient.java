@@ -6,6 +6,10 @@ import FogOSMessage.*;
 import FogOSSecurity.Role;
 import FogOSSecurity.SecureFlexIDSession;
 
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SignatureException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.logging.Level;
 
 public class FogOSClient implements FogOSClientAPI {
@@ -71,8 +75,7 @@ public class FogOSClient implements FogOSClientAPI {
         return (ResponseMessage) core.getReceivedMessage(MessageType.RESPONSE.getTopic());
     }
 
-    public SecureFlexIDSession createSecureFlexIDSession(Role role, FlexID sFID, FlexID dFID)
-    {
+    public SecureFlexIDSession createSecureFlexIDSession(Role role, FlexID sFID, FlexID dFID) throws InvalidKeySpecException, NoSuchAlgorithmException, InvalidKeyException, SignatureException {
         return core.createSecureFlexIDSession(role, sFID, dFID);
     }
 }

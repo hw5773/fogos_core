@@ -19,6 +19,10 @@ import org.json.*;
 
 import java.io.*;
 import java.net.*;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SignatureException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -435,7 +439,7 @@ public class FogOSCore {
         java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Finish: sendMessage()");
     }
 
-    public SecureFlexIDSession createSecureFlexIDSession(Role role, FlexID sFID, FlexID dFID) {
+    public SecureFlexIDSession createSecureFlexIDSession(Role role, FlexID sFID, FlexID dFID) throws NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, SignatureException {
         SecureFlexIDSession secureFlexIDSession = new SecureFlexIDSession(role, sFID, dFID);
         sessionList.add(secureFlexIDSession);
         return secureFlexIDSession;

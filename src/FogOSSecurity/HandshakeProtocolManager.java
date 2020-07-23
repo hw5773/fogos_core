@@ -6,6 +6,7 @@ import java.security.Signature;
 
 import java.security.*;
 import java.security.spec.ECGenParameterSpec;
+import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.time.Duration;
@@ -19,16 +20,44 @@ import javax.crypto.KeyAgreement;
  *  Implements an API for handshake protocol manager
  *  @author Hyeonmin Lee
  */
-public class HandshakeProtocolManager extends ProtocolManager {
+public class HandshakeProtocolManager<signed_longPubkey> extends ProtocolManager {
     private static final String TAG = "FogOSSecurity";
+    private static PublicKey platformPubkey, longPubkey;
+    private static PrivateKey platformPrvkey, longPrvkey;
+    private static KeyAgreement ka;
+    private static KeyFactory factory;
+    private String signed_longPubkey;
 
     /**
      * Construct the HandshakeProtocolManager
      * @param securityParameters the security parameters
      * @param flexIDSession the FlexID session
      */
-    HandshakeProtocolManager(SecurityParameters securityParameters, FlexIDSession flexIDSession) {
+    HandshakeProtocolManager(SecurityParameters securityParameters, FlexIDSession flexIDSession) throws NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, InvalidKeyException {
         super(securityParameters, flexIDSession);
+
+        ka = KeyAgreement.getInstance("ECDH");
+
+        String str_pltPubkey = "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAElKA5aHtbGcdaxX/2Si9JnAtqcBLjAJiXJm9rNlsiJ3MItQd+3zIgB4bWCvzf3S0N2jkTLUiCKg3+PFj52DGcUQ==";
+        String str_pltPrvkey = "MEECAQAwEwYHKoZIzj0CAQYIKoZIzj0DAQcEJzAlAgEBBCDXAr2E5mZ+MtGFcMTkMTibvn2qDnNJZPPEELv4PvJ17w==";
+
+        factory = KeyFactory.getInstance("EC");
+        byte[] byte_pltPubkey = Base64.getDecoder().decode(str_pltPubkey);
+        byte[] byte_pltPrvkey = Base64.getDecoder().decode(str_pltPrvkey);
+        platformPubkey = factory.generatePublic(new X509EncodedKeySpec(byte_pltPubkey));
+        platformPrvkey = factory.generatePrivate(new PKCS8EncodedKeySpec(byte_pltPrvkey));
+
+        KeyPairGenerator kpg = KeyPairGenerator.getInstance("EC");
+        kpg.initialize(256);
+        KeyPair myKeyPair = kpg.generateKeyPair();
+        longPrvkey = myKeyPair.getPrivate();
+        longPubkey = myKeyPair.getPublic();
+
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+        md.update(longPubkey.getEncoded());
+        byte[] hashed_pubkey_A = md.digest();
+        byte[] signed = sign(platformPrvkey, hashed_pubkey_A);
+        signed_longPubkey = Base64.getEncoder().encodeToString(signed);
     }
 
     /**
@@ -44,67 +73,12 @@ public class HandshakeProtocolManager extends ProtocolManager {
         Instant start, end;
         long timeElapsed;
 
-        KeyAgreement ka = KeyAgreement.getInstance("ECDH");
         java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Start: doHandshake(): role: " + this.securityParameters.getRole().toString());
 
-        String str_pltPubkey = "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAElKA5aHtbGcdaxX/2Si9JnAtqcBLjAJiXJm9rNlsiJ3MItQd+3zIgB4bWCvzf3S0N2jkTLUiCKg3+PFj52DGcUQ==";
-        String str_pltPrvkey = "MEECAQAwEwYHKoZIzj0CAQYIKoZIzj0DAQcEJzAlAgEBBCDXAr2E5mZ+MtGFcMTkMTibvn2qDnNJZPPEELv4PvJ17w==";
-
-        byte[] byte_pltPubkey = Base64.getDecoder().decode(str_pltPubkey);
-        KeyFactory factory = KeyFactory.getInstance("EC");
-        PublicKey platformPubkey = factory.generatePublic(new X509EncodedKeySpec(byte_pltPubkey));
-
-        byte[] byte_pltPrvkey = Base64.getDecoder().decode(str_pltPrvkey);
-        PrivateKey platformPrvkey = factory.generatePrivate(new PKCS8EncodedKeySpec(byte_pltPrvkey));
-
         start = Instant.now();
-
-        Instant start2 = Instant.now();
-        KeyPairGenerator kpg = KeyPairGenerator.getInstance("EC");
-        end = Instant.now();
-        timeElapsed = Duration.between(start2, end).toMillis();
-        System.out.println("----- A Time::: " + timeElapsed);
-
-        start2 = Instant.now();
-        kpg.initialize(256);
-        end = Instant.now();
-        timeElapsed = Duration.between(start2, end).toMillis();
-        System.out.println("----- B Time::: " + timeElapsed);
-
-        start2 = Instant.now();
-        KeyPair myKeyPair = kpg.generateKeyPair();
-        end = Instant.now();
-        timeElapsed = Duration.between(start2, end).toMillis();
-        System.out.println("----- C Time::: " + timeElapsed);
-
-        start2 = Instant.now();
-        PrivateKey longPrvkey = myKeyPair.getPrivate();
-        end = Instant.now();
-        timeElapsed = Duration.between(start2, end).toMillis();
-        System.out.println("----- D Time::: " + timeElapsed);
-
-        start2 = Instant.now();
-        PublicKey longPubkey = myKeyPair.getPublic();
-        end = Instant.now();
-        timeElapsed = Duration.between(start2, end).toMillis();
-        System.out.println("----- E Time::: " + timeElapsed);
-
-        end = Instant.now();
-        timeElapsed = Duration.between(start, end).toMillis();
-        System.out.println("----- Preparation Time::: " + timeElapsed);
-
-        start = Instant.now();
-        //int bitLength = 512; // 512 bits
-        //SecureRandom rnd = new SecureRandom();
-        //BigInteger p512 = BigInteger.probablePrime(bitLength, rnd);
-        //BigInteger g512 = BigInteger.probablePrime(bitLength, rnd);
 
         ECGenParameterSpec p256 = new ECGenParameterSpec("secp256r1");
-        //Security.addProvider(new BouncyCastleProvider());
-        //ECGenParameterSpec ecSpec = new ECGenParameterSpec(SPEC);
-        //DHParameterSpec dhParams = new DHParameterSpec(p512, g512);
         KeyPairGenerator g = KeyPairGenerator.getInstance("EC");
-        //g.initialize(dhParams, new SecureRandom());
         g.initialize(p256);
         KeyPair keypair = g.generateKeyPair();
         PublicKey shortPubkey = keypair.getPublic(); //
@@ -119,10 +93,6 @@ public class HandshakeProtocolManager extends ProtocolManager {
             start = Instant.now();
 
             MessageDigest md = MessageDigest.getInstance("SHA-256");
-            md.update(longPubkey.getEncoded());
-            byte[] hashed_pubkey_A = md.digest();
-            byte[] signed = sign(platformPrvkey, hashed_pubkey_A);
-            String str_sign = Base64.getEncoder().encodeToString(signed);
 
             byte[] byte_longPubkey = longPubkey.getEncoded();
             String str_longPubkey = Base64.getEncoder().encodeToString(byte_longPubkey);
@@ -130,7 +100,7 @@ public class HandshakeProtocolManager extends ProtocolManager {
             byte[] byte_shortPubkey = shortPubkey.getEncoded();
             String str_shortPubkey = Base64.getEncoder().encodeToString(byte_shortPubkey);
 
-            String msg = str_shortPubkey + "--Pad--" + str_longPubkey + "--Pad--" + str_sign + "--Pad--";
+            String msg = str_shortPubkey + "--Pad--" + str_longPubkey + "--Pad--" + signed_longPubkey + "--Pad--";
 
             end = Instant.now();
             timeElapsed = Duration.between(start, end).toMillis();
@@ -319,7 +289,7 @@ public class HandshakeProtocolManager extends ProtocolManager {
         signer.update(data);
         return (signer.verify(signature));
     }
-
+/*
     private static KeyPair generateKeyPair(long seed) throws Exception {
         KeyPairGenerator keyGenerator = KeyPairGenerator.getInstance("RSA");
         SecureRandom random = new SecureRandom();
@@ -327,7 +297,7 @@ public class HandshakeProtocolManager extends ProtocolManager {
 
         return (keyGenerator.generateKeyPair());
     }
-
+*/
     private static byte[] getSharedSecret (PrivateKey prvKey, PublicKey pubKey, KeyAgreement ka) throws Exception
     {
         ka.init(prvKey);

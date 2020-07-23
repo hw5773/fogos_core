@@ -4,7 +4,10 @@ import FlexID.FlexID;
 import FogOSSocket.FlexIDSession;
 
 import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.SignatureException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.logging.Level;
 
 /**
@@ -23,7 +26,7 @@ public class SecureFlexIDSession {
      * @param role the role of the entity
      * @param dFID the FlexID of the destination
      */
-    public SecureFlexIDSession(Role role, FlexID dFID) {
+    public SecureFlexIDSession(Role role, FlexID dFID) throws InvalidKeySpecException, NoSuchAlgorithmException, SignatureException, InvalidKeyException {
         java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Start: Initialize SecureFlexIDSession");
         this.flexIDSession = FlexIDSession.accept(dFID);
         initialization(role);
@@ -36,7 +39,7 @@ public class SecureFlexIDSession {
      * @param sFID the FlexID of the source
      * @param dFID the FlexID of the destination
      */
-    public SecureFlexIDSession(Role role, FlexID sFID, FlexID dFID) {
+    public SecureFlexIDSession(Role role, FlexID sFID, FlexID dFID) throws InvalidKeySpecException, NoSuchAlgorithmException, SignatureException, InvalidKeyException {
         java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Start: Initialize SecureFlexIDSession");
         this.flexIDSession = new FlexIDSession(sFID, dFID);
         initialization(role);
@@ -48,7 +51,7 @@ public class SecureFlexIDSession {
      * @param role the role of the entity
      * @param flexIDSession the FlexIDSession
      */
-    public SecureFlexIDSession(Role role, FlexIDSession flexIDSession) {
+    public SecureFlexIDSession(Role role, FlexIDSession flexIDSession) throws InvalidKeySpecException, NoSuchAlgorithmException, SignatureException, InvalidKeyException {
         java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Start: Initialize SecureFlexIDSession");
         setFlexIDSession(flexIDSession);
         initialization(role);
@@ -59,7 +62,7 @@ public class SecureFlexIDSession {
      * Initialize the SecureFlexIDSession
      * @param role the role of the entity
      */
-    private void initialization(Role role) {
+    private void initialization(Role role) throws InvalidKeySpecException, NoSuchAlgorithmException, SignatureException, InvalidKeyException {
         this.securityParameters = new SecurityParameters(role);
         this.handshakeManager = new HandshakeProtocolManager(this.securityParameters, this.flexIDSession);
         this.recordManager = new RecordProtocolManager(this.securityParameters, this.flexIDSession);

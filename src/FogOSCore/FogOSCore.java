@@ -11,7 +11,7 @@ import FogOSResource.Resource;
 import FogOSResource.ResourceReporter;
 import FogOSSecurity.Role;
 import FogOSSecurity.SecureFlexIDSession;
-//import FogOSService.Service;
+import FogOSService.Service;
 import FogOSContent.Content;
 import FogOSStore.ContentStore;
 import org.eclipse.paho.client.mqttv3.*;
@@ -38,7 +38,7 @@ public class FogOSCore {
     private FlexID deviceID;
     private ContentStore contentStore;
     private ArrayList<Resource> resources;
-   // private ArrayList<Service> services;
+    private ArrayList<Service> services;
     private MqttClient mqttClient;
     private HashMap<String, Queue<Message>> receivedMessages;
 

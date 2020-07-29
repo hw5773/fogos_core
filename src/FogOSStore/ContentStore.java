@@ -24,11 +24,13 @@ public class ContentStore {
 
     private ArrayList contents = new ArrayList();
     private ArrayList fileslist = new ArrayList();
+    private String path;
 
 
     public ContentStore(String path){
         //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
 
+        this.path = path;
         readifExist();
 
         fileExplorer(path);
@@ -38,16 +40,16 @@ public class ContentStore {
     }
 
     private void readifExist(){
-        File f = new File("/sdcard/FogOS/ContentStore/content.json");
+        File f = new File(path + "/FogOS/ContentStore/content.json");
         String jsonline = "";
         if(f.exists() && !f.isDirectory()) {
             try {
-                FileReader rd = new FileReader("/sdcard/FogOS/ContentStore/content.json");
+                FileReader rd = new FileReader(path + "/FogOS/ContentStore/content.json");
                 BufferedReader bufReader = new BufferedReader(rd);
 
                 jsonline = bufReader.readLine();
 
-                System.out.println(jsonline);
+                //System.out.println(jsonline);
 
                 JSONObject jsonObject = new JSONObject(jsonline);
                 JSONArray jsonArr = jsonObject.getJSONArray("filelist");
@@ -76,7 +78,7 @@ public class ContentStore {
 
     // @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void writeintoFile() {
-        File f = new File("/sdcard/FogOS/ContentStore/content.json");
+        File f = new File(path+"/FogOS/ContentStore/content.json");
         Content[] contentlist = getContentList();
 
         JSONArray outjson2 = new JSONArray();
@@ -86,15 +88,14 @@ public class ContentStore {
 
                 JSONObject obj = new JSONObject();
                 obj.put("name", contentlist[i].getName());
-                System.out.println(contentlist[i].getName());
+                //System.out.println(contentlist[i].getName());
                 obj.put("path", contentlist[i].getPath());
-                System.out.println(contentlist[i].getPath());
+                //System.out.println(contentlist[i].getPath());
                 obj.put("shared", Boolean.toString(contentlist[i].isShared()));
-                System.out.println(contentlist[i].isShared());
+                //System.out.println(contentlist[i].isShared());
                 outjson2.put(obj);
 
             }
-
 
             filelist.put("filelist",outjson2);
             FileWriter fw = new FileWriter(f);
@@ -109,8 +110,13 @@ public class ContentStore {
 
     }
     private void fileExplorer(String path){
+
         File f = new File(path);
         File[] files = f.listFiles();
+
+        if (files == null) {
+            return;
+        }
 
         for(int i=0; i<files.length; i++) {
             try {
@@ -118,13 +124,12 @@ public class ContentStore {
 
                 if (file.isDirectory()) {
                     fileslist.add(file);
-                    contents.add(new Content(file.getName(), file.getPath(), true));
+                    contents.add(new Content(file.getName(), file.getPath(), false));
                     fileExplorer(file.getPath());
                 }
                 else {
                     fileslist.add(file);
-                    contents.add(new Content(file.getName(),file.getPath(),true));
-
+                    contents.add(new Content(file.getName(),file.getPath(),false));
                 }
             }
             catch(Exception e) {
@@ -154,4 +159,5 @@ public class ContentStore {
 
         return returnlist;
     }
+
 }

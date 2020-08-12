@@ -84,4 +84,8 @@ public class FogOSClient implements FogOSClientAPI {
     public Content[] getContentList() {
         return core.getContentList();
     }
+    
+    public void ContentUpdate() {
+    	core.ContentUpdate();
+    }
 }

@@ -33,13 +33,15 @@ public class ContentStore {
         this.path = path;
         readifExist();
 
-        fileExplorer(path);
+        fileExplorerWithClear(path);
 
         writeintoFile();
         //}
     }
 
     private void readifExist(){
+    	contents.clear();
+
         File f = new File(path + "/FogOS/ContentStore/content.json");
         String jsonline = "";
         if(f.exists() && !f.isDirectory()) {
@@ -78,7 +80,17 @@ public class ContentStore {
 
     // @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void writeintoFile() {
+    	
         File f = new File(path+"/FogOS/ContentStore/content.json");
+        if(f.exists())
+        {
+        	f.delete();
+        }
+        try {
+        f.createNewFile();
+        } catch (IOException e){
+        	e.printStackTrace();
+        }
         Content[] contentlist = getContentList();
 
         JSONArray outjson2 = new JSONArray();
@@ -98,9 +110,10 @@ public class ContentStore {
             }
 
             filelist.put("filelist",outjson2);
-            FileWriter fw = new FileWriter(f);
+            FileWriter fw = new FileWriter(f,false);
             fw.write(filelist.toString());
             fw.flush();
+            fw.close();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -138,9 +151,17 @@ public class ContentStore {
 
             }
         }
-
+        
+     
     }
 
+    private void fileExplorerWithClear(String path) {
+    	contents.clear();
+    	fileslist.clear();
+    	
+    	fileExplorer(path);
+    	
+    }
     public Content[] getContentList(){
 
         Content[] rt = new Content[contents.size()];
@@ -158,6 +179,13 @@ public class ContentStore {
         }
 
         return returnlist;
+    }
+    
+    public void ContentUpdate() {
+    	fileExplorerWithClear(this.path);
+
+        writeintoFile();
+    	
     }
 
 }

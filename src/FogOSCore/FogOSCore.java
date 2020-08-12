@@ -449,6 +449,10 @@ public class FogOSCore {
     public Content[] getContentList() {
         return contentStore.getContentList();
     }
+    
+    public void ContentUpdate() {
+    	contentStore.ContentUpdate();
+    }
 
     public void destroySecureFlexIDSession(SecureFlexIDSession secureFlexIDSession) {
         secureFlexIDSession.getFlexIDSession().close();

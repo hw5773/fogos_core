@@ -13,7 +13,9 @@ import FogOSSecurity.Role;
 import FogOSSecurity.SecureFlexIDSession;
 import FogOSService.Service;
 import FogOSContent.Content;
+import FogOSService.ServiceRunner;
 import FogOSStore.ContentStore;
+import FogOSStore.ServiceList;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.json.*;
@@ -29,7 +31,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class FogOSCore {
-    private final String cloudName = "www.versatile-cloud.com";
+    // private final String cloudName = "www.versatile-cloud.com";
+    private final String cloudName = "147.46.114.86";
     private final int cloudPort = 3333;
     private final String DEFAULT_CONTENT_STORE_PATH = "";
     private LinkedList<FogOSBroker> brokers;
@@ -37,8 +40,8 @@ public class FogOSCore {
     private FlexIDFactory factory;
     private FlexID deviceID;
     private ContentStore contentStore;
-    private ArrayList<Resource> resources;
-    private ArrayList<Service> services;
+    private ArrayList<Resource> resourceList;
+    private ArrayList<Service> serviceList;
     private MqttClient mqttClient;
     private HashMap<String, Queue<Message>> receivedMessages;
 
@@ -51,6 +54,9 @@ public class FogOSCore {
     // A thread that periodically reports a status of resources in the device
     private Runnable resourceReporter;
 
+    // An instance that runs services
+    private ServiceRunner serviceRunner;
+
     // QoS Interpreter
     private QoSInterpreter qosInterpreter;
 
@@ -61,12 +67,18 @@ public class FogOSCore {
         init();
     }
 
-    public FogOSCore(String path) {
-        this.contentStore = new ContentStore(path);
+    public FogOSCore(ContentStore contentStore, ArrayList<Service> serviceList,
+                     ArrayList<Resource> resourceList) {
+        this.contentStore = contentStore;
+        this.serviceList = serviceList;
+        this.resourceList = resourceList;
         init();
     }
 
     private void init() {
+        //Locale locale = new Locale("en", "us");
+        //Locale.setDefault(locale);
+        //Locale.forLanguageTag("en-US");
         java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Start: Initialize FogOSCore");
 
         retrieveBrokerList();
@@ -83,6 +95,9 @@ public class FogOSCore {
         // Initilaize the resource reporter
         resourceReporter = new ResourceReporter(this);
         new Thread(resourceReporter).start();
+
+        // TODO: Initialize the service runner
+        serviceRunner = new ServiceRunner();
 
         // Initialize and run the QoS interpreter
         qosInterpreter = new QoSInterpreter(this);
@@ -154,10 +169,6 @@ public class FogOSCore {
             e.printStackTrace();
         }
         java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Finish: retrieveBrokerList()");
-    }
-
-    public ArrayList<Resource> getResources() {
-        return resources;
     }
 
     // Ping test and select the best FogOS broker
@@ -316,7 +327,9 @@ public class FogOSCore {
         java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Start: connect()");
         try {
             java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "broker.getName(): " + broker.getName() + " / broker.getPort(): " + broker.getPort() + " / deviceID.getStringIdentity(): " + deviceID.getStringIdentity());
-            mqttClient = new MqttClient("tcp://" + broker.getName() + ":" + broker.getPort(), deviceID.getStringIdentity(), new MemoryPersistence());
+            //mqttClient = new MqttClient("tcp://" + broker.getName() + ":" + broker.getPort(), deviceID.getStringIdentity(), new MemoryPersistence());
+            mqttClient = new MqttClient("tcp://147.46.114.86:" + broker.getPort(), deviceID.getStringIdentity(), new MemoryPersistence());
+
             MqttConnectOptions mqttConnectOptions = new MqttConnectOptions();
             mqttConnectOptions.setCleanSession(true);
             mqttConnectOptions.setKeepAliveInterval(15);
@@ -448,6 +461,10 @@ public class FogOSCore {
 
     public Content[] getContentList() {
         return contentStore.getContentList();
+    }
+    public ArrayList<Service> getServiceList() { return serviceList; }
+    public ArrayList<Resource> getResourceList() {
+        return resourceList;
     }
     
     public void ContentUpdate() {

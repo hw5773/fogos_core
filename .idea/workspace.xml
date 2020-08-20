@@ -24,48 +24,59 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="66aa2718-903d-4b1d-9ae1-e96d274061e9" name="Default Changelist" comment="Merge master branch with FogOSSecurity code">
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/java_json.xml" afterDir="false" />
+    <list default="true" id="66aa2718-903d-4b1d-9ae1-e96d274061e9" name="Default Changelist" comment="Add services">
+      <change afterPath="$PROJECT_DIR$/src/FogOSService/Service.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/FogOSService/ServiceRunner.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/FogOSStore/ServiceList.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/artifacts/fogos_core_jar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/fogos_core_jar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/fogos_core.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/fogos_core.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/fogos_core/FogOSSecurity/ApplicationMessage.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/fogos_core/FogOSSecurity/ApplicationMessage.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/fogos_core/FogOSSecurity/ContentType.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/fogos_core/FogOSSecurity/ContentType.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/fogos_core/FogOSSecurity/HandshakeMessage.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/fogos_core/FogOSSecurity/HandshakeMessage.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/FogOSCore.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/fogos_core/FlexID/Value.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/fogos_core/FlexID/Value.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/fogos_core/FogOSClient/FogOSClient.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/fogos_core/FogOSClient/FogOSClient.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/fogos_core/FogOSClient/FogOSClientAPI.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/fogos_core/FogOSClient/FogOSClientAPI.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/fogos_core/FogOSCore/FogOSCore$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/fogos_core/FogOSCore/FogOSCore$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/fogos_core/FogOSCore/FogOSCore$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/fogos_core/FogOSCore/FogOSCore$2.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/fogos_core/FogOSCore/FogOSCore$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/fogos_core/FogOSCore/FogOSCore$3.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/fogos_core/FogOSCore/FogOSCore$NetworkThread.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/fogos_core/FogOSCore/FogOSCore$NetworkThread.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/fogos_core/FogOSCore/FogOSCore.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/fogos_core/FogOSCore/FogOSCore.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/fogos_core/FogOSMessage/JoinMessage.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/fogos_core/FogOSMessage/JoinMessage.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/fogos_core/FogOSMessage/Message.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/fogos_core/FogOSMessage/Message.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/fogos_core/FogOSMessage/RegisterMessage.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/fogos_core/FogOSMessage/RegisterMessage.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/fogos_core/FogOSResource/Resource.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/fogos_core/FogOSResource/Resource.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/fogos_core/FogOSResource/ResourceReporter$StatusACKThread.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/fogos_core/FogOSResource/ResourceReporter$StatusACKThread.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/fogos_core/FogOSResource/ResourceReporter.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/fogos_core/FogOSResource/ResourceReporter.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/fogos_core/FogOSSecurity/HandshakeProtocolManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/fogos_core/FogOSSecurity/HandshakeProtocolManager.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/fogos_core/FogOSSecurity/ProtocolManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/fogos_core/FogOSSecurity/ProtocolManager.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/fogos_core/FogOSSecurity/ProtocolVersion.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/fogos_core/FogOSSecurity/ProtocolVersion.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/fogos_core/FogOSSecurity/Record$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/fogos_core/FogOSSecurity/Record$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/fogos_core/FogOSSecurity/Record.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/fogos_core/FogOSSecurity/Record.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/fogos_core/FogOSSecurity/RecordProtocolManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/fogos_core/FogOSSecurity/RecordProtocolManager.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/fogos_core/FogOSSecurity/Role.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/fogos_core/FogOSSecurity/Role.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/fogos_core/FogOSSecurity/SecureFlexIDSession.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/fogos_core/FogOSSecurity/SecureFlexIDSession.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/fogos_core/FogOSSecurity/SecurityMessage.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/fogos_core/FogOSSecurity/SecurityMessage.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/fogos_core/FogOSSecurity/SecurityParameters.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/fogos_core/FogOSSecurity/SecurityParameters.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FogOSSecurity/ApplicationMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FogOSSecurity/ApplicationMessage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FogOSSecurity/ContentType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FogOSSecurity/ContentType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FogOSSecurity/HandshakeMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FogOSSecurity/HandshakeMessage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FogOSSecurity/HandshakeProtocolManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FogOSSecurity/HandshakeProtocolManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FogOSSecurity/ProtocolManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FogOSSecurity/ProtocolManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FogOSSecurity/ProtocolVersion.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FogOSSecurity/ProtocolVersion.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FogOSSecurity/Record.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FogOSSecurity/Record.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FogOSSecurity/RecordProtocolManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FogOSSecurity/RecordProtocolManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FogOSSecurity/Role.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FogOSSecurity/Role.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FogOSSecurity/SecureFlexIDSession.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FogOSSecurity/SecureFlexIDSession.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FogOSSecurity/SecurityMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FogOSSecurity/SecurityMessage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FogOSSecurity/SecurityParameters.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FogOSSecurity/SecurityParameters.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/fogos_core/FogOSSocket/FlexIDSession$inbound.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/fogos_core/FogOSSocket/FlexIDSession$inbound.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/fogos_core/FogOSSocket/FlexIDSession$outbound.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/fogos_core/FogOSSocket/FlexIDSession$outbound.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/fogos_core/FogOSStore/ContentStore$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/fogos_core/FogOSStore/ContentStore.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/fogos_core/FogOSStore/ContentStore.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/FogOSClient/FogOSClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FogOSClient/FogOSClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/FogOSClient/FogOSClientAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FogOSClient/FogOSClientAPI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/FogOSResource/ResourceReporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FogOSResource/ResourceReporter.java" afterDir="false" />
     </list>
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="PREVIOUS_COMMIT_AUTHORS">
       <list>
         <option value="hmlee &lt;min0921110@gmail.com&gt;" />
       </list>
+    </option>
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="test" />
+      </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
@@ -159,30 +170,23 @@
       </profile-state>
     </entry>
   </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
   <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="android.sdk.path" value="$USER_HOME$/AppData/Local/Android/Sdk" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/lib/java-json.jar!/" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../fogos_streaming_app/app/libs" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
-    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.last.edited" value="Artifacts" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="settings.editor.selected.configurable" value="AndroidSdkUpdater" />
-  </component>
-  <component name="RunDashboard">
-    <option name="ruleStates">
-      <list>
-        <RuleState>
-          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
-        </RuleState>
-        <RuleState>
-          <option name="name" value="StatusDashboardGroupingRule" />
-        </RuleState>
-      </list>
-    </option>
   </component>
   <component name="RunManager">
     <configuration name="jar making" type="JarApplication">
@@ -193,6 +197,7 @@
       <method v="2" />
     </configuration>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -210,6 +215,14 @@
       <workItem from="1574149680693" duration="412000" />
       <workItem from="1576565335752" duration="1715000" />
     </task>
+    <task id="LOCAL-00001" summary="Add services">
+      <created>1597870277586</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1597870277586</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -223,19 +236,31 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State>
-              <option name="COLUMN_ORDER" />
-            </State>
+            <State />
           </value>
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Add resources" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add resources" />
+    <MESSAGE value="Add services" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add services" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="421" y="82" key="FileChooserDialogImpl" timestamp="1597847638523">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state x="421" y="82" key="FileChooserDialogImpl/0.0.1280.680/460.1080.1000.504@0.0.1280.680" timestamp="1597847638523" />
+    <state x="121" y="0" key="SettingsEditor" timestamp="1597862845461">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state x="121" y="0" key="SettingsEditor/0.0.1280.680/460.1080.1000.504@0.0.1280.680" timestamp="1597862845461" />
+    <state x="233" y="74" key="Vcs.Push.Dialog.v2" timestamp="1597870288433">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state x="233" y="74" key="Vcs.Push.Dialog.v2/0.0.1280.680/460.1080.1000.504@0.0.1280.680" timestamp="1597870288433" />
     <state x="760" y="419" key="git4idea.remote.GitConfigureRemotesDialog" timestamp="1591858850887">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

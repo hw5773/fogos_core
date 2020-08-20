@@ -50,8 +50,8 @@ public class ResourceReporter implements Runnable {
         // ex) double memUsage = ...;
 
         // Prepare Resource related variables
-        ArrayList<Resource> resources = core.getResources();
-        if (resources != null) {
+        ArrayList<Resource> resources = core.getResourceList();
+        if (resources != null && resources.size() > 0) {
             Iterator<Resource> iterator = resources.iterator();
             Resource resource;
 

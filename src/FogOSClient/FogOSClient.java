@@ -3,29 +3,54 @@ package FogOSClient;
 import FlexID.FlexID;
 import FogOSCore.FogOSCore;
 import FogOSMessage.*;
+import FogOSResource.Resource;
 import FogOSSecurity.Role;
 import FogOSSecurity.SecureFlexIDSession;
 import FogOSContent.*;
+import FogOSService.Service;
+import FogOSStore.ContentStore;
+import FogOSStore.ServiceList;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 
 
 public class FogOSClient implements FogOSClientAPI {
     private FogOSCore core;
+    private ContentStore contentStore;
+    private ArrayList<Content> contentList;
+    private ArrayList<Service> serviceList;
+    private ArrayList<Resource> resourceList;
+    private String rootPath;
     private static final String TAG = "FogOSClient";
 
     public FogOSClient() {
-        core = new FogOSCore();
+        this.rootPath = "";
+        init();
+        //core = new FogOSCore();
     }
 
     public FogOSClient(String path) {
         java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Start: Initialize FogOSClient");
-        core = new FogOSCore(path);
+        this.rootPath = path;
+        init();
+        //core = new FogOSCore(path);
         java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Finish: Initialize FogOSClient");
+    }
+
+    private void init() {
+        this.contentStore = new ContentStore(rootPath);
+        this.serviceList = new ArrayList<Service>();
+        this.resourceList = new ArrayList<Resource>();
+    }
+
+    // Added for the settings
+    public void begin() {
+        core = new FogOSCore(contentStore, serviceList, resourceList);
     }
 
     public QueryMessage makeQueryMessage() {
@@ -84,7 +109,22 @@ public class FogOSClient implements FogOSClientAPI {
     public Content[] getContentList() {
         return core.getContentList();
     }
-    
+    public ArrayList<Service> getServiceList() { return core.getServiceList(); }
+    public ArrayList<Resource> getResourceList() { return core.getResourceList(); }
+
+    // TODO: (hmlee or syseok) Please complete this function.
+    public void addContent(Content content) {
+
+    }
+
+    public void addService(Service service) {
+        serviceList.add(service);
+    }
+
+    public void addResource(Resource resource) {
+        resourceList.add(resource);
+    }
+
     public void ContentUpdate() {
     	core.ContentUpdate();
     }

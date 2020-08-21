@@ -40,4 +40,12 @@ public abstract class Resource {
     public String getUnit() {
         return unit;
     }
+    
+    public void setMax(String newmax) {
+    	this.max = newmax;
+    }
+    
+    public void setCurr(String newcur) {
+    	this.curr = newcur;
+    }
 }

@@ -15,7 +15,6 @@ import FogOSService.Service;
 import FogOSContent.Content;
 import FogOSService.ServiceRunner;
 import FogOSStore.ContentStore;
-import FogOSStore.ServiceList;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.json.*;

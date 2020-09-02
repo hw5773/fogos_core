@@ -13,9 +13,18 @@ import java.util.ArrayList;
 
 public interface FogOSClientAPI {
 
+    // Starting/quitting the FogOS core
+    void begin();
+    void exit();
+
     // Setting Content/Service
-    //void addContent(Content content);
-    //void addService(Service service);
+    void addContent(Content content);
+    void addService(Service service);
+
+    void removeContent(FlexID flexID);
+    void removeContent(String name);
+    void removeService(FlexID flexID);
+    void removeService(String name);
 
     Content[] getContentList();
     ArrayList<Service> getServiceList();

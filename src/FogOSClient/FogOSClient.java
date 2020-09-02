@@ -9,7 +9,6 @@ import FogOSSecurity.SecureFlexIDSession;
 import FogOSContent.*;
 import FogOSService.Service;
 import FogOSStore.ContentStore;
-import FogOSStore.ServiceList;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -52,6 +51,7 @@ public class FogOSClient implements FogOSClientAPI {
     public void begin() {
         core = new FogOSCore(contentStore, serviceList, resourceList);
     }
+    public void exit() {}
 
     public QueryMessage makeQueryMessage() {
         return (QueryMessage) core.generateMessage(MessageType.QUERY);
@@ -117,12 +117,36 @@ public class FogOSClient implements FogOSClientAPI {
 
     }
 
+    public void removeContent(FlexID flexID) {
+
+    }
+
+    public void removeContent(String name) {
+
+    }
+
     public void addService(Service service) {
         serviceList.add(service);
     }
 
+    public void removeService(FlexID flexID) {
+
+    }
+
+    public void removeService(String name) {
+
+    }
+
     public void addResource(Resource resource) {
         resourceList.add(resource);
+    }
+
+    public void removeResource(FlexID flexID) {
+
+    }
+
+    public void removeResource(String name) {
+
     }
 
     public void ContentUpdate() {

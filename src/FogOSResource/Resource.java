@@ -2,7 +2,7 @@ package FogOSResource;
 
 import FlexID.FlexID;
 
-public abstract class Resource {
+public abstract class Resource implements FogOSResourceAPI {
     private String name;        // The name of the resource
     private String max;         // The maximum value of the resource
     private String curr;        // The current value of the resource

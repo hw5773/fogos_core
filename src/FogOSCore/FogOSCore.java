@@ -474,4 +474,28 @@ public class FogOSCore {
         secureFlexIDSession.getFlexIDSession().close();
         sessionList.remove(secureFlexIDSession);
     }
+
+    public void register(Content content) {
+        Message msg = new RegisterMessage(deviceID, content);
+        msg.test(broker); // This should be commented out after being generalized.
+        // how can I get ACK message?
+    }
+
+    public void register(Service service) {
+        Message msg = new RegisterMessage(deviceID, service);
+        msg.test(broker); // This should be commented out after being generalized.
+        // how can I get ACK message?
+    }
+
+    public void register(Resource resource) {
+        Message msg = new RegisterMessage(deviceID, resource);
+        msg.test(broker); // This should be commented out after being generalized.
+        // how can I get ACK message?
+    }
+
+    public void deregister(FlexID[] flexIDList) {
+        boolean deregisterFlag = true;
+        Message msg = new UpdateMessage(deviceID, flexIDList, deregisterFlag);
+        msg.test(broker);
+    }
 }

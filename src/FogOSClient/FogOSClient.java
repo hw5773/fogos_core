@@ -21,7 +21,6 @@ import java.util.logging.Level;
 public class FogOSClient implements FogOSClientAPI {
     private FogOSCore core;
     private ContentStore contentStore;
-    private ArrayList<Content> contentList;
     private ArrayList<Service> serviceList;
     private ArrayList<Resource> resourceList;
     private String rootPath;
@@ -114,7 +113,7 @@ public class FogOSClient implements FogOSClientAPI {
 
     // TODO: (hmlee or syseok) Please complete this function.
     public void addContent(Content content) {
-        contentList.add(content);
+
     }
 
     public void removeContent(FlexID flexID) {

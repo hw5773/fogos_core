@@ -2,7 +2,7 @@ package FogOSContent;
 
 import FlexID.FlexID;
 
-public class Content {
+public class Content implements FogOSContentAPI {
     private String name;        // The name of the content
     private String path;        // The path of the content
     private int numOfSegments;  // The number of segments of the content

@@ -146,9 +146,9 @@ public class FogOSClient implements FogOSClientAPI {
 
     public void removeService(String name) {
         for (Service service : serviceList) {
-            String contentName = service.getName();
+            String contentName = service.getContext().getName();
             if (name.equals(contentName)) {
-                FlexID[] flexIDList = {service.getFlexID()};
+                FlexID[] flexIDList = {service.getContext().getServiceID()};
                 core.deregister(flexIDList);
             }
             break;

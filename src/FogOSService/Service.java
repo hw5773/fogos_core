@@ -17,7 +17,7 @@ import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.concurrent.Future;
 
-public abstract class Service implements FogOSServiceAPI {
+public abstract class Service {
     private ServiceContext context;         // The user-defined context of the service
     private SecureFlexIDSession session;    // The secure FlexID session with the client
     private AsynchronousSocketChannel proxySession; // The session with the server
@@ -50,10 +50,8 @@ public abstract class Service implements FogOSServiceAPI {
         if (context.isProxy()) {
             InetSocketAddress proxyAddr;
 
-            if (context.getProxyLoc().getType() == InterfaceType.ETH) {
-                proxyAddr = new InetSocketAddress(context.getProxyLoc().getAddr(),
+            proxyAddr = new InetSocketAddress(context.getProxyLoc().getAddr(),
                         context.getProxyLoc().getPort());
-            }
 
             try {
                 proxySession = AsynchronousSocketChannel.open();
@@ -82,5 +80,9 @@ public abstract class Service implements FogOSServiceAPI {
         if (context.isProxy()) {
 
         }
+    }
+
+    public ServiceContext getContext() {
+        return context;
     }
 }

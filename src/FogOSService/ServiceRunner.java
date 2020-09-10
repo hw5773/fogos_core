@@ -1,15 +1,13 @@
 package FogOSService;
 
-import FlexID.Value;
 import FogOSCore.FogOSCore;
-import FogOSMessage.Message;
-import FogOSMessage.StatusMessage;
-import FogOSResource.Resource;
-import FogOSResource.ResourceReporter;
 
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SignatureException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.logging.Level;
 
 public class ServiceRunner implements Runnable {
@@ -30,7 +28,19 @@ public class ServiceRunner implements Runnable {
     public void run() {
         java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Start: Run ServiceRunner");
 
-        initService();
+        try {
+            initService();
+        } catch (InvalidKeySpecException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (SignatureException e) {
+            e.printStackTrace();
+        }
 
         while (true)
         {
@@ -43,7 +53,7 @@ public class ServiceRunner implements Runnable {
         }
     }
 
-    private void initService() {
+    private void initService() throws InvalidKeySpecException, InterruptedException, NoSuchAlgorithmException, InvalidKeyException, SignatureException {
         if (services != null && services.size() > 0) {
             Iterator<Service> iterator = services.iterator();
             Service service;
@@ -68,7 +78,7 @@ public class ServiceRunner implements Runnable {
                     service.processInputFromPeer();
                 }
 
-                if (service.isProxy()) {
+                if (service.getContext().isProxy()) {
                     if (service.hasOutputToProxy()) {
                         service.processOutputToProxy();
                     }

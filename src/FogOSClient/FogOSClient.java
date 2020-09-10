@@ -123,13 +123,7 @@ public class FogOSClient implements FogOSClientAPI {
     }
 
     public void removeContent(String name) {
-        for (Content content : contentList) {
-            String contentName = content.getName();
-            if (name.equals(contentName)) {
-                core.deregister(content.getFlexID());
-            }
-            break;
-        }
+
     }
 
     public void addService(Service service) {

@@ -85,7 +85,7 @@ public class FogOSCore {
         java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Result: findBestFogOSBroker() " + broker.getName());
 
         sessionList = new LinkedList<>();
-        initReceivedMessages();
+        //initReceivedMessages();
 
         // Initialize and run the mobility detector
         mobilityDetector = new MobilityDetector(this);

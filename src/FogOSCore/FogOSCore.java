@@ -96,7 +96,8 @@ public class FogOSCore {
         new Thread(resourceReporter).start();
 
         // TODO: Initialize the service runner
-        serviceRunner = new ServiceRunner();
+        serviceRunner = new ServiceRunner(this);
+        new Thread(serviceRunner).start();
 
         // Initialize and run the QoS interpreter
         qosInterpreter = new QoSInterpreter(this);
@@ -200,6 +201,8 @@ public class FogOSCore {
             rtt2 = getPingStats(result2);
         } catch (IOException e) {
             e.printStackTrace();
+            rtt1 = 0.0; // test code for the Java application
+            rtt2 = 1.0; // test code for the Java application
         }
 
         java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Finish: findBestFogOSBroker()");

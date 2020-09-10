@@ -1,34 +1,86 @@
 package FogOSService;
 
 import FlexID.FlexID;
+import FlexID.InterfaceType;
+import FogOSSecurity.Role;
+import FogOSSecurity.SecureFlexIDSession;
+import FogOSSocket.FlexIDSession;
 
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.net.InetSocketAddress;
+import java.nio.channels.AsynchronousSocketChannel;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SignatureException;
+import java.security.spec.InvalidKeySpecException;
+import java.util.concurrent.Future;
 
 public abstract class Service implements FogOSServiceAPI {
-    private String name;        // The name of the service
-    private Object ctx;         // The user-defined context of the service
-    private FlexID flexID;      // The Flex ID of the service (Service ID)
-    private final boolean proxy;    // The flag that indicates whether the service utilizes the proxying
+    private ServiceContext context;         // The user-defined context of the service
+    private SecureFlexIDSession session;    // The secure FlexID session with the client
+    private AsynchronousSocketChannel proxySession; // The session with the server
 
-    public Service(String name, boolean proxy) {
-        this.name = name;
-        this.ctx = null;
-        this.proxy = proxy;
+    public Service(ServiceContext context) {
+        this.context = context;
     }
 
-    public String getName() {
-        return name;
+    public boolean hasInputFromPeer() {
+        return false;
     }
 
-    public FlexID getFlexID() {
-        return flexID;
+    public boolean hasInputFromProxy() {
+        return false;
     }
 
-    public boolean isProxy() {
-        return proxy;
+    public boolean hasOutputToPeer() {
+        return false;
     }
 
-    public abstract void init_ctx(Object ctx);
-    public abstract void process(Object ctx, InputStreamReader isr, OutputStreamWriter osw);
+    public boolean hasOutputToProxy() {
+        return false;
+    }
+
+    // Initialize the service (e.g., open a socket)
+    public void initService() throws NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, SignatureException, InterruptedException {
+        boolean connected;
+        session = new SecureFlexIDSession(Role.RESPONDER, context.getServiceID());
+
+        if (context.isProxy()) {
+            InetSocketAddress proxyAddr;
+
+            if (context.getProxyLoc().getType() == InterfaceType.ETH) {
+                proxyAddr = new InetSocketAddress(context.getProxyLoc().getAddr(),
+                        context.getProxyLoc().getPort());
+            }
+
+            try {
+                proxySession = AsynchronousSocketChannel.open();
+                Future<Void> future = proxySession.connect(proxyAddr);
+
+                // TODO: Need to implement all
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    // Processing of the service regarding service requests from a client
+    public abstract void processInputFromPeer();
+    public abstract void processOutputToPeer();
+
+    // Processing of the service regarding proxying
+    // This should be overridden when the application is a proxy
+    public void processInputFromProxy() {
+        if (context.isProxy()) {
+
+        }
+    }
+
+    public void processOutputToProxy() {
+        if (context.isProxy()) {
+
+        }
+    }
 }

@@ -115,7 +115,6 @@ public class FogOSClient implements FogOSClientAPI {
     // TODO: (hmlee or syseok) Please complete this function.
     public void addContent(Content content) {
         contentList.add(content);
-        core.register(content);
     }
 
     public void removeContent(FlexID flexID) {
@@ -136,7 +135,6 @@ public class FogOSClient implements FogOSClientAPI {
 
     public void addService(Service service) {
         serviceList.add(service);
-        core.register(service);
     }
 
     public void removeService(FlexID flexID) {
@@ -157,7 +155,6 @@ public class FogOSClient implements FogOSClientAPI {
 
     public void addResource(Resource resource) {
         resourceList.add(resource);
-        core.register(resource);
     }
 
     public void removeResource(FlexID flexID) {

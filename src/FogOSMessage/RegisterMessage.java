@@ -1,7 +1,10 @@
 package FogOSMessage;
 
 import FlexID.FlexID;
+import FogOSContent.Content;
 import FogOSCore.FogOSBroker;
+import FogOSResource.Resource;
+import FogOSService.Service;
 import FogOSStore.ContentStore;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
@@ -22,6 +25,24 @@ public class RegisterMessage extends Message {
     }
 
     public RegisterMessage(FlexID deviceID) {
+        super(MessageType.REGISTER, deviceID);
+        init();
+    }
+
+    // TODO: I think we need this function (from hmlee)
+    public RegisterMessage(FlexID deviceID, Content content) {
+        super(MessageType.REGISTER, deviceID);
+        init();
+    }
+
+    // TODO: I think we need this function (from hmlee)
+    public RegisterMessage(FlexID deviceID, Service service) {
+        super(MessageType.REGISTER, deviceID);
+        init();
+    }
+
+    // TODO: I think we need this function (from hmlee)
+    public RegisterMessage(FlexID deviceID, Resource resource) {
         super(MessageType.REGISTER, deviceID);
         init();
     }

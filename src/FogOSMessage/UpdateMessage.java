@@ -15,6 +15,12 @@ public class UpdateMessage extends Message {
         init();
     }
 
+    // TODO: I think we need this function (from hmlee)
+    public UpdateMessage(FlexID deviceID, FlexID[] flexIDList, boolean deregisterFlag) {
+        super(MessageType.UPDATE, deviceID);
+        init();
+    }
+
     @Override
     public void init() {
 

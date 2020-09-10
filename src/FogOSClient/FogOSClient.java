@@ -114,39 +114,66 @@ public class FogOSClient implements FogOSClientAPI {
 
     // TODO: (hmlee or syseok) Please complete this function.
     public void addContent(Content content) {
-
+        contentList.add(content);
+        core.register(content);
     }
 
     public void removeContent(FlexID flexID) {
-
+        // TODO: do i have to remove whole Content that includes the FlexID or just remove one of FlexID in the Content?
+        FlexID[] flexIDList = {flexID};
+        core.deregister(flexIDList);
     }
 
     public void removeContent(String name) {
-
+        for (Content content : contentList) {
+            String contentName = content.getName();
+            if (name.equals(contentName)) {
+                core.deregister(content.getFlexID());
+            }
+            break;
+        }
     }
 
     public void addService(Service service) {
         serviceList.add(service);
+        core.register(service);
     }
 
     public void removeService(FlexID flexID) {
-
+        FlexID[] flexIDList = {flexID};
+        core.deregister(flexIDList);
     }
 
     public void removeService(String name) {
-
+        for (Service service : serviceList) {
+            String contentName = service.getName();
+            if (name.equals(contentName)) {
+                FlexID[] flexIDList = {service.getFlexID()};
+                core.deregister(flexIDList);
+            }
+            break;
+        }
     }
 
     public void addResource(Resource resource) {
         resourceList.add(resource);
+        core.register(resource);
     }
 
     public void removeResource(FlexID flexID) {
-
+        FlexID[] flexIDList = {flexID};
+        core.deregister(flexIDList);
     }
 
     public void removeResource(String name) {
-
+        for (Resource resource : resourceList) {
+            String contentName = resource.getName();
+            if (name.equals(contentName)) {
+                FlexID[] flexIDList = {resource.getFlexID()};
+                core.deregister(flexIDList);
+            }
+            break;
+        }
     }
 
     public void ContentUpdate() {

@@ -5,6 +5,7 @@ import FlexID.Locator;
 import FlexID.ServiceID;
 
 import java.net.InetAddress;
+import java.security.KeyPair;
 
 public class ServiceContext {
     private String name;
@@ -12,6 +13,16 @@ public class ServiceContext {
     private boolean isProxy;
     private Locator proxyLoc;
     private Object userContext;
+
+    public ServiceContext(String name, KeyPair keyPair, Locator serviceLoc,
+                          boolean isProxy, Locator proxyLoc) {
+        this.name = name;
+        this.serviceID = new ServiceID(keyPair.getPrivate().getEncoded(),
+                keyPair.getPublic().getEncoded(), serviceLoc);
+        this.isProxy = isProxy;
+        this.proxyLoc = proxyLoc;
+        this.userContext = null;
+    }
 
     public ServiceContext(String name, byte[] priv, byte[] pub, Locator serviceLoc,
                           boolean isProxy, Locator proxyLoc) {

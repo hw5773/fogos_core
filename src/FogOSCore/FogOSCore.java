@@ -75,9 +75,6 @@ public class FogOSCore {
     }
 
     private void init() {
-        //Locale locale = new Locale("en", "us");
-        //Locale.setDefault(locale);
-        //Locale.forLanguageTag("en-US");
         java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Start: Initialize FogOSCore");
 
         retrieveBrokerList();
@@ -85,7 +82,6 @@ public class FogOSCore {
         java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Result: findBestFogOSBroker() " + broker.getName());
 
         sessionList = new LinkedList<>();
-        initReceivedMessages();
 
         // Initialize and run the mobility detector
         mobilityDetector = new MobilityDetector(this);
@@ -103,9 +99,8 @@ public class FogOSCore {
         qosInterpreter = new QoSInterpreter(this);
 
         // Generate the Flex ID of the device
-        // factory = new FlexIDFactory();
-        // deviceID = factory.generateDeviceID();
-        deviceID = new FlexID("versatile");
+        factory = new FlexIDFactory();
+        deviceID = factory.generateDeviceID();
 
         // Initialize the MQTT client
         connect(deviceID);
@@ -136,20 +131,6 @@ public class FogOSCore {
 
     public QoSInterpreter getQosInterpreter() {
         return qosInterpreter;
-    }
-
-    private void initReceivedMessages() {
-        java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Start: Initialize Received Messages");
-        receivedMessages = new HashMap<String, Queue<Message>>();
-        receivedMessages.put(MessageType.JOIN_ACK.getTopic(), new LinkedList<>());
-        receivedMessages.put(MessageType.LEAVE_ACK.getTopic(), new LinkedList<>());
-        receivedMessages.put(MessageType.MAP_UPDATE_ACK.getTopic(), new LinkedList<>());
-        receivedMessages.put(MessageType.REGISTER_ACK.getTopic(), new LinkedList<>());
-        receivedMessages.put(MessageType.REPLY.getTopic(), new LinkedList<>());
-        receivedMessages.put(MessageType.RESPONSE.getTopic(), new LinkedList<>());
-        receivedMessages.put(MessageType.STATUS_ACK.getTopic(), new LinkedList<>());
-        receivedMessages.put(MessageType.UPDATE_ACK.getTopic(), new LinkedList<>());
-        java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Finish: Initialize Received Messages");
     }
 
     public FogOSBroker getBroker() {

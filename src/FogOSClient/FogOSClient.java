@@ -130,7 +130,6 @@ public class FogOSClient implements FogOSClientAPI {
     }
 
     public void addService(Service service) {
-        // TODO: hmlee - Do i have to register service? (send register message)
         serviceList.add(service);
     }
 
@@ -171,7 +170,6 @@ public class FogOSClient implements FogOSClientAPI {
             break;
         }
     }
-
 
     public void ContentUpdate() {
     	core.ContentUpdate();

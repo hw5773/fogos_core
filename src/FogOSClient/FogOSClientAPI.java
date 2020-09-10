@@ -20,8 +20,9 @@ public interface FogOSClientAPI {
     // Setting Content/Service
     void addContent(Content content);
     void addService(Service service);
+    void addResource(Resource resource);
 
-    void removeContent(FlexID flexID);
+    //void removeContent(FlexID flexID);
     void removeContent(String name);
     void removeService(FlexID flexID);
     void removeService(String name);

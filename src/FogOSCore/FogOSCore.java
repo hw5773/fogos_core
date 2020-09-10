@@ -109,12 +109,10 @@ public class FogOSCore {
         initSubscribe(deviceID);
 
         // Send the JOIN message
-        // TODO: Need to generalize the message
-        Message msg = new JoinMessage(deviceID);
-        msg.test(broker); // This should be commented out after being generalized.
+        join();
 
-        Message rmsg = new RegisterMessage(deviceID, this.contentStore);
-        rmsg.test(broker);
+        // Send REGISTER message
+        register();
 
         try {
 
@@ -123,6 +121,18 @@ public class FogOSCore {
         }
 
         java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Finish: Initialize FogOSCore");
+    }
+
+    public void join() {
+        // TODO: Need to generalize the message
+        Message msg = new JoinMessage(deviceID);
+        msg.test(broker); // This should be commented out after being generalized.
+    }
+
+    public void register() {
+        // TODO: Need to generalize the message
+        Message rmsg = new RegisterMessage(deviceID, this.contentStore);
+        rmsg.test(broker); // This should be commented out after being generalized.
     }
 
     public LinkedList<SecureFlexIDSession> getSessionList() {

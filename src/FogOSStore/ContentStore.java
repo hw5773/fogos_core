@@ -19,7 +19,7 @@ import java.util.ArrayList;
 
 public class ContentStore {
 
-    private ArrayList contents = new ArrayList();
+    private ArrayList<Content> contents = new ArrayList<Content>();
     private ArrayList fileslist = new ArrayList();
     private String path;
 
@@ -183,6 +183,45 @@ public class ContentStore {
 
         writeintoFile();
     	
+    }
+
+    public void add(String name, String path, Boolean shared) {
+        contents.add(new Content(name, path, shared));
+        writeintoFile();
+    }
+
+    public void add(Content content) {
+        contents.add(content);
+        writeintoFile();
+    }
+
+    public void remove(String name) {
+        int removeIdx = -1;
+        for (int i = 0; i < contents.size(); i++) {
+            if (name.equals(contents.get(i).getName())) {
+                removeIdx = i;
+            }
+        }
+
+        if (removeIdx != -1) {
+            contents.remove(removeIdx);
+        }
+
+        writeintoFile();
+    }
+
+    public Content get(String name) {
+        int idx = -1;
+        for (int i = 0; i < contents.size(); i++) {
+            if (name.equals(contents.get(i).getName())) {
+                idx = i;
+            }
+        }
+        return contents.get(idx);
+    }
+
+    public void remove(Content content) {
+        contents.remove(content);
     }
 
 }

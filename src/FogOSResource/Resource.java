@@ -41,10 +41,6 @@ public abstract class Resource implements FogOSResourceAPI {
         return unit;
     }
 
-    public FlexID getFlexID() {
-        return flexID;
-    }
-
     public void setMax(String newmax) {
     	this.max = newmax;
     }

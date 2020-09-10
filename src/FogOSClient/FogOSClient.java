@@ -113,20 +113,24 @@ public class FogOSClient implements FogOSClientAPI {
 
     // TODO: (hmlee or syseok) Please complete this function.
     public void addContent(Content content) {
-
+        contentStore.add(content);
     }
 
+    /*
     public void removeContent(FlexID flexID) {
-        // TODO: do i have to remove whole Content that includes the FlexID or just remove one of FlexID in the Content?
         FlexID[] flexIDList = {flexID};
         core.deregister(flexIDList);
     }
+     */
 
     public void removeContent(String name) {
-
+        Content content = contentStore.get(name);
+        core.deregister(content.getFlexID());
+        contentStore.remove(name);
     }
 
     public void addService(Service service) {
+        // TODO: hmlee - Do i have to register service? (send register message)
         serviceList.add(service);
     }
 
@@ -150,21 +154,24 @@ public class FogOSClient implements FogOSClientAPI {
         resourceList.add(resource);
     }
 
+    /* hmlee - resource does not use FlexID
     public void removeResource(FlexID flexID) {
         FlexID[] flexIDList = {flexID};
         core.deregister(flexIDList);
     }
+    */
 
+    // How can i remove resource?
     public void removeResource(String name) {
         for (Resource resource : resourceList) {
             String contentName = resource.getName();
             if (name.equals(contentName)) {
-                FlexID[] flexIDList = {resource.getFlexID()};
-                core.deregister(flexIDList);
+                // leave?
             }
             break;
         }
     }
+
 
     public void ContentUpdate() {
     	core.ContentUpdate();

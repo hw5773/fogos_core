@@ -17,6 +17,17 @@ public class FlexID implements FlexIDInterface {
 
     }
 
+    public FlexID(KeyPair keyPair) throws NoSuchAlgorithmException {
+        this.priv = keyPair.getPrivate().getEncoded();
+        this.pub = keyPair.getPublic().getEncoded();
+        this.type = FlexIDType.ANY;
+        this.avps = new AttrValuePairs();
+        this.loc = null;
+        MessageDigest digest = MessageDigest.getInstance("SHA-1");
+        this.identity = digest.digest(this.pub);
+        this.sidentity = new String(this.identity);
+    }
+
     public FlexID(String id) {
         sidentity = id;
         identity = id.getBytes();
@@ -41,6 +52,25 @@ public class FlexID implements FlexIDInterface {
         this.avps = avps;
         this.loc = loc;
         this.priv = null;
+    }
+
+    public FlexID(KeyPair keyPair, FlexIDType type, AttrValuePairs avps, Locator loc) {
+        this.priv = keyPair.getPrivate().getEncoded();
+        this.pub = keyPair.getPublic().getEncoded();
+
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-1");
+            digest.reset();
+            digest.update(this.pub);
+            this.identity = digest.digest();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+
+        this.type = type;
+        this.avps = avps;
+        this.loc = loc;
+        this.sidentity = new String(this.identity);
     }
 
     public FlexID(byte[] priv, byte[] pub, FlexIDType type, AttrValuePairs avps, Locator loc) {

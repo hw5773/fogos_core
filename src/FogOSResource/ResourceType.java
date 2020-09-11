@@ -4,7 +4,8 @@ public enum ResourceType {
     Unknown(0, "unknown"),
     NetworkInterface(1, "network-interface"),
     CPU(2, "cpu"),
-    Memory(3, "mem");
+    Memory(3, "mem"),
+    Disk(4, "disk");
 
     int num;
     String resourceType;

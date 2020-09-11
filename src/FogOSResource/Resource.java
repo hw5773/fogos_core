@@ -9,16 +9,22 @@ public abstract class Resource implements FogOSResourceAPI {
     private String unit;        // The unit of the value
     private boolean onDemand;   // The flag whether to monitor the resource on-demand or not
     private FlexID flexID;
+    private ResourceType type;
 
     // Monitor the current status of this resource;
     public abstract void monitorResource();
 
-    public Resource(String name, String max, String unit, boolean onDemand) {
+    public Resource(String name, ResourceType type, String max, String unit, boolean onDemand) {
         this.name = name;
+        this.type = type;
         this.max = max;
         this.curr = max;
         this.unit = unit;
         this.onDemand = onDemand;
+    }
+
+    public ResourceType getType() {
+        return type;
     }
 
     public String getCurr() {

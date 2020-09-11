@@ -165,7 +165,7 @@ public class FogOSClient implements FogOSClientAPI {
         for (Resource resource : resourceList) {
             String contentName = resource.getName();
             if (name.equals(contentName)) {
-                // leave?
+                core.leave(resource.getFlexID());
             }
             break;
         }

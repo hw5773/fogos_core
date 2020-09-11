@@ -472,6 +472,11 @@ public class FogOSCore {
     public void deregister(FlexID[] flexIDList) {
         boolean deregisterFlag = true;
         Message msg = new UpdateMessage(deviceID, flexIDList, deregisterFlag);
-        msg.test(broker);
+        msg.send(broker);
+    }
+
+    public void leave(FlexID flexID) {
+        Message msg = new LeaveMessage(deviceID, flexID);
+        msg.send(broker);
     }
 }

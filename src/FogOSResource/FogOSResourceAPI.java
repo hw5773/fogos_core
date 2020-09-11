@@ -9,6 +9,7 @@ public interface FogOSResourceAPI {
     public String getName();
     public String getMax();
     public String getUnit();
+    public FlexID getFlexID();
 
     public void setMax(String newmax);
     public void setCurr(String newcur);

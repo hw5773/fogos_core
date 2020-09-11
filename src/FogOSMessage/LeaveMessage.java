@@ -15,6 +15,11 @@ public class LeaveMessage extends Message {
         init();
     }
 
+    public LeaveMessage(FlexID deviceID, FlexID flexID) {
+        super(MessageType.LEAVE, deviceID);
+        init();
+    }
+
     @Override
     public void init() {
 

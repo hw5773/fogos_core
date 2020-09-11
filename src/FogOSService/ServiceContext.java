@@ -13,10 +13,12 @@ public class ServiceContext {
     private boolean isProxy;
     private Locator proxyLoc;
     private Object userContext;
+    private ServiceType serviceType;
 
-    public ServiceContext(String name, KeyPair keyPair, Locator serviceLoc,
-                          boolean isProxy, Locator proxyLoc) {
+    public ServiceContext(String name, ServiceType serviceType, KeyPair keyPair,
+                          Locator serviceLoc, boolean isProxy, Locator proxyLoc) {
         this.name = name;
+        this.serviceType = serviceType;
         this.serviceID = new ServiceID(keyPair.getPrivate().getEncoded(),
                 keyPair.getPublic().getEncoded(), serviceLoc);
         this.isProxy = isProxy;
@@ -24,9 +26,10 @@ public class ServiceContext {
         this.userContext = null;
     }
 
-    public ServiceContext(String name, byte[] priv, byte[] pub, Locator serviceLoc,
-                          boolean isProxy, Locator proxyLoc) {
+    public ServiceContext(String name, ServiceType serviceType, byte[] priv, byte[] pub,
+                          Locator serviceLoc, boolean isProxy, Locator proxyLoc) {
         this.name = name;
+        this.serviceType = serviceType;
         this.serviceID = new ServiceID(priv, pub, serviceLoc);
         this.isProxy = isProxy;
         this.proxyLoc = proxyLoc;
@@ -36,6 +39,8 @@ public class ServiceContext {
     public ServiceID getServiceID() {
         return serviceID;
     }
+
+    public ServiceType getServiceType() { return serviceType; }
 
     public boolean isProxy() {
         return isProxy;

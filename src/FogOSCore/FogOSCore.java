@@ -9,6 +9,7 @@ import FogOSQoS.QoSInterpreter;
 import FogOSResource.MobilityDetector;
 import FogOSResource.Resource;
 import FogOSResource.ResourceReporter;
+import FogOSResource.ResourceType;
 import FogOSSecurity.Role;
 import FogOSSecurity.SecureFlexIDSession;
 import FogOSService.Service;
@@ -123,10 +124,103 @@ public class FogOSCore {
         java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Finish: Initialize FogOSCore");
     }
 
+    public String getLocalIpAddr() {
+        String ip = "";
+
+        try {
+            Enumeration<NetworkInterface> enumNetworkInterfaces = NetworkInterface.getNetworkInterfaces();
+
+            while (enumNetworkInterfaces.hasMoreElements()) {
+                NetworkInterface networkInterface = enumNetworkInterfaces.nextElement();
+                Enumeration<InetAddress> enumInetAddress = networkInterface.getInetAddresses();
+
+                while (enumInetAddress.hasMoreElements()) {
+                    InetAddress inetAddress = enumInetAddress.nextElement();
+
+                    if (inetAddress.isSiteLocalAddress()) {
+                        ip = inetAddress.getHostAddress();
+                    }
+                }
+            }
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+
+        return ip;
+    }
+
+    private static String getMacAddress(String ip) {
+        String mac = "";
+
+        try {
+            Enumeration<NetworkInterface> enumNetworkInterfaces = NetworkInterface.getNetworkInterfaces();
+
+            while (enumNetworkInterfaces.hasMoreElements()) {
+                NetworkInterface networkInterface = enumNetworkInterfaces.nextElement();
+                Enumeration<InetAddress> enumInetAddress = networkInterface.getInetAddresses();
+
+                while (enumInetAddress.hasMoreElements()) {
+                    InetAddress inetAddress = enumInetAddress.nextElement();
+
+                    if (inetAddress.isSiteLocalAddress()) {
+                        if (ip.equals(inetAddress.getHostAddress())) {
+                            byte[] hardwareAddress = networkInterface.getHardwareAddress();
+
+                            String[] hexadecimal = new String[hardwareAddress.length];
+                            for (int i = 0; i < hardwareAddress.length; i++) {
+                                hexadecimal[i] = String.format("%02X", hardwareAddress[i]);
+                            }
+                            mac = String.join("-", hexadecimal);
+                            return mac;
+                        }
+                    }
+                }
+            }
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+
+        return mac;
+    }
+
     public void join() {
-        // TODO: Need to generalize the message
-        Message msg = new JoinMessage(deviceID);
-        msg.test(broker); // This should be commented out after being generalized.
+
+        // Add Ethernet interface
+        Resource ifaceTypeResource = new Resource("ifaceType", ResourceType.NetworkInterface,
+                "", "Ethernet", false) {
+            @Override
+            public void monitorResource() {
+                this.setCurr(Integer.toString(Integer.parseInt(this.getCurr()) + 1));
+                System.out.println("[Ethernet] " + this.getCurr() + " " + this.getUnit());
+            }
+        };
+        resourceList.add(ifaceTypeResource);
+
+        // find IPv4 address of the device
+        String ipv4 = getLocalIpAddr();
+        Resource ipResource = new Resource("ipv4", ResourceType.NetworkInterface, "", ipv4, false) {
+            @Override
+            public void monitorResource() {
+                this.setCurr(Integer.toString(Integer.parseInt(this.getCurr()) + 1));
+                System.out.println("[IPv4] " + this.getCurr() + " " + this.getUnit());
+            }
+        };
+        resourceList.add(ipResource);
+
+        // find HW address of the device
+        String hwAddress = getMacAddress(ipv4);
+        Resource hwAddrResource = new Resource("hwAddress", ResourceType.NetworkInterface, "", hwAddress, false) {
+            @Override
+            public void monitorResource() {
+                this.setCurr(Integer.toString(Integer.parseInt(this.getCurr()) + 1));
+                System.out.println("[MAC] " + this.getCurr() + " " + this.getUnit());
+            }
+        };
+        resourceList.add(hwAddrResource);
+
+        Message msg = new JoinMessage(deviceID, resourceList, deviceID.getPub());
+        msg.send(broker);
+        //msg.test(broker); // This should be commented out after being generalized.
     }
 
     public void register() {

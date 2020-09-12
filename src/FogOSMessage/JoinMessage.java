@@ -2,12 +2,17 @@ package FogOSMessage;
 
 import FlexID.FlexID;
 import FogOSCore.FogOSBroker;
+import FogOSResource.Resource;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import java.util.Base64;
+import java.util.Base64.Encoder;
 
+import java.security.PublicKey;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -24,9 +29,42 @@ public class JoinMessage extends Message {
         init();
     }
 
+    public JoinMessage(FlexID deviceID, ArrayList<Resource> resourceList, byte[] publicKey) {
+        super(MessageType.JOIN, deviceID);
+        init();
+
+        JSONArray uniqueCodes = new JSONArray();
+        try {
+            for (Resource resource : resourceList) {
+                JSONObject obj = new JSONObject();
+                obj.put(resource.getName(), resource.getUnit());
+                uniqueCodes.put(obj);
+            }
+
+            Encoder encoder = Base64.getEncoder();
+            String encodedPubkey = encoder.encodeToString(publicKey);
+
+            this.addAttrValuePair("uniqueCodes", uniqueCodes.toString(), null);
+            this.addAttrValuePair("pubKey", encodedPubkey, null);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void init() {
 
+    }
+
+    @Override
+    public void send(FogOSBroker broker) {
+        try {
+            Logger.getLogger(TAG).log(Level.INFO, "MqttMessage: " + getStringFromHashTable(this.getAttrValueTable()));
+            broker.getMqttClient().publish(this.getMessageType().getTopicWithDeviceID(deviceID), new MqttMessage(getStringFromHashTable(this.getAttrValueTable()).getBytes()));
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

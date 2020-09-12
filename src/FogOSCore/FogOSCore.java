@@ -193,7 +193,7 @@ public class FogOSCore {
                 "", "Ethernet", false) {
             @Override
             public void monitorResource() {
-                this.setCurr(Integer.toString(Integer.parseInt(this.getCurr()) + 1));
+                this.setCurr(Integer.toString(Integer.parseInt(this.getCurr())));
                 System.out.println("[Ethernet] " + this.getCurr() + " " + this.getUnit());
             }
         };
@@ -204,7 +204,7 @@ public class FogOSCore {
         Resource ipResource = new Resource("ipv4", ResourceType.NetworkInterface, "", ipv4, false) {
             @Override
             public void monitorResource() {
-                this.setCurr(Integer.toString(Integer.parseInt(this.getCurr()) + 1));
+                this.setCurr(Integer.toString(Integer.parseInt(this.getCurr())));
                 System.out.println("[IPv4] " + this.getCurr() + " " + this.getUnit());
             }
         };
@@ -215,21 +215,23 @@ public class FogOSCore {
         Resource hwAddrResource = new Resource("hwAddress", ResourceType.NetworkInterface, "", hwAddress, false) {
             @Override
             public void monitorResource() {
-                this.setCurr(Integer.toString(Integer.parseInt(this.getCurr()) + 1));
+                this.setCurr(Integer.toString(Integer.parseInt(this.getCurr())));
                 System.out.println("[MAC] " + this.getCurr() + " " + this.getUnit());
             }
         };
         resourceList.add(hwAddrResource);
 
-        Message msg = new JoinMessage(deviceID, resourceList, deviceID.getPub());
+        JoinMessage msg = new JoinMessage(deviceID, resourceList, deviceID.getPub());
         msg.send(broker);
         //msg.test(broker); // This should be commented out after being generalized.
+
     }
 
     public void register() {
-        // TODO: Need to generalize the message
-        Message rmsg = new RegisterMessage(deviceID, this.contentStore);
-        rmsg.test(broker); // This should be commented out after being generalized.
+        RegisterMessage contentRmsg = new RegisterMessage(deviceID, this.contentStore);
+        contentRmsg.test(broker); // This should be commented out after being generalized.
+
+        RegisterMessage serviceRmsg = new RegisterMessage(deviceID, serviceList);
     }
 
     public LinkedList<SecureFlexIDSession> getSessionList() {

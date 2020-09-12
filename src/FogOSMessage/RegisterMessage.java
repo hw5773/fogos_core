@@ -14,6 +14,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.ArrayList;
 
 public class RegisterMessage extends Message {
 
@@ -29,19 +30,16 @@ public class RegisterMessage extends Message {
         init();
     }
 
-    // TODO: I think we need this function (from hmlee)
     public RegisterMessage(FlexID deviceID, Content content) {
         super(MessageType.REGISTER, deviceID);
         init();
     }
 
-    // TODO: I think we need this function (from hmlee)
     public RegisterMessage(FlexID deviceID, Service service) {
         super(MessageType.REGISTER, deviceID);
         init();
     }
 
-    // TODO: I think we need this function (from hmlee)
     public RegisterMessage(FlexID deviceID, Resource resource) {
         super(MessageType.REGISTER, deviceID);
         init();
@@ -51,6 +49,20 @@ public class RegisterMessage extends Message {
         super(MessageType.REGISTER, deviceID);
         this.store = store;
         init();
+
+        for (Content content : store.getContentList()) {
+
+        }
+    }
+
+    public RegisterMessage(FlexID deviceID, ArrayList<Service> serviceList) {
+        super(MessageType.REGISTER, deviceID);
+        init();
+
+        for (Service service : serviceList) {
+
+        }
+
     }
 
     @Override

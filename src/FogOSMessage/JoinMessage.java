@@ -35,11 +35,11 @@ public class JoinMessage extends Message {
 
         JSONArray uniqueCodes = new JSONArray();
         try {
+            JSONObject obj = new JSONObject();
             for (Resource resource : resourceList) {
-                JSONObject obj = new JSONObject();
                 obj.put(resource.getName(), resource.getUnit());
-                uniqueCodes.put(obj);
             }
+            uniqueCodes.put(obj);
 
             Encoder encoder = Base64.getEncoder();
             String encodedPubkey = encoder.encodeToString(publicKey);

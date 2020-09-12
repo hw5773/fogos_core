@@ -30,8 +30,8 @@ public class ResourceReporter implements Runnable {
         java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Start: Run ResourceReporter");
 
         // Please remove the following thread-related statements if we don't need to process the STATUS_ACK messages
-        StatusACKThread thread = new StatusACKThread();
-        thread.start();
+        //StatusACKThread thread = new StatusACKThread();
+        //thread.start();
 
         while (true)
         {
@@ -73,6 +73,7 @@ public class ResourceReporter implements Runnable {
 
     // The StatusACK message may not be needed but I prepared the following thread to process the received STATUS_ACK
     // Please remove the following stuff if it is not needed.
+    /*
     class StatusACKThread extends Thread {
         @Override
         public void run() {
@@ -94,4 +95,5 @@ public class ResourceReporter implements Runnable {
             }
         }
     }
+     */
 }

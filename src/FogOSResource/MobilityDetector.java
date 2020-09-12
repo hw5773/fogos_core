@@ -32,8 +32,8 @@ public class MobilityDetector implements Runnable {
 
     public void run() {
         java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Start: Run MobilityDetector");
-        MapUpdateACKThread thread = new MapUpdateACKThread();
-        thread.start();
+//        MapUpdateACKThread thread = new MapUpdateACKThread();
+//        thread.start();
 
         while (true)
         {
@@ -99,7 +99,7 @@ public class MobilityDetector implements Runnable {
 
         //java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Finish: checkAddresses()");
     }
-
+    /*
     class MapUpdateACKThread extends Thread {
         @Override
         public void run() {
@@ -121,4 +121,5 @@ public class MobilityDetector implements Runnable {
             }
         }
     }
+    */
 }

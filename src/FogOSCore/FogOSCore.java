@@ -103,6 +103,9 @@ public class FogOSCore {
         factory = new FlexIDFactory();
         deviceID = factory.generateDeviceID();
 
+        // Initialize the received message queue
+        receivedMessages = new HashMap<String, Queue<Message>>();
+
         // Initialize the MQTT client
         connect(deviceID);
 
@@ -432,21 +435,28 @@ public class FogOSCore {
                     Logger.getLogger(TAG).log(Level.INFO, "Mqtt: messageArrived");
 
                     if (s.startsWith(MessageType.JOIN_ACK.getTopic())) {
-
+                        System.out.println("JOIN_ACK received");
+                        System.out.println("Actual message: " + new String(mqttMessage.getPayload()));
+                        JoinAckMessage msg = new JoinAckMessage(deviceID, mqttMessage.getPayload());
+                        msg.process();
+                        receivedMessages.get(MessageType.JOIN_ACK.getTopic()).add(msg);
                     } else if (s.startsWith(MessageType.LEAVE_ACK.getTopic())) {
-
+                        System.out.println("LEAVE_ACK received");
+                        System.out.println("Actual message: " + new String(mqttMessage.getPayload()));
+                        LeaveAckMessage msg = new LeaveAckMessage(deviceID, mqttMessage.getPayload());
+                        msg.process();
                     } else if (s.startsWith(MessageType.MAP_UPDATE_ACK.getTopic())) {
-
+                        System.out.println("MAP_UPDATE_ACK received");
                     } else if (s.startsWith(MessageType.REGISTER_ACK.getTopic())) {
-
+                        System.out.println("REGISTER_ACK received");
                     } else if (s.startsWith(MessageType.STATUS_ACK.getTopic())) {
-
+                        System.out.println("STATUS_ACK received");
                     } else if (s.startsWith(MessageType.REPLY.getTopic())) {
-
+                        System.out.println("REPLY received");
                     } else if (s.startsWith(MessageType.RESPONSE.getTopic())) {
-
+                        System.out.println("RESPONSE received");
                     } else if (s.startsWith(MessageType.UPDATE_ACK.getTopic())) {
-
+                        System.out.println("UPDATE_ACK received");
                     } else {
                         // No recognized message.
                     }

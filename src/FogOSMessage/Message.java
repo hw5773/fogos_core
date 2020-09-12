@@ -3,8 +3,10 @@ import FlexID.FlexID;
 import FlexID.AttrValuePairs;
 import FlexID.Value;
 import FogOSCore.FogOSBroker;
+import jdk.nashorn.internal.parser.JSONParser;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Hashtable;
@@ -21,24 +23,33 @@ public abstract class Message {
     Random random;
 
     public Message(FlexID deviceID) {
-        this.messageType = null;
-        this.deviceID = deviceID;
-        body = new AttrValuePairs();
-        random = new Random();
+        initFields(messageType, deviceID);
     }
 
     public Message(MessageType messageType) {
-        this.messageType = messageType;
-        this.deviceID = null;
-        this.body = new AttrValuePairs();
-        random = new Random();
+        initFields(messageType, deviceID);
     }
 
     public Message(MessageType messageType, FlexID deviceID) {
+        initFields(messageType, deviceID);
+    }
+
+    public Message(MessageType messageType, FlexID deviceID, byte[] message) throws JSONException {
+        initFields(messageType, deviceID);
+        JSONObject payload = new JSONObject(new String(message));
+        Iterator<String> iterator = payload.keys();
+
+        while (iterator.hasNext()) {
+            String key = iterator.next();
+            this.body.addAttrValuePair(key, new Value(payload.get(key).toString(), ""));
+        }
+    }
+
+    private void initFields(MessageType messageType, FlexID deviceID) {
         this.messageType = messageType;
         this.deviceID = deviceID;
         this.body = new AttrValuePairs();
-        random = new Random();
+        this.random = new Random();
     }
 
     public MessageType getMessageType() {
@@ -90,7 +101,8 @@ public abstract class Message {
 
     public void send(FogOSBroker broker) {
         try {
-            broker.getMqttClient().publish(this.getMessageType().getTopic(), new MqttMessage(getStringFromHashTable(this.getAttrValueTable()).getBytes()));
+            if (broker != null)
+                broker.getMqttClient().publish(this.getMessageType().getTopic(), new MqttMessage(getStringFromHashTable(this.getAttrValueTable()).getBytes()));
         } catch (MqttException e) {
             e.printStackTrace();
         }

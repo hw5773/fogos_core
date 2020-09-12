@@ -447,16 +447,34 @@ public class FogOSCore {
                         msg.process();
                     } else if (s.startsWith(MessageType.MAP_UPDATE_ACK.getTopic())) {
                         System.out.println("MAP_UPDATE_ACK received");
+                        System.out.println("Actual message: " + new String(mqttMessage.getPayload()));
+                        MapUpdateAckMessage msg = new MapUpdateAckMessage(deviceID, mqttMessage.getPayload());
+                        msg.process();
                     } else if (s.startsWith(MessageType.REGISTER_ACK.getTopic())) {
                         System.out.println("REGISTER_ACK received");
+                        System.out.println("Actual message: " + new String(mqttMessage.getPayload()));
+                        RegisterAckMessage msg = new RegisterAckMessage(deviceID, mqttMessage.getPayload());
+                        msg.process();
                     } else if (s.startsWith(MessageType.STATUS_ACK.getTopic())) {
                         System.out.println("STATUS_ACK received");
+                        System.out.println("Actual message: " + new String(mqttMessage.getPayload()));
+                        StatusAckMessage msg = new StatusAckMessage(deviceID, mqttMessage.getPayload());
+                        msg.process();
                     } else if (s.startsWith(MessageType.REPLY.getTopic())) {
                         System.out.println("REPLY received");
+                        System.out.println("Actual message: " + new String(mqttMessage.getPayload()));
+                        ReplyMessage msg = new ReplyMessage(deviceID, mqttMessage.getPayload());
+                        receivedMessages.get(MessageType.REPLY).add(msg);
                     } else if (s.startsWith(MessageType.RESPONSE.getTopic())) {
                         System.out.println("RESPONSE received");
+                        System.out.println("Actual message: " + new String(mqttMessage.getPayload()));
+                        ResponseMessage msg = new ResponseMessage(deviceID, mqttMessage.getPayload());
+                        receivedMessages.get(MessageType.RESPONSE).add(msg);
                     } else if (s.startsWith(MessageType.UPDATE_ACK.getTopic())) {
                         System.out.println("UPDATE_ACK received");
+                        System.out.println("Actual message: " + new String(mqttMessage.getPayload()));
+                        UpdateAckMessage msg = new UpdateAckMessage(deviceID, mqttMessage.getPayload());
+                        msg.process();
                     } else {
                         // No recognized message.
                     }

@@ -82,6 +82,7 @@ public abstract class Message {
     public String getStringFromHashTable(Hashtable<String, Value> hashtable) {
         JSONObject jsonObject = new JSONObject();
         Iterator<String> itr = hashtable.keySet().iterator();
+        String ret;
         String key;
         Value val;
 
@@ -95,8 +96,13 @@ public abstract class Message {
             }
         }
 
-        Logger.getLogger(TAG).log(Level.INFO, "Result: " + jsonObject.toString());
-        return jsonObject.toString();
+        if (jsonObject.length() == 0)
+            ret = "";
+        else
+            ret = jsonObject.toString();
+
+        Logger.getLogger(TAG).log(Level.INFO, "Result: " + ret);
+        return ret;
     }
 
     public void send(FogOSBroker broker) {

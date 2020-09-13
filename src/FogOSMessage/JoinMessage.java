@@ -3,6 +3,7 @@ package FogOSMessage;
 import FlexID.FlexID;
 import FogOSCore.FogOSBroker;
 import FogOSResource.Resource;
+import FogOSResource.ResourceType;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONArray;
@@ -37,7 +38,24 @@ public class JoinMessage extends Message {
         try {
             JSONObject obj = new JSONObject();
             for (Resource resource : resourceList) {
-                obj.put(resource.getName(), resource.getUnit());
+                if (resource.getType() == ResourceType.NetworkInterface) {
+                    obj.put(resource.getName(), resource.getUnit());
+                }
+                else if (resource.getType() == ResourceType.CPU) {
+                    // handle CPU resource
+                }
+                else if (resource.getType() == ResourceType.Memory) {
+                    // handle Memory resource
+                }
+                else if (resource.getType() == ResourceType.Disk) {
+                    // handle Disk resource
+                }
+                else if (resource.getType() == ResourceType.Unknown) {
+                    // handle Unknown type resource
+                }
+                else {
+                    // Raise error
+                }
             }
             uniqueCodes.put(obj);
 

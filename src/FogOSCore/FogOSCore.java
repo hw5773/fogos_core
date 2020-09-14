@@ -378,12 +378,17 @@ public class FogOSCore {
         Logger.getLogger(TAG).log(Level.INFO, "Start: initSubscribe()");
 
         subscribe(MessageType.JOIN_ACK.getTopicWithDeviceID(deviceID));
+
+        Logger.getLogger(TAG).log(Level.INFO, "Finish: initSubscribe()");
+    }
+
+    void subscribeWithDeviceID(FlexID deviceID) {
+        Logger.getLogger(TAG).log(Level.INFO, "Start: initSubscribe()");
         subscribe(MessageType.LEAVE_ACK.getTopicWithDeviceID(deviceID));
         subscribe(MessageType.STATUS_ACK.getTopicWithDeviceID(deviceID));
         subscribe(MessageType.REGISTER_ACK.getTopicWithDeviceID(deviceID));
         subscribe(MessageType.UPDATE_ACK.getTopicWithDeviceID(deviceID));
         subscribe(MessageType.MAP_UPDATE_ACK.getTopicWithDeviceID(deviceID));
-
         Logger.getLogger(TAG).log(Level.INFO, "Finish: initSubscribe()");
     }
 
@@ -441,7 +446,7 @@ public class FogOSCore {
                         System.out.println("Actual message: " + new String(mqttMessage.getPayload()));
                         JoinAckMessage msg = new JoinAckMessage(deviceID, mqttMessage.getPayload());
                         msg.process();
-                        receivedMessages.get(MessageType.JOIN_ACK.getTopic()).add(msg);
+                        subscribeWithDeviceID(msg.getDeviceID());
                     } else if (s.startsWith(MessageType.LEAVE_ACK.getTopic())) {
                         System.out.println("LEAVE_ACK received");
                         System.out.println("Actual message: " + new String(mqttMessage.getPayload()));

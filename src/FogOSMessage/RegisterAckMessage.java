@@ -2,9 +2,12 @@ package FogOSMessage;
 
 import FlexID.FlexID;
 import FogOSCore.FogOSBroker;
+import FogOSStore.ContentStore;
 import org.json.JSONException;
 
 public class RegisterAckMessage extends Message {
+    private final String TAG = "FogOSRegisterAck";
+
 
     public RegisterAckMessage() {
         super(MessageType.REGISTER_ACK);
@@ -27,6 +30,8 @@ public class RegisterAckMessage extends Message {
 
     // TODO: Implement processing the received message with AVPs (this.body)
     public MessageError process() {
+
+
         return MessageError.NONE;
     }
 

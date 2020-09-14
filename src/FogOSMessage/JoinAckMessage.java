@@ -12,6 +12,8 @@ import java.util.Base64.Decoder;
 import java.util.Iterator;
 
 public class JoinAckMessage extends Message {
+    private final String TAG = "FogOSJoinAck";
+
 
     public JoinAckMessage() {
         super(MessageType.JOIN_ACK);
@@ -29,6 +31,7 @@ public class JoinAckMessage extends Message {
         String msg = new String(message);
         this.addAttrValuePair("answer", msg, null);
     }
+
 
     @Override
     public void init() {

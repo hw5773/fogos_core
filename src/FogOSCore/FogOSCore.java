@@ -63,6 +63,8 @@ public class FogOSCore {
     private static final String TAG = "FogOSCore";
 
     private boolean joinAckFlag = false;
+    private boolean registerAckFlag = false;
+    private int registerIDCounter = 0;
 
     public FogOSCore() {
         this.contentStore = new ContentStore(DEFAULT_CONTENT_STORE_PATH);
@@ -117,8 +119,8 @@ public class FogOSCore {
         // Send the JOIN message
         join();
 
+        // Subscribe again with new deviceID
         initSubscribe(deviceID);
-
 
         // Send REGISTER message
         register();
@@ -139,8 +141,15 @@ public class FogOSCore {
 
     public void setJoinAckFlag(boolean val) {
         this.joinAckFlag = val;
-        System.out.println("Changed");
-        System.out.println(this.joinAckFlag);
+    }
+
+    public boolean getRegisterAckFlag() {
+        System.out.print("");
+        return registerAckFlag;
+    };
+
+    public void setRegisterAckFlag(boolean val) {
+        this.registerAckFlag = val;
     }
 
     public void join() {
@@ -156,8 +165,12 @@ public class FogOSCore {
     }
 
     public void register() {
-        RegisterMessage contentRmsg = new RegisterMessage(deviceID, this.contentStore);
-        contentRmsg.test(broker); // This should be commented out after being generalized.
+        RegisterMessage contentRmsg = new RegisterMessage(deviceID, registerIDCounter++, this.contentStore);
+        contentRmsg.send(broker); // This should be commented out after being generalized.
+        setJoinAckFlag(false);
+        while (true) {
+            if (getRegisterAckFlag()) break;
+        }
         //RegisterMessage serviceRmsg = new RegisterMessage(deviceID, serviceList);
         //serviceRmsg.test(broker);
     }
@@ -449,6 +462,7 @@ public class FogOSCore {
                         System.out.println("Actual message: " + new String(mqttMessage.getPayload()));
                         JoinAckMessage msg = new JoinAckMessage(deviceID, mqttMessage.getPayload());
                         msg.process();
+                        deviceID = msg.getDeviceID();
                         setJoinAckFlag(true);
                     } else if (s.startsWith(MessageType.LEAVE_ACK.getTopic())) {
                         System.out.println("LEAVE_ACK received");
@@ -465,6 +479,7 @@ public class FogOSCore {
                         System.out.println("Actual message: " + new String(mqttMessage.getPayload()));
                         RegisterAckMessage msg = new RegisterAckMessage(deviceID, mqttMessage.getPayload());
                         msg.process();
+                        //setRegisterAckFlag(true);
                     } else if (s.startsWith(MessageType.STATUS_ACK.getTopic())) {
                         System.out.println("STATUS_ACK received");
                         System.out.println("Actual message: " + new String(mqttMessage.getPayload()));

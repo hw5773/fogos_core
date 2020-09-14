@@ -37,7 +37,6 @@ public class JoinMessage extends Message {
         JSONArray uniqueCodes = new JSONArray();
         try {
             JSONObject obj = new JSONObject();
-            String name;
             for (Resource resource : resourceList) {
                 if (resource.getType() == ResourceType.NetworkInterface) {
                     obj.put(resource.getName(), resource.getUnit());
@@ -57,23 +56,6 @@ public class JoinMessage extends Message {
                 else {
                     // Raise error
                 }
-                if (resource.getType() == ResourceType.NetworkInterface) {
-                    name = resource.getName();
-
-                }
-                else if (resource.getType() == ResourceType.CPU) {
-                    name = resource.getName();
-                    // Do something
-                }
-                else if (resource.getType() == ResourceType.Memory) {
-                    name = resource.getName();
-                    // Do something
-                }
-                else if (resource.getType() == ResourceType.Disk) {
-                    name = resource.getName();
-                    // Do something
-                }
-                obj.put(resource.getName(), resource.getUnit());
             }
             uniqueCodes.put(obj);
 

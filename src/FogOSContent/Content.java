@@ -34,4 +34,6 @@ public class Content implements FogOSContentAPI {
     public boolean isShared() {
         return shared;
     }
+
+    public void setFlexID(FlexID[] flexID) { this.flexID = flexID; }
 }

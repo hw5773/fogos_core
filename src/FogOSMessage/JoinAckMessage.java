@@ -12,6 +12,8 @@ import java.util.Base64.Decoder;
 import java.util.Iterator;
 
 public class JoinAckMessage extends Message {
+    private final String TAG = "FogOSJoinAck";
+
 
     public JoinAckMessage() {
         super(MessageType.JOIN_ACK);
@@ -30,6 +32,7 @@ public class JoinAckMessage extends Message {
         this.addAttrValuePair("answer", msg, null);
     }
 
+
     @Override
     public void init() {
 
@@ -43,7 +46,6 @@ public class JoinAckMessage extends Message {
             JSONObject answerObj = new JSONObject(answerStr);
             String newIDStr = answerObj.getString("id");
             int error = answerObj.getInt("error");
-
             if (error != 0) {
                 return MessageError.PROCESS_ERROR;
             }

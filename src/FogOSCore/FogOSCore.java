@@ -65,6 +65,8 @@ public class FogOSCore {
     private boolean joinAckFlag = false;
     private boolean registerAckFlag = false;
     private int registerIDCounter = 0;
+    private HashMap<String, HashMap<String, String>> registerIndexMap;
+    private HashMap<String, String> registerTypeMap;
 
     public FogOSCore() {
         this.contentStore = new ContentStore(DEFAULT_CONTENT_STORE_PATH);
@@ -109,6 +111,10 @@ public class FogOSCore {
 
         // Initialize the received message queue
         receivedMessages = new HashMap<String, Queue<Message>>();
+
+        // initialize register index map queue & type queue
+        registerIndexMap = new HashMap<String, HashMap<String, String>>();
+        registerTypeMap = new HashMap<String, String>();
 
         // Initialize the MQTT client
         connect(deviceID);
@@ -167,10 +173,16 @@ public class FogOSCore {
     public void register() {
         RegisterMessage contentRmsg = new RegisterMessage(deviceID, registerIDCounter++, this.contentStore);
         contentRmsg.send(broker); // This should be commented out after being generalized.
+        registerIndexMap.put(contentRmsg.getRegisterID(), contentRmsg.getIndexMap());
+        registerTypeMap.put(contentRmsg.getRegisterID(), contentRmsg.getType());
+
+        // wait Register message
         setJoinAckFlag(false);
         while (true) {
             if (getRegisterAckFlag()) break;
         }
+
+        // TODO: Service does not have FlexID?
         //RegisterMessage serviceRmsg = new RegisterMessage(deviceID, serviceList);
         //serviceRmsg.test(broker);
     }
@@ -458,11 +470,16 @@ public class FogOSCore {
                     Logger.getLogger(TAG).log(Level.INFO, "Mqtt: " + s + mqttMessage);
 
                     if (s.startsWith(MessageType.JOIN_ACK.getTopic())) {
+                        java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "JoinAckProcessing");
                         System.out.println("JOIN_ACK received");
                         System.out.println("Actual message: " + new String(mqttMessage.getPayload()));
                         JoinAckMessage msg = new JoinAckMessage(deviceID, mqttMessage.getPayload());
-                        msg.process();
-                        deviceID = msg.getDeviceID();
+                        MessageError error = msg.process();
+                        if (error == MessageError.NONE) {
+                            deviceID = msg.getDeviceID();
+                        } else {
+                            System.out.println("JoinACK: Error");
+                        }
                         setJoinAckFlag(true);
                     } else if (s.startsWith(MessageType.LEAVE_ACK.getTopic())) {
                         System.out.println("LEAVE_ACK received");
@@ -475,11 +492,45 @@ public class FogOSCore {
                         MapUpdateAckMessage msg = new MapUpdateAckMessage(deviceID, mqttMessage.getPayload());
                         msg.process();
                     } else if (s.startsWith(MessageType.REGISTER_ACK.getTopic())) {
+                        java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "RegisterAckProcessing");
                         System.out.println("REGISTER_ACK received");
                         System.out.println("Actual message: " + new String(mqttMessage.getPayload()));
                         RegisterAckMessage msg = new RegisterAckMessage(deviceID, mqttMessage.getPayload());
-                        msg.process();
-                        //setRegisterAckFlag(true);
+                        MessageError error = msg.process();
+                        if (error == MessageError.NONE) {
+                            String registerID = msg.getRegisterID();
+                            if (registerTypeMap.get(registerID) == "Content") {
+                                java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "RegisterAckProcessing:Content");
+
+                                HashMap<String, String> idList = msg.getIdMap();
+                                HashMap<String, String> indexMap = registerIndexMap.get(registerID);
+
+                                for (String idx: indexMap.keySet()) {
+                                    String name = indexMap.get(idx);
+                                    String id = idList.get(idx);
+
+                                    FlexID flexID = new FlexID(id);
+                                    FlexID[] flexIDList = {flexID};
+
+                                    Content content = contentStore.get(name);
+                                    content.setFlexID(flexIDList);
+
+                                    contentStore.remove(name);
+                                    contentStore.add(content);
+                                }
+
+                            } else if (registerTypeMap.get(registerID) == "Service") {
+                                java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "RegisterAckProcessing:Service");
+
+
+                            } else {
+                                System.out.println("RegisterTypeMap Error");
+                            }
+
+                        } else {
+                            System.out.println("JoinACK Error");
+                        }
+                        setRegisterAckFlag(true);
                     } else if (s.startsWith(MessageType.STATUS_ACK.getTopic())) {
                         System.out.println("STATUS_ACK received");
                         System.out.println("Actual message: " + new String(mqttMessage.getPayload()));

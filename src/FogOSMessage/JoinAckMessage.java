@@ -46,7 +46,6 @@ public class JoinAckMessage extends Message {
             JSONObject answerObj = new JSONObject(answerStr);
             String newIDStr = answerObj.getString("id");
             int error = answerObj.getInt("error");
-
             if (error != 0) {
                 return MessageError.PROCESS_ERROR;
             }

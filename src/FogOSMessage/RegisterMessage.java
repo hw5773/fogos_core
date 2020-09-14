@@ -24,7 +24,8 @@ public class RegisterMessage extends Message {
 
     private ContentStore store;
     private String type;
-    private HashMap<String, Integer> indexMap;
+    private HashMap<String, String> indexMap;
+    private String registerID;
 
     public RegisterMessage() {
         super(MessageType.REGISTER);
@@ -44,16 +45,18 @@ public class RegisterMessage extends Message {
 
     public RegisterMessage(FlexID deviceID, int registerIDCounter, ContentStore store) {
         super(MessageType.REGISTER, deviceID);
-
+        init();
+        registerID = Integer.toString(registerIDCounter);
         this.store = store;
         this.type = "Content";
-        init();
+
 
         Content[] contentList = store.getContentList();
         try {
             JSONArray registerList = new JSONArray();
             for (int i = 0; i < contentList.length; i++) {
                 String hash = Integer.toString(contentList[i].getName().hashCode());
+                indexMap.put(Integer.toString(i), contentList[i].getName());
 
                 JSONObject obj = new JSONObject();
                 obj.put("index", Integer.toString(i)); // TODO: We have to store mapping between the content and the index (for Register Ack processing)
@@ -63,11 +66,9 @@ public class RegisterMessage extends Message {
                 obj.put("attributes", "none"); // TODO: How can we get attributes of the content?
                 obj.put("cache", false); // TODO: Do we use following 3 bits?
                 obj.put("segment", false); // TODO
-                obj.put("collisionAvoid", false); // TODO
+                obj.put("collisionAvoid", true); // TODO
                 registerList.put(obj);
-                indexMap.put(hash, i);
             }
-            String registerID = Integer.toString(registerIDCounter);
             this.addAttrValuePair("registerList", registerList.toString(), null);
             this.addAttrValuePair("registerID", registerID, null);
 
@@ -93,7 +94,11 @@ public class RegisterMessage extends Message {
 
     }
 
-    public HashMap<String, Integer> getIndexMap() {
+    public String getRegisterID() {
+        return registerID;
+    }
+
+    public HashMap<String, String> getIndexMap() {
         return indexMap;
     }
 
@@ -104,7 +109,7 @@ public class RegisterMessage extends Message {
     @Override
     public void init() {
         type = "none";
-        indexMap = new HashMap<String, Integer>();
+        indexMap = new HashMap<String, String>();
     }
 
     @Override

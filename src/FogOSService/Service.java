@@ -44,10 +44,12 @@ public abstract class Service {
 
     // Initialize the service (e.g., open a socket)
     public void initService() throws NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, SignatureException, InterruptedException {
+        System.out.println("[FogOSService] Start: initService()");
         boolean connected;
         session = new SecureFlexIDSession(Role.RESPONDER, context.getServiceID());
 
         if (context.isProxy()) {
+            System.out.println("[FogOSService] Proxy: processInputFromProxy()");
             InetSocketAddress proxyAddr;
 
             proxyAddr = new InetSocketAddress(context.getProxyLoc().getAddr(),
@@ -62,6 +64,7 @@ public abstract class Service {
                 e.printStackTrace();
             }
         }
+        System.out.println("[FogOSService] Finish: processInputFromProxy()");
     }
 
     // Processing of the service regarding service requests from a client
@@ -71,15 +74,19 @@ public abstract class Service {
     // Processing of the service regarding proxying
     // This should be overridden when the application is a proxy
     public void processInputFromProxy() {
+        System.out.println("[FogOSService] Start: processInputFromProxy()");
         if (context.isProxy()) {
-
+            System.out.println("[FogOSService] Proxy: processInputFromProxy()");
         }
+        System.out.println("[FogOSService] Finish: processInputFromProxy()");
     }
 
     public void processOutputToProxy() {
+        System.out.println("[FogOSService] Start: processOutputToProxy()");
         if (context.isProxy()) {
-
+            System.out.println("[FogOSService] Proxy: processOutputToProxy()");
         }
+        System.out.println("[FogOSService] Finish: processOutputToProxy()");
     }
 
     public ServiceContext getContext() {

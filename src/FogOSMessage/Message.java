@@ -107,8 +107,9 @@ public abstract class Message {
 
     public void send(FogOSBroker broker) {
         try {
-            if (broker != null)
+            if (broker != null && broker.getMqttClient() != null) {
                 broker.getMqttClient().publish(this.getMessageType().getTopic(), new MqttMessage(getStringFromHashTable(this.getAttrValueTable()).getBytes()));
+            }
         } catch (MqttException e) {
             e.printStackTrace();
         }

@@ -1,6 +1,7 @@
 package FlexID;
 
 import java.security.*;
+import java.util.Base64;
 import java.util.logging.Level;
 
 public class FlexID implements FlexIDInterface {
@@ -105,11 +106,14 @@ public class FlexID implements FlexIDInterface {
     }
 
     public String getStringIdentity() {
-        return new String(identity);
+        Base64.Encoder encoder = Base64.getEncoder();
+        String encodedIdentity = encoder.encodeToString(identity);
+        return encodedIdentity;
     }
 
     public void setIdentity(byte[] identity) {
         this.identity = identity;
+        this.sidentity = new String(identity);
     }
 
     public FlexIDType getType() {

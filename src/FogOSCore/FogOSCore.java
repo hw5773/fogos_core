@@ -62,6 +62,8 @@ public class FogOSCore {
 
     private static final String TAG = "FogOSCore";
 
+    private boolean joinAckFlag = false;
+
     public FogOSCore() {
         this.contentStore = new ContentStore(DEFAULT_CONTENT_STORE_PATH);
         init();
@@ -115,6 +117,9 @@ public class FogOSCore {
         // Send the JOIN message
         join();
 
+        initSubscribe(deviceID);
+
+
         // Send REGISTER message
         register();
 
@@ -127,111 +132,34 @@ public class FogOSCore {
         java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Finish: Initialize FogOSCore");
     }
 
-    public String getLocalIpAddr() {
-        String ip = "";
+    public boolean getJoinAckFlag() {
+        System.out.print("");
+        return joinAckFlag;
+    };
 
-        try {
-            Enumeration<NetworkInterface> enumNetworkInterfaces = NetworkInterface.getNetworkInterfaces();
-
-            while (enumNetworkInterfaces.hasMoreElements()) {
-                NetworkInterface networkInterface = enumNetworkInterfaces.nextElement();
-                Enumeration<InetAddress> enumInetAddress = networkInterface.getInetAddresses();
-
-                while (enumInetAddress.hasMoreElements()) {
-                    InetAddress inetAddress = enumInetAddress.nextElement();
-
-                    if (inetAddress.isSiteLocalAddress()) {
-                        ip = inetAddress.getHostAddress();
-                    }
-                }
-            }
-        } catch (SocketException e) {
-            e.printStackTrace();
-        }
-
-        return ip;
-    }
-
-    private static String getMacAddress(String ip) {
-        String mac = "";
-
-        try {
-            Enumeration<NetworkInterface> enumNetworkInterfaces = NetworkInterface.getNetworkInterfaces();
-
-            while (enumNetworkInterfaces.hasMoreElements()) {
-                NetworkInterface networkInterface = enumNetworkInterfaces.nextElement();
-                Enumeration<InetAddress> enumInetAddress = networkInterface.getInetAddresses();
-
-                while (enumInetAddress.hasMoreElements()) {
-                    InetAddress inetAddress = enumInetAddress.nextElement();
-
-                    if (inetAddress.isSiteLocalAddress()) {
-                        if (ip.equals(inetAddress.getHostAddress())) {
-                            byte[] hardwareAddress = networkInterface.getHardwareAddress();
-
-                            String[] hexadecimal = new String[hardwareAddress.length];
-                            for (int i = 0; i < hardwareAddress.length; i++) {
-                                hexadecimal[i] = String.format("%02X", hardwareAddress[i]);
-                            }
-                            mac = String.join("-", hexadecimal);
-                            return mac;
-                        }
-                    }
-                }
-            }
-        } catch (SocketException e) {
-            e.printStackTrace();
-        }
-
-        return mac;
+    public void setJoinAckFlag(boolean val) {
+        this.joinAckFlag = val;
+        System.out.println("Changed");
+        System.out.println(this.joinAckFlag);
     }
 
     public void join() {
-
-        // Add Ethernet interface
-        Resource ifaceTypeResource = new Resource("ifaceType", ResourceType.NetworkInterface,
-                "", "Ethernet", false) {
-            @Override
-            public void monitorResource() {
-                this.setCurr(Integer.toString(Integer.parseInt(this.getCurr())));
-                System.out.println("[Ethernet] " + this.getCurr() + " " + this.getUnit());
-            }
-        };
-        resourceList.add(ifaceTypeResource);
-
-        // find IPv4 address of the device
-        String ipv4 = getLocalIpAddr();
-        Resource ipResource = new Resource("ipv4", ResourceType.NetworkInterface, "", ipv4, false) {
-            @Override
-            public void monitorResource() {
-                this.setCurr(Integer.toString(Integer.parseInt(this.getCurr())));
-                System.out.println("[IPv4] " + this.getCurr() + " " + this.getUnit());
-            }
-        };
-        resourceList.add(ipResource);
-
-        // find HW address of the device
-        String hwAddress = getMacAddress(ipv4);
-        Resource hwAddrResource = new Resource("hwAddress", ResourceType.NetworkInterface, "", hwAddress, false) {
-            @Override
-            public void monitorResource() {
-                this.setCurr(Integer.toString(Integer.parseInt(this.getCurr())));
-                System.out.println("[MAC] " + this.getCurr() + " " + this.getUnit());
-            }
-        };
-        resourceList.add(hwAddrResource);
-
         JoinMessage msg = new JoinMessage(deviceID, resourceList, deviceID.getPub());
         msg.send(broker);
         //msg.test(broker); // This should be commented out after being generalized.
 
+        // Wait JOIN_ACK message
+        setJoinAckFlag(false);
+        while (true) {
+            if (getJoinAckFlag()) break;
+        }
     }
 
     public void register() {
         RegisterMessage contentRmsg = new RegisterMessage(deviceID, this.contentStore);
         contentRmsg.test(broker); // This should be commented out after being generalized.
-
-        RegisterMessage serviceRmsg = new RegisterMessage(deviceID, serviceList);
+        //RegisterMessage serviceRmsg = new RegisterMessage(deviceID, serviceList);
+        //serviceRmsg.test(broker);
     }
 
     public LinkedList<SecureFlexIDSession> getSessionList() {
@@ -378,17 +306,12 @@ public class FogOSCore {
         Logger.getLogger(TAG).log(Level.INFO, "Start: initSubscribe()");
 
         subscribe(MessageType.JOIN_ACK.getTopicWithDeviceID(deviceID));
-
-        Logger.getLogger(TAG).log(Level.INFO, "Finish: initSubscribe()");
-    }
-
-    void subscribeWithDeviceID(FlexID deviceID) {
-        Logger.getLogger(TAG).log(Level.INFO, "Start: initSubscribe()");
         subscribe(MessageType.LEAVE_ACK.getTopicWithDeviceID(deviceID));
         subscribe(MessageType.STATUS_ACK.getTopicWithDeviceID(deviceID));
         subscribe(MessageType.REGISTER_ACK.getTopicWithDeviceID(deviceID));
         subscribe(MessageType.UPDATE_ACK.getTopicWithDeviceID(deviceID));
         subscribe(MessageType.MAP_UPDATE_ACK.getTopicWithDeviceID(deviceID));
+
         Logger.getLogger(TAG).log(Level.INFO, "Finish: initSubscribe()");
     }
 
@@ -439,14 +362,14 @@ public class FogOSCore {
 
                 @Override
                 public void messageArrived(String s, MqttMessage mqttMessage) throws Exception {
-                    Logger.getLogger(TAG).log(Level.INFO, "Mqtt: messageArrived");
+                    Logger.getLogger(TAG).log(Level.INFO, "Mqtt: messageArrived1");
 
+                    /*
                     if (s.startsWith(MessageType.JOIN_ACK.getTopic())) {
                         System.out.println("JOIN_ACK received");
                         System.out.println("Actual message: " + new String(mqttMessage.getPayload()));
                         JoinAckMessage msg = new JoinAckMessage(deviceID, mqttMessage.getPayload());
                         msg.process();
-                        subscribeWithDeviceID(msg.getDeviceID());
                     } else if (s.startsWith(MessageType.LEAVE_ACK.getTopic())) {
                         System.out.println("LEAVE_ACK received");
                         System.out.println("Actual message: " + new String(mqttMessage.getPayload()));
@@ -485,6 +408,7 @@ public class FogOSCore {
                     } else {
                         // No recognized message.
                     }
+                    */
                 }
 
                 @Override
@@ -514,10 +438,56 @@ public class FogOSCore {
     public void subscribe(String topic) {
         try {
             mqttClient.subscribe(topic, new IMqttMessageListener() {
+
                 @Override
                 public void messageArrived(String s, MqttMessage mqttMessage) throws Exception {
-                    Logger.getLogger(TAG).log(Level.INFO, "Mqtt: messageArrived()");
+                    Logger.getLogger(TAG).log(Level.INFO, "Mqtt: messageArrived()-");
                     Logger.getLogger(TAG).log(Level.INFO, "Mqtt: " + s + mqttMessage);
+
+                    if (s.startsWith(MessageType.JOIN_ACK.getTopic())) {
+                        System.out.println("JOIN_ACK received");
+                        System.out.println("Actual message: " + new String(mqttMessage.getPayload()));
+                        JoinAckMessage msg = new JoinAckMessage(deviceID, mqttMessage.getPayload());
+                        msg.process();
+                        setJoinAckFlag(true);
+                    } else if (s.startsWith(MessageType.LEAVE_ACK.getTopic())) {
+                        System.out.println("LEAVE_ACK received");
+                        System.out.println("Actual message: " + new String(mqttMessage.getPayload()));
+                        LeaveAckMessage msg = new LeaveAckMessage(deviceID, mqttMessage.getPayload());
+                        msg.process();
+                    } else if (s.startsWith(MessageType.MAP_UPDATE_ACK.getTopic())) {
+                        System.out.println("MAP_UPDATE_ACK received");
+                        System.out.println("Actual message: " + new String(mqttMessage.getPayload()));
+                        MapUpdateAckMessage msg = new MapUpdateAckMessage(deviceID, mqttMessage.getPayload());
+                        msg.process();
+                    } else if (s.startsWith(MessageType.REGISTER_ACK.getTopic())) {
+                        System.out.println("REGISTER_ACK received");
+                        System.out.println("Actual message: " + new String(mqttMessage.getPayload()));
+                        RegisterAckMessage msg = new RegisterAckMessage(deviceID, mqttMessage.getPayload());
+                        msg.process();
+                    } else if (s.startsWith(MessageType.STATUS_ACK.getTopic())) {
+                        System.out.println("STATUS_ACK received");
+                        System.out.println("Actual message: " + new String(mqttMessage.getPayload()));
+                        StatusAckMessage msg = new StatusAckMessage(deviceID, mqttMessage.getPayload());
+                        msg.process();
+                    } else if (s.startsWith(MessageType.REPLY.getTopic())) {
+                        System.out.println("REPLY received");
+                        System.out.println("Actual message: " + new String(mqttMessage.getPayload()));
+                        ReplyMessage msg = new ReplyMessage(deviceID, mqttMessage.getPayload());
+                        receivedMessages.get(MessageType.REPLY).add(msg);
+                    } else if (s.startsWith(MessageType.RESPONSE.getTopic())) {
+                        System.out.println("RESPONSE received");
+                        System.out.println("Actual message: " + new String(mqttMessage.getPayload()));
+                        ResponseMessage msg = new ResponseMessage(deviceID, mqttMessage.getPayload());
+                        receivedMessages.get(MessageType.RESPONSE).add(msg);
+                    } else if (s.startsWith(MessageType.UPDATE_ACK.getTopic())) {
+                        System.out.println("UPDATE_ACK received");
+                        System.out.println("Actual message: " + new String(mqttMessage.getPayload()));
+                        UpdateAckMessage msg = new UpdateAckMessage(deviceID, mqttMessage.getPayload());
+                        msg.process();
+                    } else {
+                        // No recognized message.
+                    }
                 }
             });
         } catch (MqttException e) {

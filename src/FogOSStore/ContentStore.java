@@ -3,11 +3,6 @@ package FogOSStore;
 //import android.os.Build;//
 
 //import androidx.annotation.Req//uiresApi;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import FogOSContent.Content;
 
 import java.io.BufferedReader;
@@ -15,7 +10,14 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class ContentStore {
 
@@ -28,12 +30,13 @@ public class ContentStore {
         //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
 
         this.path = path;
-        readifExist();
-
+  
+        readifExist();  
+      
         fileExplorerWithClear(path);
-
+      
         writeintoFile();
-        //}
+
     }
 
     private void readifExist(){
@@ -48,7 +51,7 @@ public class ContentStore {
 
                 jsonline = bufReader.readLine();
 
-                //System.out.println(jsonline);
+//                System.out.println(jsonline);
 
                 JSONObject jsonObject = new JSONObject(jsonline);
                 JSONArray jsonArr = jsonObject.getJSONArray("filelist");
@@ -61,7 +64,9 @@ public class ContentStore {
                     String myname = jsonObj.getString("name");
                     String mypath = jsonObj.getString("path");
                     Boolean myshared = jsonObj.getBoolean("shared");
-                    //contents.add(new Content(myname,mypath,myshared));
+                    String myhash = jsonObj.getString("hash");                 
+                    
+                    contents.add(new Content(myname,mypath,myshared,myhash));
                 }
 
             } catch (JSONException e) {
@@ -95,13 +100,12 @@ public class ContentStore {
         try {
             for(int i=0;i<contentlist.length;i++) {
 
+            	
                 JSONObject obj = new JSONObject();
                 obj.put("name", contentlist[i].getName());
-                //System.out.println(contentlist[i].getName());
                 obj.put("path", contentlist[i].getPath());
-                //System.out.println(contentlist[i].getPath());
                 obj.put("shared", Boolean.toString(contentlist[i].isShared()));
-                //System.out.println(contentlist[i].isShared());
+                obj.put("hash", contentlist[i].getHash());
                 outjson2.put(obj);
 
             }
@@ -133,13 +137,16 @@ public class ContentStore {
                 File file = files[i];
 
                 if (file.isDirectory()) {
-                    fileslist.add(file);
-                    //contents.add(new Content(file.getName(), file.getPath(), false));
+//                    fileslist.add(file);
+//                    contents.add(new Content(file.getName(), file.getPath(), false,getHash(file.getAbsolutePath())));
                     fileExplorer(file.getPath());
                 }
                 else {
-                    fileslist.add(file);
-                    //contents.add(new Content(file.getName(),file.getPath(),false));
+                	if(!jsonlistchecker(file)) {
+	                    fileslist.add(file);
+//	                    System.out.println("contents add");
+	                    contents.add(new Content(file.getName(), file.getPath(), false,getHash(file.getAbsolutePath())));
+                	}
                 }
             }
             catch(Exception e) {
@@ -151,14 +158,42 @@ public class ContentStore {
         
      
     }
-
-    private void fileExplorerWithClear(String path) {
-    	contents.clear();
-    	fileslist.clear();
+    private Boolean jsonlistchecker(File file) {
     	
+    	
+    	for(int i=0;i < contents.size();i++)
+    	{    	
+       		String str1 = contents.get(i).getPath().replace("\\","");
+    		String str2 = file.getPath().replace("\\", "");
+    		
+    		if (str1.equals(str2))
+    		{  			
+    			return true;
+    		}
+    	}
+		return false;
+    	
+    }
+    private void fileExplorerWithClear(String path) {
+//    	contents.clear();
+//    	fileslist.clear();
+//    	
     	fileExplorer(path);
     	
     }
+    
+    private String getHash(String path) {
+    	
+    	String sha1 = "";
+    	try (InputStream is = Files.newInputStream(Paths.get(path))) {
+    	    sha1 = org.apache.commons.codec.digest.DigestUtils.sha1Hex(is);
+    	}
+    	catch(IOException e) {
+    		e.printStackTrace();
+    	}
+    	return sha1;
+    }
+    
     public Content[] getContentList(){
 
         Content[] rt = new Content[contents.size()];

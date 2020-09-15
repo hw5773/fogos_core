@@ -122,6 +122,9 @@ public class FogOSCore {
         // Initialize the subscription to necessary messages
         initSubscribe(deviceID);
 
+        // Find all network interfaces and add them to the resourceList
+        findNetworkInterfaces();
+
         // Send the JOIN message
         join();
 
@@ -138,6 +141,52 @@ public class FogOSCore {
         }
 
         java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Finish: Initialize FogOSCore");
+    }
+
+
+    private String getStringHwAddr (byte[] hwAddress) {
+        String[] hexadecimal = new String[hwAddress.length];
+        for (int i = 0; i < hwAddress.length; i++) {
+            hexadecimal[i] = String.format("%02X", hwAddress[i]);
+        }
+        String strAddr = String.join("-", hexadecimal);
+        return strAddr;
+    }
+
+    private void findNetworkInterfaces() {
+
+        try {
+            Enumeration<NetworkInterface> nets = NetworkInterface.getNetworkInterfaces();
+
+            for (NetworkInterface netInterface : Collections.list(nets)) {
+
+                Enumeration<InetAddress> inetAddr = netInterface.getInetAddresses();
+                for (InetAddress inetAddress : Collections.list(inetAddr)) {
+                    if (inetAddress.isLoopbackAddress()) continue;
+                    if (inetAddress instanceof Inet6Address) continue;
+
+                    NetworkInterface ni = NetworkInterface.getByInetAddress(inetAddress);
+                    byte[] byteHwAddress = ni.getHardwareAddress();
+                    String ifaceType = netInterface.getName();
+                    String ipv4= inetAddress.getHostAddress();
+                    String hwAddress = getStringHwAddr(byteHwAddress);
+
+                    Resource tmpResource = new Resource(ifaceType, ResourceType.NetworkInterface, "", ipv4, false) {
+                        @Override
+                        public void monitorResource() { }
+                    };
+
+                    Resource tmpResource2 = new Resource(ifaceType, ResourceType.NetworkInterface, "", hwAddress, false) {
+                        @Override
+                        public void monitorResource() { }
+                    };
+                    resourceList.add(tmpResource);
+                    resourceList.add(tmpResource2);
+                }
+            }
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
     }
 
     public boolean getJoinAckFlag() {

@@ -3,6 +3,7 @@ package FogOSCore;
 import FogOSMessage.*;
 import FlexID.FlexID;
 import FlexID.FlexIDFactory;
+import FlexID.FlexIDType;
 import FlexID.Locator;
 import FlexID.InterfaceType;
 import FogOSQoS.QoSInterpreter;
@@ -22,6 +23,8 @@ import org.json.*;
 
 import java.io.*;
 import java.net.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
@@ -56,6 +59,7 @@ public class FogOSCore {
 
     // An instance that runs services
     private ServiceRunner serviceRunner;
+    private Thread serviceRunnerThread;
 
     // QoS Interpreter
     private QoSInterpreter qosInterpreter;
@@ -100,7 +104,8 @@ public class FogOSCore {
 
         // TODO: Initialize the service runner
         serviceRunner = new ServiceRunner(this);
-        new Thread(serviceRunner).start();
+        serviceRunnerThread = new Thread(serviceRunner);
+        serviceRunnerThread.start();
 
         // Initialize and run the QoS interpreter
         qosInterpreter = new QoSInterpreter(this);
@@ -138,6 +143,10 @@ public class FogOSCore {
         }
 
         java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Finish: Initialize FogOSCore");
+    }
+
+    public void finalization() throws InterruptedException {
+        serviceRunnerThread.join();
     }
 
     public boolean getJoinAckFlag() {
@@ -602,6 +611,37 @@ public class FogOSCore {
             java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Peer ID: " + new String(requestMessage.getPeerID().getIdentity()));
             ResponseMessage responseMessage;
             Locator locator = new Locator(InterfaceType.WIFI, "192.168.0.128", 3333);
+            responseMessage = (ResponseMessage) generateMessage(MessageType.RESPONSE);
+            responseMessage.setPeerID(new FlexID(msg.getValueByAttr("id").getValue()));
+            responseMessage.getPeerID().setLocator(locator);
+            receivedMessages.get(MessageType.RESPONSE.getTopic()).add(responseMessage);
+            java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Make a test response message finished.");
+        }
+        java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Finish: sendMessage()");
+    }
+
+    public void proxyMessage(Message msg) throws IOException, NoSuchAlgorithmException {
+        java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Start: proxyMessage(): MessageType: " + msg.getMessageType().toString());
+
+        /* Test Returns */
+        if (msg.getMessageType() == MessageType.QUERY) {
+            java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Make a test list started.");
+            ReplyMessage replyMessage;
+            FlexID id;
+            byte[] pub = Files.readAllBytes(Paths.get("D:\\tmp\\pub.pem"));
+            replyMessage = (ReplyMessage) generateMessage(MessageType.REPLY);
+            id = new FlexID(FlexIDType.SERVICE, pub);
+            replyMessage.addReplyEntry("Test", "Test", id);
+            receivedMessages.get(MessageType.REPLY.getTopic()).add(replyMessage);
+            java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Make a test list finished.");
+            java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Finish: proxyMessage()");
+        } else if (msg.getMessageType() == MessageType.REQUEST) {
+            RequestMessage requestMessage;
+            requestMessage = (RequestMessage) msg;
+            java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Make a test response message started.");
+            java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Peer ID: " + new String(requestMessage.getPeerID().getIdentity()));
+            ResponseMessage responseMessage;
+            Locator locator = new Locator(InterfaceType.ETH, "127.0.0.1", 5556);
             responseMessage = (ResponseMessage) generateMessage(MessageType.RESPONSE);
             responseMessage.setPeerID(new FlexID(msg.getValueByAttr("id").getValue()));
             responseMessage.getPeerID().setLocator(locator);

@@ -1,5 +1,7 @@
 package FlexID;
 
+import org.w3c.dom.Attr;
+
 import java.security.*;
 import java.util.Base64;
 import java.util.logging.Level;
@@ -22,6 +24,17 @@ public class FlexID implements FlexIDInterface {
         this.priv = keyPair.getPrivate().getEncoded();
         this.pub = keyPair.getPublic().getEncoded();
         this.type = FlexIDType.ANY;
+        this.avps = new AttrValuePairs();
+        this.loc = null;
+        MessageDigest digest = MessageDigest.getInstance("SHA-1");
+        this.identity = digest.digest(this.pub);
+        this.sidentity = new String(this.identity);
+    }
+
+    public FlexID(FlexIDType type, byte[] pub) throws NoSuchAlgorithmException {
+        this.priv = null;
+        this.pub = pub;
+        this.type = type;
         this.avps = new AttrValuePairs();
         this.loc = null;
         MessageDigest digest = MessageDigest.getInstance("SHA-1");

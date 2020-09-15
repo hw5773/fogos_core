@@ -50,7 +50,9 @@ public class FogOSClient implements FogOSClientAPI {
     public void begin() {
         core = new FogOSCore(contentStore, serviceList, resourceList);
     }
-    public void exit() {}
+    public void exit() throws InterruptedException {
+        this.core.finalization();
+    }
 
     public QueryMessage makeQueryMessage() {
         return (QueryMessage) core.generateMessage(MessageType.QUERY);
@@ -65,6 +67,9 @@ public class FogOSClient implements FogOSClientAPI {
     // TODO: Currently, this function returns the test values
     public void testQueryMessage(QueryMessage queryMessage) {
         core.testMessage(queryMessage);
+    }
+    public void proxyQueryMessage(QueryMessage queryMessage) {
+        core.proxyMessage(queryMessage);
     }
 
     public void sendQueryMessage(QueryMessage queryMessage) {
@@ -92,6 +97,7 @@ public class FogOSClient implements FogOSClientAPI {
     public void testRequestMessage(RequestMessage requestMessage) {
         core.testMessage(requestMessage);
     }
+    public void proxyRequestMessage(RequestMessage requestMessage) { core.proxyMessage(requestMessage); }
 
     public void sendRequestMessage(RequestMessage requestMessage) {
         core.sendMessage(requestMessage);

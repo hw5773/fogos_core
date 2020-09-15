@@ -116,6 +116,10 @@ public class FogOSClient implements FogOSClientAPI {
         contentStore.add(content);
     }
 
+    public void registerContent(String name, String path) {
+        core.registerContent(name, path);
+    }
+
     /*
     public void removeContent(FlexID flexID) {
         FlexID[] flexIDList = {flexID};

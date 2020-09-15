@@ -37,10 +37,34 @@ public class RegisterMessage extends Message {
         init();
     }
 
-    public RegisterMessage(FlexID deviceID, Content content) {
+    public RegisterMessage(FlexID deviceID, int registerIDCounter, Content content) {
         super(MessageType.REGISTER, deviceID);
-        this.type = "Content";
         init();
+        this.type = "Content";
+        registerID = Integer.toString(registerIDCounter);
+
+        try {
+            JSONArray registerList = new JSONArray();
+            String hash = content.getHash();
+            indexMap.put("0", content.getName());
+
+            JSONObject obj = new JSONObject();
+            obj.put("index", "0"); // TODO: We have to store mapping between the content and the index (for Register Ack processing)
+            obj.put("hash", hash); // TODO: Need a hash of content itself; client input
+            obj.put("registerType", "Content");
+            obj.put("category", "none"); // TODO: Do we use category of the content?
+            obj.put("attributes", "none"); // TODO: How can we get attributes of the content?
+            obj.put("cache", false);
+            obj.put("segment", false);
+            obj.put("collisionAvoid", true); // TODO
+            registerList.put(obj);
+
+            this.addAttrValuePair("registerList", registerList.toString(), null);
+            this.addAttrValuePair("registerID", registerID, null);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public RegisterMessage(FlexID deviceID, int registerIDCounter, ContentStore store) {
@@ -64,8 +88,8 @@ public class RegisterMessage extends Message {
                 obj.put("registerType", "Content");
                 obj.put("category", "none"); // TODO: Do we use category of the content?
                 obj.put("attributes", "none"); // TODO: How can we get attributes of the content?
-                obj.put("cache", false); // TODO: Do we use following 3 bits?
-                obj.put("segment", false); // TODO
+                obj.put("cache", false);
+                obj.put("segment", false);
                 obj.put("collisionAvoid", true); // TODO
                 registerList.put(obj);
             }

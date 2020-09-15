@@ -131,14 +131,10 @@ public class FogOSCore {
         // Subscribe again with new deviceID
         initSubscribe(deviceID);
 
-        // Send REGISTER message
-        register();
+        // Do not have to register service/content in the init function; Register should be done manually by the client
+        //register();
 
-        try {
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
         java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Finish: Initialize FogOSCore");
     }
@@ -579,7 +575,6 @@ public class FogOSCore {
                         } else {
                             System.out.println("JoinACK Error");
                         }
-                        setRegisterAckFlag(true);
                     } else if (s.startsWith(MessageType.STATUS_ACK.getTopic())) {
                         System.out.println("STATUS_ACK received");
                         System.out.println("Actual message: " + new String(mqttMessage.getPayload()));
@@ -681,6 +676,13 @@ public class FogOSCore {
     public void destroySecureFlexIDSession(SecureFlexIDSession secureFlexIDSession) {
         secureFlexIDSession.getFlexIDSession().close();
         sessionList.remove(secureFlexIDSession);
+    }
+
+    public void registerContent(String name, String path) {
+        Content content = contentStore.get(name, path);
+        RegisterMessage contentRmsg = new RegisterMessage(deviceID, registerIDCounter++, content);
+        contentRmsg.send(broker); // This should be commented out after being generalized.
+
     }
 
     public void deregister(FlexID[] flexIDList) {

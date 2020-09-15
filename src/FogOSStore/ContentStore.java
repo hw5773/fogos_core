@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 public class ContentStore {
 
     private ArrayList<Content> contents = new ArrayList<Content>();
@@ -31,12 +30,11 @@ public class ContentStore {
 
         this.path = path;
   
-        readifExist();  
-      
-        fileExplorerWithClear(path);
-      
-        writeintoFile();
+        readifExist();
 
+        fileExplorerWithClear(path);
+
+        writeintoFile();
     }
 
     private void readifExist(){
@@ -65,8 +63,9 @@ public class ContentStore {
                     String mypath = jsonObj.getString("path");
                     Boolean myshared = jsonObj.getBoolean("shared");
                     String myhash = jsonObj.getString("hash");                 
-                    
+
                     contents.add(new Content(myname,mypath,myshared,myhash));
+
                 }
 
             } catch (JSONException e) {
@@ -144,8 +143,7 @@ public class ContentStore {
                 else {
                 	if(!jsonlistchecker(file)) {
 	                    fileslist.add(file);
-//	                    System.out.println("contents add");
-	                    contents.add(new Content(file.getName(), file.getPath(), false,getHash(file.getAbsolutePath())));
+	                    contents.add(new Content(file.getName(), file.getPath(), false, getHash(file.getAbsolutePath())));
                 	}
                 }
             }
@@ -162,7 +160,7 @@ public class ContentStore {
     	
     	
     	for(int i=0;i < contents.size();i++)
-    	{    	
+    	{
        		String str1 = contents.get(i).getPath().replace("\\","");
     		String str2 = file.getPath().replace("\\", "");
     		
@@ -217,17 +215,11 @@ public class ContentStore {
     	fileExplorerWithClear(this.path);
 
         writeintoFile();
-    	
-    }
-
-    public void add(String name, String path, Boolean shared) {
-        //contents.add(new Content(name, path, shared));
-        writeintoFile();
     }
 
     public void add(Content content) {
-        contents.add(content);
         writeintoFile();
+        contents.add(content);
     }
 
     public void remove(String name) {
@@ -251,6 +243,20 @@ public class ContentStore {
             if (name.equals(contents.get(i).getName())) {
                 idx = i;
             }
+        }
+        return contents.get(idx);
+    }
+
+    public Content get(String name, String path) {
+        int idx = -1;
+        for (int i = 0; i < contents.size(); i++) {
+            if (name.equals(contents.get(i).getName())) {
+                if (path.equals(contents.get(i).getPath()))
+                    idx = i;
+            }
+        }
+        if (idx == -1) {
+            System.out.println("No Content: " + name + ", "  + path);
         }
         return contents.get(idx);
     }

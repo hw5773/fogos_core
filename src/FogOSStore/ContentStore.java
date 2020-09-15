@@ -61,7 +61,7 @@ public class ContentStore {
                     String myname = jsonObj.getString("name");
                     String mypath = jsonObj.getString("path");
                     Boolean myshared = jsonObj.getBoolean("shared");
-                    contents.add(new Content(myname,mypath,myshared));
+                    //contents.add(new Content(myname,mypath,myshared));
                 }
 
             } catch (JSONException e) {
@@ -134,12 +134,12 @@ public class ContentStore {
 
                 if (file.isDirectory()) {
                     fileslist.add(file);
-                    contents.add(new Content(file.getName(), file.getPath(), false));
+                    //contents.add(new Content(file.getName(), file.getPath(), false));
                     fileExplorer(file.getPath());
                 }
                 else {
                     fileslist.add(file);
-                    contents.add(new Content(file.getName(),file.getPath(),false));
+                    //contents.add(new Content(file.getName(),file.getPath(),false));
                 }
             }
             catch(Exception e) {
@@ -186,7 +186,7 @@ public class ContentStore {
     }
 
     public void add(String name, String path, Boolean shared) {
-        contents.add(new Content(name, path, shared));
+        //contents.add(new Content(name, path, shared));
         writeintoFile();
     }
 

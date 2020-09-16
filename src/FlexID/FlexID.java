@@ -26,7 +26,11 @@ public class FlexID implements FlexIDInterface {
         this.loc = null;
         MessageDigest digest = MessageDigest.getInstance("SHA-1");
         this.identity = digest.digest(this.pub);
-        this.sidentity = new String(this.identity);
+
+        StringBuffer hexString = new StringBuffer();
+        for (int i = 0; i < this.identity.length; i++)
+            hexString.append(Integer.toHexString(0xFF & this.identity[i]));
+        this.sidentity = hexString.toString();
     }
 
     public FlexID(String id) {
@@ -44,11 +48,18 @@ public class FlexID implements FlexIDInterface {
         type = FlexIDType.ANY;
         avps = new AttrValuePairs();
         loc = null;
+        StringBuffer hexString = new StringBuffer();
+        for (int i = 0; i < this.identity.length; i++)
+            hexString.append(Integer.toHexString(0xFF & this.identity[i]));
+        this.sidentity = hexString.toString();
     }
 
     public FlexID(byte[] identity, FlexIDType type, AttrValuePairs avps, Locator loc) {
         this.identity = identity;
-        this.sidentity = new String(identity);
+        StringBuffer hexString = new StringBuffer();
+        for (int i = 0; i < this.identity.length; i++)
+            hexString.append(Integer.toHexString(0xFF & this.identity[i]));
+        this.sidentity = hexString.toString();
         this.type = type;
         this.avps = avps;
         this.loc = loc;
@@ -71,7 +82,10 @@ public class FlexID implements FlexIDInterface {
         this.type = type;
         this.avps = avps;
         this.loc = loc;
-        this.sidentity = new String(this.identity);
+        StringBuffer hexString = new StringBuffer();
+        for (int i = 0; i < this.identity.length; i++)
+            hexString.append(Integer.toHexString(0xFF & this.identity[i]));
+        this.sidentity = hexString.toString();
     }
 
     public FlexID(byte[] priv, byte[] pub, FlexIDType type, AttrValuePairs avps, Locator loc) {
@@ -88,6 +102,10 @@ public class FlexID implements FlexIDInterface {
         this.type = type;
         this.avps = avps;
         this.loc = loc;
+        StringBuffer hexString = new StringBuffer();
+        for (int i = 0; i < this.identity.length; i++)
+            hexString.append(Integer.toHexString(0xFF & this.identity[i]));
+        this.sidentity = hexString.toString();
     }
 
     // TODO: Should implement this function
@@ -106,16 +124,27 @@ public class FlexID implements FlexIDInterface {
     }
 
     public String getStringIdentity() {
+        return sidentity;
+        /*
         Base64.Encoder encoder = Base64.getEncoder();
         String encodedIdentity = encoder.encodeToString(identity);
         // Replace "+" character to ":" to solve MQTT topic problem
         encodedIdentity = encodedIdentity.replace('+', ':');
         return encodedIdentity;
+         */
     }
 
     public void setIdentity(byte[] identity) {
         this.identity = identity;
-        this.sidentity = new String(identity);
+        StringBuffer hexString = new StringBuffer();
+        for (int i = 0; i < this.identity.length; i++)
+            hexString.append(Integer.toHexString(0xFF & this.identity[i]));
+        this.sidentity = hexString.toString();
+    }
+
+    public void setSidentity(String sidentity) {
+        this.sidentity = sidentity;
+        this.identity = sidentity.getBytes();
     }
 
     public FlexIDType getType() {

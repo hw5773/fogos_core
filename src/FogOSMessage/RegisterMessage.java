@@ -3,8 +3,9 @@ package FogOSMessage;
 import FlexID.FlexID;
 import FogOSContent.Content;
 import FogOSCore.FogOSBroker;
-import FogOSResource.Resource;
 import FogOSService.Service;
+import FogOSService.ServiceContext;
+import FlexID.ServiceID;
 import FogOSStore.ContentStore;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
@@ -40,7 +41,7 @@ public class RegisterMessage extends Message {
     public RegisterMessage(FlexID deviceID, int registerIDCounter, Content content) {
         super(MessageType.REGISTER, deviceID);
         init();
-        this.type = "Content";
+        type = "Content";
         registerID = Integer.toString(registerIDCounter);
 
         try {
@@ -51,7 +52,7 @@ public class RegisterMessage extends Message {
             JSONObject obj = new JSONObject();
             obj.put("index", "0"); // TODO: We have to store mapping between the content and the index (for Register Ack processing)
             obj.put("hash", hash); // TODO: Need a hash of content itself; client input
-            obj.put("registerType", "Content");
+            obj.put("registerType", type);
             obj.put("category", "none"); // TODO: Do we use category of the content?
             obj.put("attributes", "none"); // TODO: How can we get attributes of the content?
             obj.put("cache", false);
@@ -72,7 +73,7 @@ public class RegisterMessage extends Message {
         init();
         registerID = Integer.toString(registerIDCounter);
         this.store = store;
-        this.type = "Content";
+        type = "Content";
 
 
         Content[] contentList = store.getContentList();
@@ -83,11 +84,11 @@ public class RegisterMessage extends Message {
                 indexMap.put(Integer.toString(i), contentList[i].getName());
 
                 JSONObject obj = new JSONObject();
-                obj.put("index", Integer.toString(i)); // TODO: We have to store mapping between the content and the index (for Register Ack processing)
-                obj.put("hash", hash); // TODO: Need a hash of content itself; client input
-                obj.put("registerType", "Content");
-                obj.put("category", "none"); // TODO: Do we use category of the content?
-                obj.put("attributes", "none"); // TODO: How can we get attributes of the content?
+                obj.put("index", Integer.toString(i));
+                obj.put("hash", hash);
+                obj.put("registerType", type);
+                obj.put("category", "none"); // TODO: Need user input
+                obj.put("attributes", "none"); // TODO: Need user input
                 obj.put("cache", false);
                 obj.put("segment", false);
                 obj.put("collisionAvoid", true); // TODO
@@ -101,13 +102,43 @@ public class RegisterMessage extends Message {
         }
     }
 
-    public RegisterMessage(FlexID deviceID, Service service) {
+    public RegisterMessage(FlexID deviceID, int registerIDCounter, Service service) {
         super(MessageType.REGISTER, deviceID);
-        this.type = "Service";
         init();
+
+        type = "Service";
+        registerID = Integer.toString(registerIDCounter);
+
+        try {
+            JSONArray registerList = new JSONArray();
+
+            ServiceContext serviceCtxt = service.getContext();
+            ServiceID serviceID = serviceCtxt.getServiceID();
+
+            String hash = serviceID.getStringIdentity();
+            indexMap.put("0", serviceCtxt.getName());
+
+            JSONObject obj = new JSONObject();
+            obj.put("index", "0");
+            obj.put("hash", hash);
+            obj.put("registerType", type);
+            obj.put("category", serviceCtxt.getServiceType());
+            obj.put("attributes", "none"); // TODO: Need user input
+            obj.put("cache", false);
+            obj.put("segment", false);
+            obj.put("collisionAvoid", true); // TODO
+            registerList.put(obj);
+
+            this.addAttrValuePair("registerList", registerList.toString(), null);
+            this.addAttrValuePair("registerID", registerID, null);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 
-    public RegisterMessage(FlexID deviceID, ArrayList<Service> serviceList) {
+    public RegisterMessage(FlexID deviceID, int registerIDCounter, ArrayList<Service> serviceList) {
         super(MessageType.REGISTER, deviceID);
         this.type = "Service";
         init();
@@ -130,6 +161,7 @@ public class RegisterMessage extends Message {
         return type;
     }
 
+
     @Override
     public void init() {
         type = "none";
@@ -139,6 +171,8 @@ public class RegisterMessage extends Message {
     @Override
     public void send(FogOSBroker broker) {
         try {
+
+
             Logger.getLogger(TAG).log(Level.INFO, "MqttMessage: " + getStringFromHashTable(this.getAttrValueTable()));
             broker.getMqttClient().publish(this.getMessageType().getTopicWithDeviceID(deviceID), new MqttMessage(getStringFromHashTable(this.getAttrValueTable()).getBytes()));
         } catch (MqttException e) {

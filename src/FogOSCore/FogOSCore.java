@@ -2,6 +2,7 @@ package FogOSCore;
 
 import FogOSMessage.*;
 import FlexID.FlexID;
+import FlexID.ServiceID;
 import FlexID.FlexIDFactory;
 import FlexID.Locator;
 import FlexID.InterfaceType;
@@ -14,12 +15,14 @@ import FogOSSecurity.Role;
 import FogOSSecurity.SecureFlexIDSession;
 import FogOSService.Service;
 import FogOSContent.Content;
+import FogOSService.ServiceContext;
 import FogOSService.ServiceRunner;
 import FogOSStore.ContentStore;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.json.*;
 
+import javax.management.Query;
 import java.io.*;
 import java.net.*;
 import java.security.InvalidKeyException;
@@ -65,6 +68,7 @@ public class FogOSCore {
     private boolean joinAckFlag = false;
     private boolean registerAckFlag = false;
     private int registerIDCounter = 0;
+    private int queryIDCounter = 0;
     private HashMap<String, HashMap<String, String>> registerIndexMap;
     private HashMap<String, String> registerTypeMap;
 
@@ -567,6 +571,37 @@ public class FogOSCore {
                             } else if (registerTypeMap.get(registerID) == "Service") {
                                 java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "RegisterAckProcessing:Service");
 
+                                HashMap<String, String> idList = msg.getIdMap();
+                                HashMap<String, String> indexMap = registerIndexMap.get(registerID);
+
+                                int index = -1;
+                                for (String idx: indexMap.keySet()) {
+                                    String name = indexMap.get(idx);
+                                    String id = idList.get(idx);
+
+                                    for (int i = 0; i < serviceList.size(); i++) {
+                                        Service service = serviceList.get(i);
+                                        ServiceContext serviceCtxt = service.getContext();
+                                        String serviceName = serviceCtxt.getName();
+
+                                        if (serviceName.equals(name)) {
+                                            index = i;
+                                            break;
+                                        }
+                                    }
+
+                                    Service service = serviceList.get(index);
+                                    ServiceContext serviceCtxt = service.getContext();
+                                    String serviceName = serviceCtxt.getName();
+                                    ServiceID serviceID = serviceCtxt.getServiceID();
+                                    serviceID.setSidentity(id);
+                                    serviceCtxt.setServiceID(serviceID);
+                                    service.setContext(serviceCtxt);
+                                    serviceList.remove(index);
+                                    serviceList.add(service);
+                                }
+
+
 
                             } else {
                                 System.out.println("RegisterTypeMap Error");
@@ -678,11 +713,23 @@ public class FogOSCore {
         sessionList.remove(secureFlexIDSession);
     }
 
-    public void registerContent(String name, String path) {
-        Content content = contentStore.get(name, path);
+    public QueryMessage generateQueryMessage(String queryType, String queryCategory, String order, boolean desc, int limit) {
+        QueryMessage msg = new QueryMessage(deviceID, queryIDCounter++, queryType, queryCategory, order, desc, limit);
+        return msg;
+    }
+
+    public void registerContent(Content content) {
         RegisterMessage contentRmsg = new RegisterMessage(deviceID, registerIDCounter++, content);
         contentRmsg.send(broker); // This should be commented out after being generalized.
+        registerIndexMap.put(contentRmsg.getRegisterID(), contentRmsg.getIndexMap());
+        registerTypeMap.put(contentRmsg.getRegisterID(), contentRmsg.getType());
+    }
 
+    public void registerService(Service service) {
+        RegisterMessage serviceRmsg = new RegisterMessage(deviceID, registerIDCounter++, service);
+        serviceRmsg.send(broker);
+        registerIndexMap.put(serviceRmsg.getRegisterID(), serviceRmsg.getIndexMap());
+        registerTypeMap.put(serviceRmsg.getRegisterID(), serviceRmsg.getType());
     }
 
     public void deregister(FlexID[] flexIDList) {

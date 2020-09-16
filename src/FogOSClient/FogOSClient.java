@@ -8,6 +8,7 @@ import FogOSSecurity.Role;
 import FogOSSecurity.SecureFlexIDSession;
 import FogOSContent.*;
 import FogOSService.Service;
+import FogOSService.ServiceContext;
 import FogOSStore.ContentStore;
 
 import java.security.InvalidKeyException;
@@ -56,11 +57,13 @@ public class FogOSClient implements FogOSClientAPI {
         return (QueryMessage) core.generateMessage(MessageType.QUERY);
     }
 
-    public QueryMessage makeQueryMessage(String query) {
-        QueryMessage queryMessage = (QueryMessage) core.generateMessage(MessageType.QUERY);
-        queryMessage.addAttrValuePair("keywords", query, null);
+    public QueryMessage makeQueryMessage(String queryType, String queryCategory, String order, boolean desc, int limit) {
+        QueryMessage queryMessage = (QueryMessage) core.generateQueryMessage(queryType, queryCategory, order, desc, limit);
+        //QueryMessage queryMessage = (QueryMessage) core.generateMessage(MessageType.QUERY);
+        //queryMessage.addAttrValuePair("keywords", query, null);
         return queryMessage;
     }
+
 
     // TODO: Currently, this function returns the test values
     public void testQueryMessage(QueryMessage queryMessage) {
@@ -116,8 +119,13 @@ public class FogOSClient implements FogOSClientAPI {
         contentStore.add(content);
     }
 
+    public void registerContent(Content content) {
+        core.registerContent(content);
+    }
+
     public void registerContent(String name, String path) {
-        core.registerContent(name, path);
+        Content content = contentStore.get(name, path);
+        core.registerContent(content);
     }
 
     /*
@@ -135,6 +143,27 @@ public class FogOSClient implements FogOSClientAPI {
 
     public void addService(Service service) {
         serviceList.add(service);
+    }
+
+    public void registerService(String name) {
+        int idx = -1;
+        for (int i = 0; i < serviceList.size(); i++) {
+            Service service = serviceList.get(i);
+            ServiceContext serviceCtxt = service.getContext();
+            String serviceName = serviceCtxt.getName();
+            if (serviceName.equals(name)) {
+                idx = i;
+                break;
+            }
+        }
+        if (idx == -1) {
+            System.out.println("No Service: " + name);
+        }
+        core.registerService(serviceList.get(idx));
+    }
+
+    public void registerService(Service service) {
+        core.registerService(service);
     }
 
     public void removeService(FlexID flexID) {

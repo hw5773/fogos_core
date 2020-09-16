@@ -92,4 +92,6 @@ public abstract class Service {
     public ServiceContext getContext() {
         return context;
     }
+
+    public void setContext(ServiceContext context) { this.context = context; }
 }

@@ -36,10 +36,28 @@ public class JoinMessage extends Message {
 
         JSONArray uniqueCodes = new JSONArray();
         try {
+
             JSONObject obj = new JSONObject();
+            String prevIfaceType = "";
             for (Resource resource : resourceList) {
+                if (!prevIfaceType.equals(resource.getName())) {
+                    if (prevIfaceType == "") {
+                        prevIfaceType = resource.getName();
+                        obj.put("ifaceType", resource.getName());
+                    } else {
+                        uniqueCodes.put(obj);
+                        obj = new JSONObject();
+                        obj.put("ifaceType", resource.getName());
+                    }
+                }
+                prevIfaceType = resource.getName();
+
                 if (resource.getType() == ResourceType.NetworkInterface) {
-                    obj.put(resource.getName(), resource.getUnit());
+                    if (resource.getUnit().contains("-")) {
+                        obj.put("hwAddress", resource.getUnit());
+                    } else {
+                        obj.put("ipv4", resource.getUnit());
+                    }
                 }
                 else if (resource.getType() == ResourceType.CPU) {
                     // handle CPU resource
@@ -57,7 +75,6 @@ public class JoinMessage extends Message {
                     // Raise error
                 }
             }
-            uniqueCodes.put(obj);
 
             Encoder encoder = Base64.getEncoder();
             String encodedPubkey = encoder.encodeToString(publicKey);

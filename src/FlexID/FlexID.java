@@ -121,6 +121,8 @@ public class FlexID implements FlexIDInterface {
     public String getStringIdentity() {
         Base64.Encoder encoder = Base64.getEncoder();
         String encodedIdentity = encoder.encodeToString(identity);
+        // Replace "+" character to ":" to solve MQTT topic problem
+        encodedIdentity = encodedIdentity.replace('+', ':');
         return encodedIdentity;
     }
 

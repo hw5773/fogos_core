@@ -127,20 +127,19 @@ public class FogOSCore {
         // Initialize the subscription to necessary messages
         initSubscribe(deviceID);
 
+        // Find all network interfaces and add them to the resourceList
+        findNetworkInterfaces();
+
         // Send the JOIN message
         join();
 
         // Subscribe again with new deviceID
         initSubscribe(deviceID);
 
-        // Send REGISTER message
-        register();
+        // Do not have to register service/content in the init function; Register should be done manually by the client
+        //register();
 
-        try {
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
         java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Finish: Initialize FogOSCore");
     }
@@ -149,10 +148,55 @@ public class FogOSCore {
         serviceRunnerThread.join();
     }
 
+    private String getStringHwAddr (byte[] hwAddress) {
+        String[] hexadecimal = new String[hwAddress.length];
+        for (int i = 0; i < hwAddress.length; i++) {
+            hexadecimal[i] = String.format("%02X", hwAddress[i]);
+        }
+        String strAddr = String.join("-", hexadecimal);
+        return strAddr;
+    }
+
+    private void findNetworkInterfaces() {
+
+        try {
+            Enumeration<NetworkInterface> nets = NetworkInterface.getNetworkInterfaces();
+
+            for (NetworkInterface netInterface : Collections.list(nets)) {
+
+                Enumeration<InetAddress> inetAddr = netInterface.getInetAddresses();
+                for (InetAddress inetAddress : Collections.list(inetAddr)) {
+                    if (inetAddress.isLoopbackAddress()) continue;
+                    if (inetAddress instanceof Inet6Address) continue;
+
+                    NetworkInterface ni = NetworkInterface.getByInetAddress(inetAddress);
+                    byte[] byteHwAddress = ni.getHardwareAddress();
+                    String ifaceType = netInterface.getName();
+                    String ipv4= inetAddress.getHostAddress();
+                    String hwAddress = getStringHwAddr(byteHwAddress);
+
+                    Resource tmpResource = new Resource(ifaceType, ResourceType.NetworkInterface, "", ipv4, false) {
+                        @Override
+                        public void monitorResource() { }
+                    };
+
+                    Resource tmpResource2 = new Resource(ifaceType, ResourceType.NetworkInterface, "", hwAddress, false) {
+                        @Override
+                        public void monitorResource() { }
+                    };
+                    resourceList.add(tmpResource);
+                    resourceList.add(tmpResource2);
+                }
+            }
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+    }
+
     public boolean getJoinAckFlag() {
         System.out.print("");
         return joinAckFlag;
-    };
+    }
 
     public void setJoinAckFlag(boolean val) {
         this.joinAckFlag = val;
@@ -161,7 +205,7 @@ public class FogOSCore {
     public boolean getRegisterAckFlag() {
         System.out.print("");
         return registerAckFlag;
-    };
+    }
 
     public void setRegisterAckFlag(boolean val) {
         this.registerAckFlag = val;
@@ -539,7 +583,6 @@ public class FogOSCore {
                         } else {
                             System.out.println("JoinACK Error");
                         }
-                        setRegisterAckFlag(true);
                     } else if (s.startsWith(MessageType.STATUS_ACK.getTopic())) {
                         System.out.println("STATUS_ACK received");
                         System.out.println("Actual message: " + new String(mqttMessage.getPayload()));
@@ -571,7 +614,10 @@ public class FogOSCore {
     }
 
     public Message getReceivedMessage(String topic) {
-        return receivedMessages.get(topic).poll();
+        if (receivedMessages.isEmpty())
+            return null;
+        else
+            return receivedMessages.get(topic).poll();
     }
 
     public void sendMessage(Message msg) {
@@ -672,6 +718,13 @@ public class FogOSCore {
     public void destroySecureFlexIDSession(SecureFlexIDSession secureFlexIDSession) {
         secureFlexIDSession.getFlexIDSession().close();
         sessionList.remove(secureFlexIDSession);
+    }
+
+    public void registerContent(String name, String path) {
+        Content content = contentStore.get(name, path);
+        RegisterMessage contentRmsg = new RegisterMessage(deviceID, registerIDCounter++, content);
+        contentRmsg.send(broker); // This should be commented out after being generalized.
+
     }
 
     public void deregister(FlexID[] flexIDList) {

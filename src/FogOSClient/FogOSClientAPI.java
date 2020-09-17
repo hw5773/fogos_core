@@ -15,7 +15,7 @@ public interface FogOSClientAPI {
 
     // Starting/quitting the FogOS core
     void begin();
-    void exit();
+    void exit() throws InterruptedException;
 
     // Setting Content/Service
     void addContent(Content content);

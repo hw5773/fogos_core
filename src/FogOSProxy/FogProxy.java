@@ -4,24 +4,26 @@ import FlexID.*;
 import FogOSCore.FogOSCore;
 import FogOSResource.Resource;
 
+import java.net.SocketException;
+
 public class FogProxy {
     private FogOSCore core;
     private FlexID deviceID;
     private String name;
 
-    public FogProxy() {
+    public FogProxy() throws SocketException {
         initialization(null, null, null);
     }
 
-    public FogProxy(String name) {
+    public FogProxy(String name) throws SocketException {
         initialization(name, null, null);
     }
 
-    public FogProxy(String name, byte[] priv, byte[] pub) {
+    public FogProxy(String name, byte[] priv, byte[] pub) throws SocketException {
         initialization(name, priv, pub);
     }
 
-    private void initialization(String name, byte[] priv, byte[] pub) {
+    private void initialization(String name, byte[] priv, byte[] pub) throws SocketException {
         core = new FogOSCore();
         this.name = name;
         generateDeviceID(priv, pub);

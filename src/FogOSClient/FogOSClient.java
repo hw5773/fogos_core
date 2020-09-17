@@ -10,6 +10,7 @@ import FogOSContent.*;
 import FogOSService.Service;
 import FogOSStore.ContentStore;
 
+import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
@@ -68,7 +69,7 @@ public class FogOSClient implements FogOSClientAPI {
     public void testQueryMessage(QueryMessage queryMessage) {
         core.testMessage(queryMessage);
     }
-    public void proxyQueryMessage(QueryMessage queryMessage) {
+    public void proxyQueryMessage(QueryMessage queryMessage) throws IOException, NoSuchAlgorithmException {
         core.proxyMessage(queryMessage);
     }
 
@@ -97,7 +98,7 @@ public class FogOSClient implements FogOSClientAPI {
     public void testRequestMessage(RequestMessage requestMessage) {
         core.testMessage(requestMessage);
     }
-    public void proxyRequestMessage(RequestMessage requestMessage) { core.proxyMessage(requestMessage); }
+    public void proxyRequestMessage(RequestMessage requestMessage) throws IOException, NoSuchAlgorithmException { core.proxyMessage(requestMessage); }
 
     public void sendRequestMessage(RequestMessage requestMessage) {
         core.sendMessage(requestMessage);
@@ -120,6 +121,10 @@ public class FogOSClient implements FogOSClientAPI {
     // TODO: (hmlee or syseok) Please complete this function.
     public void addContent(Content content) {
         contentStore.add(content);
+    }
+
+    public void registerContent(String name, String path) {
+        core.registerContent(name, path);
     }
 
     /*

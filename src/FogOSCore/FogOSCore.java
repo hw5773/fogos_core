@@ -76,7 +76,7 @@ public class FogOSCore {
     private HashMap<String, HashMap<String, String>> registerIndexMap;
     private HashMap<String, String> registerTypeMap;
 
-    public FogOSCore() {
+    public FogOSCore() throws IOException, NoSuchAlgorithmException {
         this.contentStore = new ContentStore(DEFAULT_CONTENT_STORE_PATH);
         init();
     }
@@ -405,8 +405,10 @@ public class FogOSCore {
                 msg = new RegisterMessage(deviceID);
                 break;
             case UPDATE:
+                msg = new UpdateMessage();
                 break;
             case MAP_UPDATE:
+                msg = new MapUpdateMessage();
                 break;
             case QUERY:
                 msg = new QueryMessage(deviceID);
@@ -746,7 +748,7 @@ public class FogOSCore {
         return resourceList;
     }
     
-    public void ContentUpdate() {
+    public void ContentUpdate() throws IOException, NoSuchAlgorithmException {
     	contentStore.ContentUpdate();
     }
 

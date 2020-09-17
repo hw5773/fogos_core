@@ -211,7 +211,7 @@ public class FogOSClient implements FogOSClientAPI {
         }
     }
 
-    public void ContentUpdate() {
+    public void ContentUpdate() throws IOException, NoSuchAlgorithmException {
     	core.ContentUpdate();
     }
 }

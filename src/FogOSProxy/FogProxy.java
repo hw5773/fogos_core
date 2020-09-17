@@ -4,26 +4,28 @@ import FlexID.*;
 import FogOSCore.FogOSCore;
 import FogOSResource.Resource;
 
+import java.io.IOException;
 import java.net.SocketException;
+import java.security.NoSuchAlgorithmException;
 
 public class FogProxy {
     private FogOSCore core;
     private FlexID deviceID;
     private String name;
 
-    public FogProxy() throws SocketException {
+    public FogProxy() throws IOException, NoSuchAlgorithmException {
         initialization(null, null, null);
     }
 
-    public FogProxy(String name) throws SocketException {
+    public FogProxy(String name) throws IOException, NoSuchAlgorithmException {
         initialization(name, null, null);
     }
 
-    public FogProxy(String name, byte[] priv, byte[] pub) throws SocketException {
+    public FogProxy(String name, byte[] priv, byte[] pub) throws IOException, NoSuchAlgorithmException {
         initialization(name, priv, pub);
     }
 
-    private void initialization(String name, byte[] priv, byte[] pub) throws SocketException {
+    private void initialization(String name, byte[] priv, byte[] pub) throws IOException, NoSuchAlgorithmException {
         core = new FogOSCore();
         this.name = name;
         generateDeviceID(priv, pub);

@@ -16,6 +16,7 @@ import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Base64;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,7 +28,7 @@ public class ContentStore {
     private String path;
 
 
-    public ContentStore(String path){
+    public ContentStore(String path) throws NoSuchAlgorithmException, IOException {
         //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
 
         this.path = path;
@@ -64,9 +65,9 @@ public class ContentStore {
                     String myname = jsonObj.getString("name");
                     String mypath = jsonObj.getString("path");
                     Boolean myshared = jsonObj.getBoolean("shared");
-                    String myhash = jsonObj.getString("hash");                 
+                    String myhash = jsonObj.getString("hash");
 
-                    contents.add(new Content(myname,mypath,myshared,myhash));
+                    contents.add(new Content(myname,mypath,myshared, myhash));
 
                 }
 
@@ -90,7 +91,7 @@ public class ContentStore {
         	f.delete();
         }
         try {
-        f.createNewFile();
+            f.createNewFile();
         } catch (IOException e){
         	e.printStackTrace();
         }
@@ -124,7 +125,7 @@ public class ContentStore {
         }
 
     }
-    private void fileExplorer(String path){
+    private void fileExplorer(String path) throws NoSuchAlgorithmException, IOException {
 
         File f = new File(path);
         File[] files = f.listFiles();
@@ -174,7 +175,7 @@ public class ContentStore {
 		return false;
     	
     }
-    private void fileExplorerWithClear(String path) {
+    private void fileExplorerWithClear(String path) throws NoSuchAlgorithmException, IOException {
 //    	contents.clear();
 //    	fileslist.clear();
 //    	
@@ -182,7 +183,7 @@ public class ContentStore {
     	
     }
     
-    private String getHash(String path) throws NoSuchAlgorithmException {
+    private String getHash(String path) throws NoSuchAlgorithmException, IOException {
     	MessageDigest md;
     	String sha1 = "";
     	byte[] content;
@@ -192,13 +193,7 @@ public class ContentStore {
     	content = Files.readAllBytes(Paths.get("D:\\tmp\\pub.pem"));
     	digest = md.digest(content);
 
-    	try (InputStream is = Files.newInputStream(Paths.get(path))) {
-    	    sha1 = org.apache.commons.codec.digest.DigestUtils.sha1Hex(is);
-    	}
-    	catch(IOException e) {
-    		e.printStackTrace();
-    	}
-    	return sha1;
+    	return Base64.getEncoder().encodeToString(digest);
     }
     
     public Content[] getContentList(){
@@ -220,7 +215,7 @@ public class ContentStore {
         return returnlist;
     }
     
-    public void ContentUpdate() {
+    public void ContentUpdate() throws IOException, NoSuchAlgorithmException {
     	fileExplorerWithClear(this.path);
 
         writeintoFile();

@@ -39,6 +39,6 @@ public class Content implements FogOSContentAPI {
 
     public void setFlexID(FlexID[] flexID) { this.flexID = flexID; }
 
-    public void setHash(String hash) {this.hash = hash; }
+    public void setHash(String hash) { this.hash = hash; }
     public String getHash() { return hash; }
 }

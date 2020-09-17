@@ -138,7 +138,7 @@ public class FogOSCore {
         join();
 
         // Subscribe again with new deviceID
-        initSubscribe(deviceID);
+        subscribeWithConfirmedDeviceID(deviceID);
 
         // Do not have to register service/content in the init function; Register should be done manually by the client
         //register();
@@ -394,7 +394,27 @@ public class FogOSCore {
         subscribe(MessageType.UPDATE_ACK.getTopicWithDeviceID(deviceID));
         subscribe(MessageType.MAP_UPDATE_ACK.getTopicWithDeviceID(deviceID));
 
+        subscribe(MessageType.REPLY.getTopicWithDeviceID(deviceID));
+        subscribe(MessageType.RESPONSE.getTopicWithDeviceID(deviceID));
+
         Logger.getLogger(TAG).log(Level.INFO, "Finish: initSubscribe()");
+    }
+
+    // Initialize subscriptions with the selected broker
+    void subscribeWithConfirmedDeviceID(FlexID deviceID) {
+        Logger.getLogger(TAG).log(Level.INFO, "Start: subscribeWithConfirmedDeviceID()");
+
+        subscribe(MessageType.JOIN_ACK.getTopicWithDeviceID(deviceID));
+        subscribe(MessageType.LEAVE_ACK.getTopicWithDeviceID(deviceID));
+        subscribe(MessageType.STATUS_ACK.getTopicWithDeviceID(deviceID));
+        subscribe(MessageType.REGISTER_ACK.getTopicWithDeviceID(deviceID));
+        subscribe(MessageType.UPDATE_ACK.getTopicWithDeviceID(deviceID));
+        subscribe(MessageType.MAP_UPDATE_ACK.getTopicWithDeviceID(deviceID));
+
+        subscribe(MessageType.REPLY.getTopicWithDeviceID(deviceID));
+        subscribe(MessageType.RESPONSE.getTopicWithDeviceID(deviceID));
+
+        Logger.getLogger(TAG).log(Level.INFO, "Finish: subscribeWithConfirmedDeviceID()");
     }
 
     // Generate the Edge Utilization Messages for an application

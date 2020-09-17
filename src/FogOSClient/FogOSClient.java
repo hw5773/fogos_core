@@ -28,13 +28,13 @@ public class FogOSClient implements FogOSClientAPI {
     private String rootPath;
     private static final String TAG = "FogOSClient";
 
-    public FogOSClient() {
+    public FogOSClient() throws IOException, NoSuchAlgorithmException {
         this.rootPath = "";
         init();
         //core = new FogOSCore();
     }
 
-    public FogOSClient(String path) {
+    public FogOSClient(String path) throws IOException, NoSuchAlgorithmException {
         java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Start: Initialize FogOSClient");
         this.rootPath = path;
         init();
@@ -42,7 +42,7 @@ public class FogOSClient implements FogOSClientAPI {
         java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Finish: Initialize FogOSClient");
     }
 
-    private void init() {
+    private void init() throws IOException, NoSuchAlgorithmException {
         this.contentStore = new ContentStore(rootPath);
         this.serviceList = new ArrayList<Service>();
         this.resourceList = new ArrayList<Resource>();

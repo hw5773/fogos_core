@@ -1,5 +1,6 @@
 package FogOSService;
 
+import FlexID.AttrValuePairs;
 import FlexID.InterfaceType;
 import FlexID.Locator;
 import FlexID.ServiceID;
@@ -14,6 +15,7 @@ public class ServiceContext {
     private Locator proxyLoc;
     private Object userContext;
     private ServiceType serviceType;
+    private AttrValuePairs avps;
 
     public ServiceContext(String name, ServiceType serviceType, KeyPair keyPair,
                           Locator serviceLoc, boolean isProxy, Locator proxyLoc) {
@@ -78,5 +80,9 @@ public class ServiceContext {
 
     public void setUserContext(Object userContext) {
         this.userContext = userContext;
+    }
+
+    public AttrValuePairs getAvps() {
+        return avps;
     }
 }

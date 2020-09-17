@@ -40,6 +40,8 @@ public class ServiceContext {
         return serviceID;
     }
 
+    public void setServiceID(ServiceID serviceID) { this.serviceID = serviceID; }
+
     public ServiceType getServiceType() { return serviceType; }
 
     public boolean isProxy() {

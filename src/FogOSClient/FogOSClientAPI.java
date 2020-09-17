@@ -33,7 +33,8 @@ public interface FogOSClientAPI {
 
     // QueryMessage-related
     QueryMessage makeQueryMessage();
-    QueryMessage makeQueryMessage(String keywords);
+    //QueryMessage makeQueryMessage(String keywords);
+    QueryMessage makeQueryMessage(String queryType, String queryCategory, String order, boolean desc, int limit);
     void sendQueryMessage(QueryMessage queryMessage);
 
     // ReplyMessage-related

@@ -34,6 +34,7 @@ public abstract class Service {
     private ByteBuffer outputBufferToServer;
 
     // Socket with Server
+    // TODO: (hmlee) Please declare the variable for the socket with the server
     // private AsynchronousSocketChannel serverSession
 
     public Service(ServiceContext context) {
@@ -50,10 +51,15 @@ public abstract class Service {
     }
 
     public boolean hasInputFromPeer() {
+        byte[] buf = new byte[16384];
+        int len = secureFlexIDSession.recv(buf, buf.length);
+        if (len > 0)
+            inputBufferFromPeer.put(buf);
         return inputBufferFromPeer.hasRemaining();
     }
 
     public boolean hasInputFromServer() {
+        // TODO: (hmlee) Please add the process of reading the socket bound with the server.
         return inputBufferFromServer.hasRemaining();
     }
 
@@ -72,6 +78,7 @@ public abstract class Service {
         secureFlexIDSession = new SecureFlexIDSession(Role.RESPONDER, context.getServiceID());
 
         if (context.isProxy()) {
+            // TODO: (hmlee) Please initialize the socket bound with the server
             System.out.println("[FogOSService] Proxy: processInputFromProxy()");
             InetSocketAddress serverAddr;
 

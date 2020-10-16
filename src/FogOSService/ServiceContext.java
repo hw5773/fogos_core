@@ -4,37 +4,39 @@ import FlexID.AttrValuePairs;
 import FlexID.InterfaceType;
 import FlexID.Locator;
 import FlexID.ServiceID;
+import FogOSSecurity.SecureFlexIDSession;
 
 import java.net.InetAddress;
+import java.nio.ByteBuffer;
 import java.security.KeyPair;
 
 public class ServiceContext {
     private String name;
     private ServiceID serviceID;
     private boolean isProxy;
-    private Locator proxyLoc;
+    private Locator serverLoc;
     private Object userContext;
     private ServiceType serviceType;
     private AttrValuePairs avps;
 
     public ServiceContext(String name, ServiceType serviceType, KeyPair keyPair,
                           Locator serviceLoc, boolean isProxy, Locator proxyLoc) {
-        this.name = name;
-        this.serviceType = serviceType;
+        init(name, serviceType, serviceLoc, isProxy, proxyLoc);
         this.serviceID = new ServiceID(keyPair.getPrivate().getEncoded(),
                 keyPair.getPublic().getEncoded(), serviceLoc);
-        this.isProxy = isProxy;
-        this.proxyLoc = proxyLoc;
-        this.userContext = null;
     }
 
     public ServiceContext(String name, ServiceType serviceType, byte[] priv, byte[] pub,
                           Locator serviceLoc, boolean isProxy, Locator proxyLoc) {
+        init(name, serviceType, serviceLoc, isProxy, proxyLoc);
+        this.serviceID = new ServiceID(priv, pub, serviceLoc);
+    }
+
+    private void init(String name, ServiceType serviceType, Locator serviceLoc, boolean isProxy, Locator serverLoc) {
         this.name = name;
         this.serviceType = serviceType;
-        this.serviceID = new ServiceID(priv, pub, serviceLoc);
         this.isProxy = isProxy;
-        this.proxyLoc = proxyLoc;
+        this.serverLoc = serverLoc;
         this.userContext = null;
     }
 
@@ -66,12 +68,12 @@ public class ServiceContext {
         serviceID.setLocator(serviceLoc);
     }
 
-    public Locator getProxyLoc() {
-        return proxyLoc;
+    public Locator getServerLoc() {
+        return serverLoc;
     }
 
-    public void setProxyLoc(Locator proxyLoc) {
-        this.proxyLoc = proxyLoc;
+    public void setServerLoc(Locator serverLoc) {
+        this.serverLoc = serverLoc;
     }
 
     public Object getUserContext() {

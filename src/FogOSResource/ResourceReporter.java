@@ -44,11 +44,7 @@ public class ResourceReporter implements Runnable {
         }
     }
 
-    // TODO: Please implement the following function that monitors and reports information about resources in the device
     private void monitorResource() {
-        // TODO: Monitor resources (Please declare variables and assign values)
-        // ex) double memUsage = ...;
-
         // Prepare Resource related variables
         ArrayList<Resource> resources = core.getResourceList();
         if (resources != null && resources.size() > 0) {
@@ -70,30 +66,4 @@ public class ResourceReporter implements Runnable {
             msg.send(core.getBroker());
         }
     }
-
-    // The StatusACK message may not be needed but I prepared the following thread to process the received STATUS_ACK
-    // Please remove the following stuff if it is not needed.
-    /*
-    class StatusACKThread extends Thread {
-        @Override
-        public void run() {
-            Message msg;
-            Value statusID;
-            while (true) {
-                // Get the received message from the queue
-                msg = core.getReceivedMessage(MessageType.STATUS_ACK.getTopic());
-
-                // Process the received message if any
-                if (msg != null) {
-                    java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Start: Received STATUS_ACK");
-                    statusID = msg.getValueByAttr("statusID");
-                    if (statusIDList.contains(statusID)) {
-
-                    }
-                    java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Finish: Received STATUS_ACK");
-                }
-            }
-        }
-    }
-     */
 }

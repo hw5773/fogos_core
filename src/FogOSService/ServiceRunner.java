@@ -67,7 +67,7 @@ public class ServiceRunner implements Runnable {
     }
 
     private void processService() {
-        //
+
         if (services != null && services.size() > 0) {
             Iterator<Service> iterator = services.iterator();
             Service service;
@@ -79,12 +79,12 @@ public class ServiceRunner implements Runnable {
                 }
 
                 if (service.getContext().isProxy()) {
-                    if (service.hasOutputToProxy()) {
-                        service.processOutputToProxy();
+                    if (service.hasOutputToServer()) {
+                        service.processOutputToServer();
                     }
 
-                    if (service.hasInputFromProxy()) {
-                        service.processInputFromProxy();
+                    if (service.hasInputFromServer()) {
+                        service.processInputFromServer();
                     }
                 }
 

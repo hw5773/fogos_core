@@ -117,7 +117,10 @@ public abstract class Service {
 
     public void setContext(ServiceContext context) { this.context = context; }
 
-    public SecureFlexIDSession getSecureFlexIDSession() {
+    // TODO: (hmlee) Please complete the getter function below
+    // public getServerSession() { return ;}
+    
+    public SecureFlexIDSession getPeerSession() {
         return secureFlexIDSession;
     }
 

@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
-  <artifact type="jar" name="fogos_core:jar">
-    <output-path>$PROJECT_DIR$/../fogos_streaming_app/app/libs</output-path>
+  <artifact type="jar" name="FogOSCore">
+    <output-path>$PROJECT_DIR$/lib</output-path>
     <root id="archive" name="FogOSCore.jar">
       <element id="module-output" name="fogos_core" />
       <element id="extracted-dir" path="$PROJECT_DIR$/lib/FogOSCore.jar" path-in-jar="/" />

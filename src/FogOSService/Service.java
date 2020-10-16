@@ -129,4 +129,12 @@ public abstract class Service {
     public ByteBuffer getOutputToServer(byte[] buf) {
         return outputBufferToServer.get(buf);
     }
+
+    public void putOutputToPeer(ByteBuffer buf) {
+        outputBufferToPeer.put(buf);
+    }
+
+    public void putOutputToServer(ByteBuffer buf) {
+        outputBufferToServer.put(buf);
+    }
 }

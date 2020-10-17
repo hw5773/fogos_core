@@ -2,12 +2,14 @@ package FogOSService;
 
 import FogOSCore.FogOSCore;
 
+import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 
 public class ServiceRunner implements Runnable {
@@ -32,13 +34,13 @@ public class ServiceRunner implements Runnable {
             initService();
         } catch (InvalidKeySpecException e) {
             e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         } catch (InvalidKeyException e) {
             e.printStackTrace();
         } catch (SignatureException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -47,13 +49,13 @@ public class ServiceRunner implements Runnable {
             try {
                 Thread.sleep(PERIOD);
                 processService();
-            } catch (InterruptedException e) {
+            } catch (InterruptedException | IOException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    private void initService() throws InvalidKeySpecException, InterruptedException, NoSuchAlgorithmException, InvalidKeyException, SignatureException {
+    private void initService() throws InvalidKeySpecException, NoSuchAlgorithmException, InvalidKeyException, SignatureException, IOException {
         if (services != null && services.size() > 0) {
             Iterator<Service> iterator = services.iterator();
             Service service;
@@ -66,7 +68,7 @@ public class ServiceRunner implements Runnable {
         }
     }
 
-    private void processService() {
+    private void processService() throws IOException {
 
         if (services != null && services.size() > 0) {
             Iterator<Service> iterator = services.iterator();

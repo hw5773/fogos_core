@@ -7,15 +7,18 @@ import FogOSSecurity.SecureFlexIDSession;
 import FogOSSocket.FlexIDSession;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 public abstract class Service {
@@ -35,7 +38,8 @@ public abstract class Service {
 
     // Socket with Server
     // TODO: (hmlee) Please declare the variable for the socket with the server
-    // private AsynchronousSocketChannel serverSession
+    private Socket serverSocket;
+    private InputStream serverSession;
 
     public Service(ServiceContext context) {
         this.context = context;
@@ -58,9 +62,22 @@ public abstract class Service {
         return inputBufferFromPeer.hasRemaining();
     }
 
-    public boolean hasInputFromServer() {
+    public boolean hasInputFromServer() throws IOException {
         // TODO: (hmlee) Please add the process of reading the socket bound with the server.
-        return inputBufferFromServer.hasRemaining();
+
+        // initialize the buffer
+        byte[] data = new byte[1024*1024];
+        int count = serverSession.available();
+
+        if (count == 0)
+            return false;
+
+        serverSession.read(data);
+
+        inputBufferFromServer.clear();
+        inputBufferFromServer.put(data);
+
+        return true;
     }
 
     public boolean hasOutputToPeer() {
@@ -72,7 +89,7 @@ public abstract class Service {
     }
 
     // Initialize the service (e.g., open a socket)
-    public void initService() throws NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, SignatureException, InterruptedException {
+    public void initService() throws NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, SignatureException, IOException {
         System.out.println("[FogOSService] Start: initService()");
         boolean connected;
         secureFlexIDSession = new SecureFlexIDSession(Role.RESPONDER, context.getServiceID());
@@ -85,6 +102,9 @@ public abstract class Service {
             serverAddr = new InetSocketAddress(context.getServerLoc().getAddr(),
                         context.getServerLoc().getPort());
 
+            serverSocket = new Socket();
+            serverSocket.connect(serverAddr);
+            serverSession = serverSocket.getInputStream();
         }
         System.out.println("[FogOSService] Finish: processInputFromProxy()");
     }
@@ -118,7 +138,9 @@ public abstract class Service {
     public void setContext(ServiceContext context) { this.context = context; }
 
     // TODO: (hmlee) Please complete the getter function below
-    // public getServerSession() { return ;}
+    public InputStream getServerSession() {
+        return serverSession;
+    }
     
     public SecureFlexIDSession getPeerSession() {
         return secureFlexIDSession;

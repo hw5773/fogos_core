@@ -6,10 +6,7 @@ import FogOSSecurity.Role;
 import FogOSSecurity.SecureFlexIDSession;
 import FogOSSocket.FlexIDSession;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.ByteBuffer;
@@ -38,8 +35,8 @@ public abstract class Service {
 
     // Socket with Server
     // TODO: (hmlee) Please declare the variable for the socket with the server
-    private Socket serverSocket;
-    private InputStream serverSession;
+
+    private ServerSession serverSession;
 
     public Service(ServiceContext context) {
         this.context = context;
@@ -65,19 +62,7 @@ public abstract class Service {
     public boolean hasInputFromServer() throws IOException {
         // TODO: (hmlee) Please add the process of reading the socket bound with the server.
 
-        // initialize the buffer
-        byte[] data = new byte[1024*1024];
-        int count = serverSession.available();
-
-        if (count == 0)
-            return false;
-
-        serverSession.read(data);
-
-        inputBufferFromServer.clear();
-        inputBufferFromServer.put(data);
-
-        return true;
+        return serverSession.hasRemaining();
     }
 
     public boolean hasOutputToPeer() {
@@ -97,14 +82,14 @@ public abstract class Service {
         if (context.isProxy()) {
             // TODO: (hmlee) Please initialize the socket bound with the server
             System.out.println("[FogOSService] Proxy: processInputFromProxy()");
-            InetSocketAddress serverAddr;
+            //InetSocketAddress serverAddr;
 
-            serverAddr = new InetSocketAddress(context.getServerLoc().getAddr(),
-                        context.getServerLoc().getPort());
+            //serverAddr = new InetSocketAddress(context.getServerLoc().getAddr(),
+            //            context.getServerLoc().getPort());
 
-            serverSocket = new Socket();
-            serverSocket.connect(serverAddr);
-            serverSession = serverSocket.getInputStream();
+            serverSession = new ServerSession(context.getServerLoc().getAddr(),
+                    context.getServerLoc().getPort());
+
         }
         System.out.println("[FogOSService] Finish: processInputFromProxy()");
     }
@@ -138,7 +123,7 @@ public abstract class Service {
     public void setContext(ServiceContext context) { this.context = context; }
 
     // TODO: (hmlee) Please complete the getter function below
-    public InputStream getServerSession() {
+    public ServerSession getServerSession() {
         return serverSession;
     }
     
@@ -168,5 +153,40 @@ public abstract class Service {
 
     public void putOutputToServer(ByteBuffer buf) {
         outputBufferToServer.put(buf);
+    }
+
+
+    public class ServerSession {
+        private Socket serverSocket;
+        private InputStream inputStream;
+        private OutputStream outputStream;
+
+        public ServerSession(String host, int port) throws IOException {
+            InetSocketAddress serverAddr;
+
+            serverAddr = new InetSocketAddress(host, port);
+
+            serverSocket = new Socket();
+            serverSocket.connect(serverAddr);
+            inputStream = serverSocket.getInputStream();
+            outputStream = serverSocket.getOutputStream();
+        }
+
+        public void send(byte[] buffer, int len) throws IOException {
+            outputStream.write(buffer, 0, len);
+        }
+
+        public void read(byte[] buffer) throws IOException {
+            inputStream.read(buffer);
+
+        }
+
+        public boolean hasRemaining() throws IOException {
+            int count = inputStream.available();
+
+            if (count == 0)
+                return false;
+            return true;
+        }
     }
 }

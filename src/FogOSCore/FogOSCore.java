@@ -120,6 +120,10 @@ public class FogOSCore {
 
         // Initialize the received message queue
         receivedMessages = new HashMap<String, Queue<Message>>();
+        Queue<Message> replyQueue = new LinkedList<>();
+        receivedMessages.put(MessageType.REPLY.getTopic(), replyQueue);
+        Queue<Message> requestQueue = new LinkedList<>();
+        receivedMessages.put(MessageType.REQUEST.getTopic(), requestQueue);
 
         // initialize register index map queue & type queue
         registerIndexMap = new HashMap<String, HashMap<String, String>>();
@@ -467,52 +471,6 @@ public class FogOSCore {
                 @Override
                 public void messageArrived(String s, MqttMessage mqttMessage) throws Exception {
                     Logger.getLogger(TAG).log(Level.INFO, "Mqtt: messageArrived1");
-
-                    /*
-                    if (s.startsWith(MessageType.JOIN_ACK.getTopic())) {
-                        System.out.println("JOIN_ACK received");
-                        System.out.println("Actual message: " + new String(mqttMessage.getPayload()));
-                        JoinAckMessage msg = new JoinAckMessage(deviceID, mqttMessage.getPayload());
-                        msg.process();
-                    } else if (s.startsWith(MessageType.LEAVE_ACK.getTopic())) {
-                        System.out.println("LEAVE_ACK received");
-                        System.out.println("Actual message: " + new String(mqttMessage.getPayload()));
-                        LeaveAckMessage msg = new LeaveAckMessage(deviceID, mqttMessage.getPayload());
-                        msg.process();
-                    } else if (s.startsWith(MessageType.MAP_UPDATE_ACK.getTopic())) {
-                        System.out.println("MAP_UPDATE_ACK received");
-                        System.out.println("Actual message: " + new String(mqttMessage.getPayload()));
-                        MapUpdateAckMessage msg = new MapUpdateAckMessage(deviceID, mqttMessage.getPayload());
-                        msg.process();
-                    } else if (s.startsWith(MessageType.REGISTER_ACK.getTopic())) {
-                        System.out.println("REGISTER_ACK received");
-                        System.out.println("Actual message: " + new String(mqttMessage.getPayload()));
-                        RegisterAckMessage msg = new RegisterAckMessage(deviceID, mqttMessage.getPayload());
-                        msg.process();
-                    } else if (s.startsWith(MessageType.STATUS_ACK.getTopic())) {
-                        System.out.println("STATUS_ACK received");
-                        System.out.println("Actual message: " + new String(mqttMessage.getPayload()));
-                        StatusAckMessage msg = new StatusAckMessage(deviceID, mqttMessage.getPayload());
-                        msg.process();
-                    } else if (s.startsWith(MessageType.REPLY.getTopic())) {
-                        System.out.println("REPLY received");
-                        System.out.println("Actual message: " + new String(mqttMessage.getPayload()));
-                        ReplyMessage msg = new ReplyMessage(deviceID, mqttMessage.getPayload());
-                        receivedMessages.get(MessageType.REPLY).add(msg);
-                    } else if (s.startsWith(MessageType.RESPONSE.getTopic())) {
-                        System.out.println("RESPONSE received");
-                        System.out.println("Actual message: " + new String(mqttMessage.getPayload()));
-                        ResponseMessage msg = new ResponseMessage(deviceID, mqttMessage.getPayload());
-                        receivedMessages.get(MessageType.RESPONSE).add(msg);
-                    } else if (s.startsWith(MessageType.UPDATE_ACK.getTopic())) {
-                        System.out.println("UPDATE_ACK received");
-                        System.out.println("Actual message: " + new String(mqttMessage.getPayload()));
-                        UpdateAckMessage msg = new UpdateAckMessage(deviceID, mqttMessage.getPayload());
-                        msg.process();
-                    } else {
-                        // No recognized message.
-                    }
-                    */
                 }
 
                 @Override
@@ -629,9 +587,9 @@ public class FogOSCore {
                                     service.setContext(serviceCtxt);
                                     serviceList.remove(index);
                                     serviceList.add(service);
+
+                                    System.out.println(serviceCtxt.getServerLoc().getAddr());
                                 }
-
-
 
                             } else {
                                 System.out.println("RegisterTypeMap Error");
@@ -649,12 +607,13 @@ public class FogOSCore {
                         System.out.println("REPLY received");
                         System.out.println("Actual message: " + new String(mqttMessage.getPayload()));
                         ReplyMessage msg = new ReplyMessage(deviceID, mqttMessage.getPayload());
-                        receivedMessages.get(MessageType.REPLY).add(msg);
+                        msg.process();
+                        receivedMessages.get(MessageType.REPLY.getTopic()).add(msg);
                     } else if (s.startsWith(MessageType.RESPONSE.getTopic())) {
                         System.out.println("RESPONSE received");
                         System.out.println("Actual message: " + new String(mqttMessage.getPayload()));
                         ResponseMessage msg = new ResponseMessage(deviceID, mqttMessage.getPayload());
-                        receivedMessages.get(MessageType.RESPONSE).add(msg);
+                        receivedMessages.get(MessageType.RESPONSE.getTopic()).add(msg);
                     } else if (s.startsWith(MessageType.UPDATE_ACK.getTopic())) {
                         System.out.println("UPDATE_ACK received");
                         System.out.println("Actual message: " + new String(mqttMessage.getPayload()));
@@ -671,10 +630,12 @@ public class FogOSCore {
     }
 
     public Message getReceivedMessage(String topic) {
-        if (receivedMessages.isEmpty())
+        if (receivedMessages.get(topic).isEmpty()) {
             return null;
-        else
+        }
+        else {
             return receivedMessages.get(topic).poll();
+        }
     }
 
     public void sendMessage(Message msg) {
@@ -789,8 +750,22 @@ public class FogOSCore {
         registerTypeMap.put(contentRmsg.getRegisterID(), contentRmsg.getType());
     }
 
+    public void registerContent(Content content, HashMap<String, String> attributes) {
+        RegisterMessage contentRmsg = new RegisterMessage(deviceID, registerIDCounter++, content, attributes);
+        contentRmsg.send(broker); // This should be commented out after being generalized.
+        registerIndexMap.put(contentRmsg.getRegisterID(), contentRmsg.getIndexMap());
+        registerTypeMap.put(contentRmsg.getRegisterID(), contentRmsg.getType());
+    }
+
     public void registerService(Service service) {
         RegisterMessage serviceRmsg = new RegisterMessage(deviceID, registerIDCounter++, service);
+        serviceRmsg.send(broker);
+        registerIndexMap.put(serviceRmsg.getRegisterID(), serviceRmsg.getIndexMap());
+        registerTypeMap.put(serviceRmsg.getRegisterID(), serviceRmsg.getType());
+    }
+
+    public void registerService(Service service, HashMap<String, String> attributes) {
+        RegisterMessage serviceRmsg = new RegisterMessage(deviceID, registerIDCounter++, service, attributes);
         serviceRmsg.send(broker);
         registerIndexMap.put(serviceRmsg.getRegisterID(), serviceRmsg.getIndexMap());
         registerTypeMap.put(serviceRmsg.getRegisterID(), serviceRmsg.getType());

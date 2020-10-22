@@ -17,6 +17,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.logging.Level;
 
 
@@ -135,6 +136,16 @@ public class FogOSClient implements FogOSClientAPI {
         core.registerContent(content);
     }
 
+    public void registerContent(Content content, HashMap<String, String> attributes) {
+        core.registerContent(content, attributes);
+    }
+
+    public void registerContent(String name, String path, HashMap<String, String> attributes) {
+        Content content = contentStore.get(name, path);
+        core.registerContent(content, attributes);
+    }
+
+
     /*
     public void removeContent(FlexID flexID) {
         FlexID[] flexIDList = {flexID};
@@ -171,6 +182,27 @@ public class FogOSClient implements FogOSClientAPI {
 
     public void registerService(Service service) {
         core.registerService(service);
+    }
+
+    public void registerService(String name, HashMap<String, String> attributes) {
+        int idx = -1;
+        for (int i = 0; i < serviceList.size(); i++) {
+            Service service = serviceList.get(i);
+            ServiceContext serviceCtxt = service.getContext();
+            String serviceName = serviceCtxt.getName();
+            if (serviceName.equals(name)) {
+                idx = i;
+                break;
+            }
+        }
+        if (idx == -1) {
+            System.out.println("No Service: " + name);
+        }
+        core.registerService(serviceList.get(idx), attributes);
+    }
+
+    public void registerService(Service service, HashMap<String, String> attributes) {
+        core.registerService(service, attributes);
     }
 
     public void removeService(FlexID flexID) {

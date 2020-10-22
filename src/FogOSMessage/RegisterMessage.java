@@ -10,6 +10,7 @@ import FogOSStore.ContentStore;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.MqttPersistenceException;
+import org.eclipse.paho.client.mqttv3.util.Strings;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,6 +19,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -56,6 +58,42 @@ public class RegisterMessage extends Message {
             obj.put("registerType", type);
             obj.put("category", "none"); // TODO: Do we use category of the content?
             obj.put("attributes", "none"); // TODO: How can we get attributes of the content?
+            obj.put("cache", false);
+            obj.put("segment", false);
+            obj.put("collisionAvoid", true); // TODO
+            registerList.put(obj);
+
+            this.addAttrValuePair("registerList", registerList.toString(), null);
+            this.addAttrValuePair("registerID", registerID, null);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public RegisterMessage(FlexID deviceID, int registerIDCounter, Content content, HashMap<String, String> attributes) {
+        super(MessageType.REGISTER, deviceID);
+        init();
+        type = "Content";
+        registerID = Integer.toString(registerIDCounter);
+
+        try {
+            JSONArray registerList = new JSONArray();
+            String hash = content.getHash();
+            indexMap.put("0", content.getName());
+
+            JSONObject attrObj = new JSONObject();
+            Set<String> keys = attributes.keySet();
+            for (String key : keys) {
+                attrObj.put(key, attributes.get(key));
+            }
+
+            JSONObject obj = new JSONObject();
+            obj.put("index", "0"); // TODO: We have to store mapping between the content and the index (for Register Ack processing)
+            obj.put("hash", hash); // TODO: Need a hash of content itself; client input
+            obj.put("registerType", type);
+            obj.put("category", "none"); // TODO: Do we use category of the content?
+            obj.put("attributes", attrObj);
             obj.put("cache", false);
             obj.put("segment", false);
             obj.put("collisionAvoid", true); // TODO
@@ -125,6 +163,48 @@ public class RegisterMessage extends Message {
             obj.put("registerType", type);
             obj.put("category", serviceCtxt.getServiceType());
             obj.put("attributes", "none"); // TODO: Need user input
+            obj.put("cache", false);
+            obj.put("segment", false);
+            obj.put("collisionAvoid", true); // TODO
+            registerList.put(obj);
+
+            this.addAttrValuePair("registerList", registerList.toString(), null);
+            this.addAttrValuePair("registerID", registerID, null);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public RegisterMessage(FlexID deviceID, int registerIDCounter, Service service, HashMap<String, String> attributes) {
+        super(MessageType.REGISTER, deviceID);
+        init();
+
+        type = "Service";
+        registerID = Integer.toString(registerIDCounter);
+
+        try {
+            JSONArray registerList = new JSONArray();
+
+            ServiceContext serviceCtxt = service.getContext();
+            ServiceID serviceID = serviceCtxt.getServiceID();
+
+            String hash = serviceID.getStringIdentity();
+            indexMap.put("0", serviceCtxt.getName());
+
+            JSONObject attrObj = new JSONObject();
+            Set<String> keys = attributes.keySet();
+            for (String key : keys) {
+                attrObj.put(key, attributes.get(key));
+            }
+
+            JSONObject obj = new JSONObject();
+            obj.put("index", "0");
+            obj.put("hash", hash);
+            obj.put("registerType", type);
+            obj.put("category", serviceCtxt.getServiceType());
+            obj.put("attributes", attrObj); // TODO: Need user input
             obj.put("cache", false);
             obj.put("segment", false);
             obj.put("collisionAvoid", true); // TODO

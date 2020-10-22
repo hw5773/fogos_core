@@ -86,7 +86,7 @@ public class HandshakeProtocolManager<signed_longPubkey> extends ProtocolManager
 
         end = Instant.now();
         timeElapsed = Duration.between(start, end).toMillis();
-        System.out.println("----- TIME Short-term Key Generation (ECDH)::: " + timeElapsed);
+        //System.out.println("----- TIME Short-term Key Generation (ECDH)::: " + timeElapsed);
 
         // client
         if (isServer == 0) {
@@ -104,7 +104,7 @@ public class HandshakeProtocolManager<signed_longPubkey> extends ProtocolManager
 
             end = Instant.now();
             timeElapsed = Duration.between(start, end).toMillis();
-            System.out.println("----- TIME INITIATOR Generate First MSG::: " + timeElapsed);
+            //System.out.println("----- TIME INITIATOR Generate First MSG::: " + timeElapsed);
 
             start = Instant.now();
             // ------------------------------------------------------------------------------------------------------------------------
@@ -117,7 +117,7 @@ public class HandshakeProtocolManager<signed_longPubkey> extends ProtocolManager
             String receivedMsg = new String(buf);
             end = Instant.now();
             timeElapsed = Duration.between(start, end).toMillis();
-            System.out.println("----- TIME INITIATOR Send/Receive::: " + timeElapsed);
+            //System.out.println("----- TIME INITIATOR Send/Receive::: " + timeElapsed);
             // ------------------------------------------------------------------------------------------------------------------------
 
             start = Instant.now();
@@ -148,7 +148,7 @@ public class HandshakeProtocolManager<signed_longPubkey> extends ProtocolManager
 
             end = Instant.now();
             timeElapsed = Duration.between(start, end).toMillis();
-            System.out.println("----- TIME INITIATOR Verify Responder's MSG::: " + timeElapsed);
+            //System.out.println("----- TIME INITIATOR Verify Responder's MSG::: " + timeElapsed);
 
             start = Instant.now();
 
@@ -163,7 +163,7 @@ public class HandshakeProtocolManager<signed_longPubkey> extends ProtocolManager
             timeElapsed = Duration.between(start, end).toMillis();
 
             msg = str_signed_secret + "--Pad--";
-            System.out.println("----- TIME INITIATOR Generate Last MSG & MASTER KEY::: " + timeElapsed);
+            //System.out.println("----- TIME INITIATOR Generate Last MSG & MASTER KEY::: " + timeElapsed);
 
             flexIDSession.send(msg.getBytes());
             rcvd = -1;
@@ -229,7 +229,7 @@ public class HandshakeProtocolManager<signed_longPubkey> extends ProtocolManager
 
             end = Instant.now();
             timeElapsed = Duration.between(start, end).toMillis();
-            System.out.println("----- TIME RESPONDER 1::: " + timeElapsed);
+            //System.out.println("----- TIME RESPONDER 1::: " + timeElapsed);
 
             start = Instant.now();
             // ------------------------------------------------------------------------------------------------------------------------
@@ -244,7 +244,7 @@ public class HandshakeProtocolManager<signed_longPubkey> extends ProtocolManager
 
             end = Instant.now();
             timeElapsed = Duration.between(start, end).toMillis();
-            System.out.println("----- TIME Send/Receive::: " + timeElapsed);
+            //System.out.println("----- TIME Send/Receive::: " + timeElapsed);
             // ------------------------------------------------------------------------------------------------------------------------
 
             start = Instant.now();
@@ -264,7 +264,7 @@ public class HandshakeProtocolManager<signed_longPubkey> extends ProtocolManager
 
             end = Instant.now();
             timeElapsed = Duration.between(start, end).toMillis();
-            System.out.println("----- TIME RESPONDER 2::: " + timeElapsed);
+            //System.out.println("----- TIME RESPONDER 2::: " + timeElapsed);
 
             msg = "1";
             flexIDSession.send(msg.getBytes());

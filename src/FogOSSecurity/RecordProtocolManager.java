@@ -93,6 +93,7 @@ public class RecordProtocolManager extends ProtocolManager {
 
              */
         }
+
         return rcvd;
     }
 
@@ -104,6 +105,7 @@ public class RecordProtocolManager extends ProtocolManager {
      * @return the encrypted message
      */
     byte[] encrypt(SecretKeySpec key, byte[] msg, int len) {
+
         byte[] ret = null;
         byte[] buf = new byte[len];
         System.arraycopy(msg, 0, buf, 0, len);
@@ -145,7 +147,7 @@ public class RecordProtocolManager extends ProtocolManager {
         } else {
             System.out.println("encrypted value is not null");
             System.out.println("Encrypted Message (" + ret.length + " bytes)");
-            System.out.println(byteArrayToHex(ret, -1));
+            //System.out.println(byteArrayToHex(ret, -1));
         }
         return ret;
     }
@@ -199,7 +201,7 @@ public class RecordProtocolManager extends ProtocolManager {
             System.out.println("decrypted value is null");
         } else {
             System.out.println("decrypted value is not null");
-            System.out.println("Decrypted Message (" + ret.length + " bytes)");
+            //System.out.println("Decrypted Message (" + ret.length + " bytes)");
             System.out.println(byteArrayToHex(ret, -1));
         }
         return ret;

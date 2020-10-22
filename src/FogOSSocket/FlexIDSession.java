@@ -131,6 +131,7 @@ public class FlexIDSession {
     public static FlexIDSession accept(FlexID flexID) {
         java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Start: FlexIDSession accept");
         FlexIDServerSocket server;
+
         if (flexID != null) {
             server = new FlexIDServerSocket(flexID.getLocator().getPort());
         } else {
@@ -236,14 +237,14 @@ public class FlexIDSession {
                             byte[] ACKmessage = setHeader(null);
 //								System.out.println("Wait for sending ACK (2s)");
 //								Thread.sleep(2000);
-                            System.out.println("Send ACK message #: " + sentACK + " to " + DFID.getLocator().getAddr());
+                            //System.out.println("Send ACK message #: " + sentACK + " to " + DFID.getLocator().getAddr());
 
 //								Conversion.byteToAscii(ACKmessage);
                             socket.write(ACKmessage);
 //								System.out.println("ACK write done.");
                         }
                         else { // received ACK message.
-                            System.out.println("Received ACK message");
+                            //System.out.println("Received ACK message");
                             if(msgAck >= (sentSEQ+1)) {
                                 recvACK = msgAck;
                             }
@@ -269,7 +270,7 @@ public class FlexIDSession {
                     message = socket.read();
 
                 if(message != null) {
-                    System.out.println("Received) " + message.length + "  sentSEQ) " + sentSEQ + "  sentACK) " + sentACK + "  recvSEQ) " + recvSEQ + "  recvACK) " + recvACK);
+                    //System.out.println("Received) " + message.length + "  sentSEQ) " + sentSEQ + "  sentACK) " + sentACK + "  recvSEQ) " + recvSEQ + "  recvACK) " + recvACK);
                     return message;
                 }
             } catch (Exception e) {
@@ -307,7 +308,7 @@ public class FlexIDSession {
                         //lock = 1;
                         byte[] data = new byte[32768];
                         int dataLen = wbuf.read(data);
-                        System.out.println("Messages to be sent: " + dataLen);
+                        //System.out.println("Messages to be sent: " + dataLen);
                         data = Arrays.copyOfRange(data, 0, dataLen);
 
                         byte[] header = setHeader(data);

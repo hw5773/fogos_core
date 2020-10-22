@@ -40,7 +40,7 @@ public class ServiceRunner implements Runnable {
             e.printStackTrace();
         } catch (SignatureException e) {
             e.printStackTrace();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -55,7 +55,7 @@ public class ServiceRunner implements Runnable {
         }
     }
 
-    private void initService() throws InvalidKeySpecException, NoSuchAlgorithmException, InvalidKeyException, SignatureException, IOException {
+    private void initService() throws Exception {
         if (services != null && services.size() > 0) {
             Iterator<Service> iterator = services.iterator();
             Service service;
@@ -81,6 +81,8 @@ public class ServiceRunner implements Runnable {
                 }
 
                 if (service.getContext().isProxy()) {
+
+                    System.out.println();
                     if (service.hasOutputToServer()) {
                         service.processOutputToServer();
                     }

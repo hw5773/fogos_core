@@ -596,7 +596,7 @@ public class FogOSCore {
                             }
 
                         } else {
-                            System.out.println("JoinACK Error");
+                            System.out.println("RegisterACK Error");
                         }
                     } else if (s.startsWith(MessageType.STATUS_ACK.getTopic())) {
                         System.out.println("STATUS_ACK received");
@@ -705,7 +705,7 @@ public class FogOSCore {
             java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Make a test response message started.");
             java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Peer ID: " + new String(requestMessage.getPeerID().getIdentity()));
             ResponseMessage responseMessage;
-            Locator locator = new Locator(InterfaceType.WIFI, "127.0.0.1", 5550);
+            Locator locator = new Locator(InterfaceType.WIFI, "127.0.0.1", 5551);
             responseMessage = (ResponseMessage) generateMessage(MessageType.RESPONSE);
             responseMessage.setPeerID(new FlexID(msg.getValueByAttr("id").getValue()));
             responseMessage.getPeerID().setLocator(locator);

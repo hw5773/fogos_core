@@ -54,30 +54,48 @@ public abstract class Service {
     public boolean hasInputFromPeer() {
         byte[] buf = new byte[16384];
         int len = secureFlexIDSession.recv(buf, buf.length);
-        if (len > 0)
+
+        if (len > 0) {
+            inputBufferFromPeer.clear();
             inputBufferFromPeer.put(buf);
+            inputBufferFromPeer.flip();
+        }
+
         return inputBufferFromPeer.hasRemaining();
     }
 
     public boolean hasInputFromServer() throws IOException {
         // TODO: (hmlee) Please add the process of reading the socket bound with the server.
 
-        return serverSession.hasRemaining();
+
+        boolean hasInput = serverSession.hasRemaining();
+        if (hasInput) {
+            byte[] buf = new byte[16384];
+            inputBufferFromServer.clear();
+            serverSession.read(buf);
+            inputBufferFromServer.put(buf);
+            inputBufferFromServer.flip();
+        }
+
+        return hasInput;
     }
 
     public boolean hasOutputToPeer() {
+        outputBufferToPeer.flip();
         return outputBufferToPeer.hasRemaining();
     }
 
     public boolean hasOutputToServer() {
+        outputBufferToServer.flip();
         return outputBufferToServer.hasRemaining();
     }
 
     // Initialize the service (e.g., open a socket)
-    public void initService() throws NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, SignatureException, IOException {
+    public void initService() throws Exception {
         System.out.println("[FogOSService] Start: initService()");
         boolean connected;
         secureFlexIDSession = new SecureFlexIDSession(Role.RESPONDER, context.getServiceID());
+        int ret = secureFlexIDSession.doHandshake(1);
 
         if (context.isProxy()) {
             // TODO: (hmlee) Please initialize the socket bound with the server
@@ -132,27 +150,44 @@ public abstract class Service {
     }
 
     public ByteBuffer getInputFromPeer(byte[] buf) {
-        return inputBufferFromPeer.get(buf);
+        ByteBuffer ret = inputBufferFromPeer.get(buf);
+        inputBufferFromPeer.clear();
+        return ret;
+
+        //return inputBufferFromPeer.get(buf);
     }
 
     public ByteBuffer getInputFromServer(byte[] buf) {
-        return inputBufferFromServer.get(buf);
+        ByteBuffer ret = inputBufferFromServer.get(buf);
+        inputBufferFromServer.clear();
+        return ret;
+        //return inputBufferFromServer.get(buf);
     }
 
     public ByteBuffer getOutputToPeer(byte[] buf) {
-        return outputBufferToPeer.get(buf);
+        ByteBuffer ret = outputBufferToPeer.get(buf);
+        outputBufferToPeer.clear();
+        //System.out.println("DWWWWWWWWWWWWWWWWWW");
+        //System.out.println(new String(ret.array()).trim());
+        return ret;
+        //return outputBufferToPeer.get(buf);
     }
 
     public ByteBuffer getOutputToServer(byte[] buf) {
-        return outputBufferToServer.get(buf);
+        ByteBuffer ret = outputBufferToServer.get(buf);
+        outputBufferToServer.clear();
+        return ret;
+        //return outputBufferToServer.get(buf);
     }
 
     public void putOutputToPeer(ByteBuffer buf) {
-        outputBufferToPeer.put(buf);
+        outputBufferToPeer.clear();
+        outputBufferToPeer.put(buf.array());
     }
 
     public void putOutputToServer(ByteBuffer buf) {
-        outputBufferToServer.put(buf);
+        outputBufferToServer.clear();
+        outputBufferToServer.put(buf.array());
     }
 
 

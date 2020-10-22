@@ -69,9 +69,9 @@ public class SecurityParameters {
             System.arraycopy(tmp, 0, key, 0, KEY_LENGTH);
             i2rSecret = new SecretKeySpec(key, "AES");
 
-            System.out.println("I2R AES Key (" + key.length + " bytes)");
-            System.out.println ("{ " + byteArrayToHex(key) + " }");
-            System.out.println("");
+            //System.out.println("I2R AES Key (" + key.length + " bytes)");
+            //System.out.println ("{ " + byteArrayToHex(key) + " }");
+            //System.out.println("");
 
             digest.reset();
             digest.update(tmp);
@@ -79,9 +79,9 @@ public class SecurityParameters {
             System.arraycopy(tmp, 0, key, 0, KEY_LENGTH);
             r2iSecret = new SecretKeySpec(key, "AES");
 
-            System.out.println("R2I AES Key (" + key.length + " bytes)");
-            System.out.println ("{ " + byteArrayToHex(key) + " }");
-            System.out.println("");
+            //System.out.println("R2I AES Key (" + key.length + " bytes)");
+            //System.out.println ("{ " + byteArrayToHex(key) + " }");
+            //System.out.println("");
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }

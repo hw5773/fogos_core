@@ -103,7 +103,6 @@ public class SecureFlexIDSession {
         }
 
          */
-
         return this.recordManager.send(msg.getBytes(), msg.length());
     }
 

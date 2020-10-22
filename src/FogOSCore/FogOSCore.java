@@ -123,7 +123,7 @@ public class FogOSCore {
         Queue<Message> replyQueue = new LinkedList<>();
         receivedMessages.put(MessageType.REPLY.getTopic(), replyQueue);
         Queue<Message> requestQueue = new LinkedList<>();
-        receivedMessages.put(MessageType.REQUEST.getTopic(), requestQueue);
+        receivedMessages.put(MessageType.RESPONSE.getTopic(), requestQueue);
 
         // initialize register index map queue & type queue
         registerIndexMap = new HashMap<String, HashMap<String, String>>();
@@ -705,7 +705,7 @@ public class FogOSCore {
             java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Make a test response message started.");
             java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Peer ID: " + new String(requestMessage.getPeerID().getIdentity()));
             ResponseMessage responseMessage;
-            Locator locator = new Locator(InterfaceType.ETH, "127.0.0.1", 5556);
+            Locator locator = new Locator(InterfaceType.WIFI, "127.0.0.1", 5550);
             responseMessage = (ResponseMessage) generateMessage(MessageType.RESPONSE);
             responseMessage.setPeerID(new FlexID(msg.getValueByAttr("id").getValue()));
             responseMessage.getPeerID().setLocator(locator);

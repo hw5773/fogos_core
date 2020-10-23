@@ -36,6 +36,7 @@ public class FlexIDSocket {
             dOut = new DataOutputStream(socket.getOutputStream());
         } catch (Exception e) {
             e.printStackTrace();
+            e.printStackTrace();
         }
     }
 

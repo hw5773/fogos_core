@@ -82,7 +82,6 @@ public class ServiceRunner implements Runnable {
 
                 if (service.getContext().isProxy()) {
 
-                    System.out.println();
                     if (service.hasOutputToServer()) {
                         service.processOutputToServer();
                     }

@@ -190,7 +190,8 @@ public class ContentStore {
         byte[] digest;
 
     	md = MessageDigest.getInstance("SHA-1");
-    	content = Files.readAllBytes(Paths.get("D:\\tmp\\pub.pem"));
+    	//content = Files.readAllBytes(Paths.get("D:\\tmp\\pub.pem"));
+    	content = Files.readAllBytes(Paths.get(path));
     	digest = md.digest(content);
 
     	return Base64.getEncoder().encodeToString(digest);

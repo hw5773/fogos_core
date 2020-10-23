@@ -21,10 +21,12 @@ import java.util.concurrent.Future;
 public abstract class Service {
     private ServiceContext context;         // The user-defined context of the service
     private final int BUFFER_SIZE = 1024 * 1024;
+    //private final int BUFFER_SIZE = 16384;
 
     // Buffer with Peer
     private ByteBuffer inputBufferFromPeer;
     private ByteBuffer outputBufferToPeer;
+    private boolean hasOutputToPeer = false;
 
     // Socket with Peer
     private SecureFlexIDSession secureFlexIDSession;
@@ -32,6 +34,9 @@ public abstract class Service {
     // Buffer with Server, if Proxy
     private ByteBuffer inputBufferFromServer;
     private ByteBuffer outputBufferToServer;
+    private boolean hasOutputToServer = false;
+
+    private String prevStr = "";
 
     // Socket with Server
     // TODO: (hmlee) Please declare the variable for the socket with the server
@@ -55,39 +60,53 @@ public abstract class Service {
         byte[] buf = new byte[16384];
         int len = secureFlexIDSession.recv(buf, buf.length);
 
-        if (len > 0) {
-            inputBufferFromPeer.clear();
-            inputBufferFromPeer.put(buf);
-            inputBufferFromPeer.flip();
-        }
+        //System.out.println("555555555555555555555");
+        boolean ret = (len > 0);
+        if (ret) {
 
-        return inputBufferFromPeer.hasRemaining();
+            String currStr = new String(buf).trim();
+            if (prevStr == currStr) {
+                return false;
+            } else {
+                prevStr = currStr;
+            }
+
+            //System.out.println("5-------------------");
+            inputBufferFromPeer.put(buf);
+        }
+        //System.out.println(len > 0);
+
+        return ret;
     }
 
     public boolean hasInputFromServer() throws IOException {
         // TODO: (hmlee) Please add the process of reading the socket bound with the server.
 
-
+        //System.out.println("66666666666666666666");
         boolean hasInput = serverSession.hasRemaining();
         if (hasInput) {
             byte[] buf = new byte[16384];
-            inputBufferFromServer.clear();
             serverSession.read(buf);
             inputBufferFromServer.put(buf);
-            inputBufferFromServer.flip();
         }
-
+        //System.out.println(hasInput);
         return hasInput;
     }
 
     public boolean hasOutputToPeer() {
-        outputBufferToPeer.flip();
-        return outputBufferToPeer.hasRemaining();
+        //System.out.println("77777777777777777777");
+        //boolean ret = outputBufferToPeer.hasRemaining();
+        boolean ret = hasOutputToPeer;
+        //System.out.println(hasOutputToPeer);
+        return ret;
     }
 
     public boolean hasOutputToServer() {
-        outputBufferToServer.flip();
-        return outputBufferToServer.hasRemaining();
+        //System.out.println("8888888888888888888888");
+        //boolean ret = outputBufferToServer.hasRemaining();
+        boolean ret = hasOutputToServer;
+        //System.out.println(hasOutputToServer);
+        return ret;
     }
 
     // Initialize the service (e.g., open a socket)
@@ -151,7 +170,6 @@ public abstract class Service {
 
     public ByteBuffer getInputFromPeer(byte[] buf) {
         ByteBuffer ret = inputBufferFromPeer.get(buf);
-        inputBufferFromPeer.clear();
         return ret;
 
         //return inputBufferFromPeer.get(buf);
@@ -159,35 +177,33 @@ public abstract class Service {
 
     public ByteBuffer getInputFromServer(byte[] buf) {
         ByteBuffer ret = inputBufferFromServer.get(buf);
-        inputBufferFromServer.clear();
         return ret;
         //return inputBufferFromServer.get(buf);
     }
 
     public ByteBuffer getOutputToPeer(byte[] buf) {
         ByteBuffer ret = outputBufferToPeer.get(buf);
-        outputBufferToPeer.clear();
-        //System.out.println("DWWWWWWWWWWWWWWWWWW");
-        //System.out.println(new String(ret.array()).trim());
+        hasOutputToPeer = false;
         return ret;
         //return outputBufferToPeer.get(buf);
     }
 
     public ByteBuffer getOutputToServer(byte[] buf) {
         ByteBuffer ret = outputBufferToServer.get(buf);
-        outputBufferToServer.clear();
+
+        hasOutputToServer = false;
         return ret;
         //return outputBufferToServer.get(buf);
     }
 
     public void putOutputToPeer(ByteBuffer buf) {
-        outputBufferToPeer.clear();
         outputBufferToPeer.put(buf.array());
+        hasOutputToPeer = true;
     }
 
     public void putOutputToServer(ByteBuffer buf) {
-        outputBufferToServer.clear();
         outputBufferToServer.put(buf.array());
+        hasOutputToServer = true;
     }
 
 
@@ -208,17 +224,20 @@ public abstract class Service {
         }
 
         public void send(byte[] buffer, int len) throws IOException {
+            System.out.println("AAAAAAAAAAAAAAA");
+            //System.out.println(new String(buffer).trim());
+            System.out.println(len);
             outputStream.write(buffer, 0, len);
+            outputStream.flush();
         }
 
         public void read(byte[] buffer) throws IOException {
             inputStream.read(buffer);
-
         }
+
 
         public boolean hasRemaining() throws IOException {
             int count = inputStream.available();
-
             if (count == 0)
                 return false;
             return true;

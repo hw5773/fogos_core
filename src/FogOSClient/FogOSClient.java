@@ -246,4 +246,8 @@ public class FogOSClient implements FogOSClientAPI {
     public void ContentUpdate() throws IOException, NoSuchAlgorithmException {
     	core.ContentUpdate();
     }
+
+    public FlexID getDeviceID() {
+        return core.getDeviceID();
+    }
 }

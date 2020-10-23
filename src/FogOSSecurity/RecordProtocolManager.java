@@ -9,6 +9,7 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.*;
 import java.util.logging.Level;
@@ -39,11 +40,7 @@ public class RecordProtocolManager extends ProtocolManager {
      */
     public int send(byte[] msg, int len) {
         java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Start: send()");
-        try {
-            java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "msg: " + new String(msg, "UTF-8"));
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+        java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "msg: "/* + new String(msg, "UTF-8")*/);
         int ret;
         int sent;
         byte[] ciph = null;
@@ -52,12 +49,15 @@ public class RecordProtocolManager extends ProtocolManager {
         } else {
             ciph = encrypt(this.securityParameters.getR2iSecret(), msg, len);
         }
+
+        //System.out.println(new String(ciph).trim());
         sent = this.flexIDSession.send(ciph);
         //System.out.println("Sent: " + sent + " bytes");
         //System.out.println("Sent Message");
         //System.out.println(byteArrayToHex(ciph, sent));
 
         java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Finish: send()");
+
         return len;
     }
 
@@ -68,8 +68,13 @@ public class RecordProtocolManager extends ProtocolManager {
      * @return the size of the received message
      */
     public int recv(byte[] msg, int len) {
+
         byte[] ciph = new byte[16384];
         int rcvd = this.flexIDSession.receive(ciph);
+
+        //if (rcvd > 0)
+         //   System.out.println(new String(ciph).trim());
+
         byte[] ret;
         if (rcvd > 0) {
             //System.out.println("Received: " + rcvd + " bytes");
@@ -160,6 +165,7 @@ public class RecordProtocolManager extends ProtocolManager {
      * @return the decrypted message
      */
     byte[] decrypt(SecretKeySpec key, byte[] ciph, int len) {
+        //System.out.println(byteArrayToHex(ciph, -1));
         byte[] ret = null;
         byte[] buf = new byte[len];
         System.arraycopy(ciph, 0, buf, 0, len);

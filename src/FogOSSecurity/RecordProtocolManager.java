@@ -207,7 +207,7 @@ public class RecordProtocolManager extends ProtocolManager {
             System.out.println("decrypted value is null");
         } else {
             System.out.println("decrypted value is not null");
-            //System.out.println("Decrypted Message (" + ret.length + " bytes)");
+            System.out.println("Decrypted Message (" + ret.length + " bytes): " + new String(ret));
             System.out.println(byteArrayToHex(ret, -1));
         }
         return ret;

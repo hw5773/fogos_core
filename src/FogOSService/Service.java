@@ -20,20 +20,20 @@ import java.util.concurrent.Future;
 
 public abstract class Service {
     private ServiceContext context;         // The user-defined context of the service
-    private final int BUFFER_SIZE = 1024 * 1024;
-    //private final int BUFFER_SIZE = 16384;
+    //private final int BUFFER_SIZE = 1024 * 1024;
+    private final int BUFFER_SIZE = 16384;
 
     // Buffer with Peer
-    private ByteBuffer inputBufferFromPeer;
-    private ByteBuffer outputBufferToPeer;
+    private ServiceBuffer inputBufferFromPeer;
+    private ServiceBuffer outputBufferToPeer;
     private boolean hasOutputToPeer = false;
 
     // Socket with Peer
     private SecureFlexIDSession secureFlexIDSession;
 
     // Buffer with Server, if Proxy
-    private ByteBuffer inputBufferFromServer;
-    private ByteBuffer outputBufferToServer;
+    private ServiceBuffer inputBufferFromServer;
+    private ServiceBuffer outputBufferToServer;
     private boolean hasOutputToServer = false;
 
     private String prevStr = "";
@@ -46,35 +46,25 @@ public abstract class Service {
     public Service(ServiceContext context) {
         this.context = context;
         // Buffer with Peer
-        this.inputBufferFromPeer = ByteBuffer.allocate(BUFFER_SIZE);
-        this.outputBufferToPeer = ByteBuffer.allocate(BUFFER_SIZE);
+        this.inputBufferFromPeer = new ServiceBuffer(BUFFER_SIZE);
+        this.outputBufferToPeer = new ServiceBuffer(BUFFER_SIZE);
 
         // Buffer with Server, if Proxy
         if (this.context.isProxy()) {
-            this.inputBufferFromServer = ByteBuffer.allocate(BUFFER_SIZE);
-            this.outputBufferToServer = ByteBuffer.allocate(BUFFER_SIZE);
+            this.inputBufferFromServer = new ServiceBuffer(BUFFER_SIZE);
+            this.outputBufferToServer = new ServiceBuffer(BUFFER_SIZE);
         }
     }
 
     public boolean hasInputFromPeer() {
-        byte[] buf = new byte[16384];
+        byte[] buf = new byte[BUFFER_SIZE];
         int len = secureFlexIDSession.recv(buf, buf.length);
 
-        //System.out.println("555555555555555555555");
         boolean ret = (len > 0);
         if (ret) {
-
-            String currStr = new String(buf).trim();
-            if (prevStr == currStr) {
-                return false;
-            } else {
-                prevStr = currStr;
-            }
-
-            //System.out.println("5-------------------");
-            inputBufferFromPeer.put(buf);
+            inputBufferFromPeer.writeToBuffer(buf, len);
+            System.out.println("[Service] Received in hasInputFromPeer() (" + len + " bytes): " + new String(buf));
         }
-        //System.out.println(len > 0);
 
         return ret;
     }
@@ -82,19 +72,18 @@ public abstract class Service {
     public boolean hasInputFromServer() throws IOException {
         // TODO: (hmlee) Please add the process of reading the socket bound with the server.
 
-        //System.out.println("66666666666666666666");
         boolean hasInput = serverSession.hasRemaining();
+        int len;
         if (hasInput) {
-            byte[] buf = new byte[16384];
-            serverSession.read(buf);
-            inputBufferFromServer.put(buf);
+            byte[] buf = new byte[BUFFER_SIZE];
+            len = serverSession.read(buf);
+            inputBufferFromServer.writeToBuffer(buf, len);
         }
         //System.out.println(hasInput);
         return hasInput;
     }
 
     public boolean hasOutputToPeer() {
-        //System.out.println("77777777777777777777");
         //boolean ret = outputBufferToPeer.hasRemaining();
         boolean ret = hasOutputToPeer;
         //System.out.println(hasOutputToPeer);
@@ -102,7 +91,6 @@ public abstract class Service {
     }
 
     public boolean hasOutputToServer() {
-        //System.out.println("8888888888888888888888");
         //boolean ret = outputBufferToServer.hasRemaining();
         boolean ret = hasOutputToServer;
         //System.out.println(hasOutputToServer);
@@ -117,18 +105,11 @@ public abstract class Service {
         int ret = secureFlexIDSession.doHandshake(1);
 
         if (context.isProxy()) {
-            // TODO: (hmlee) Please initialize the socket bound with the server
-            System.out.println("[FogOSService] Proxy: processInputFromProxy()");
-            //InetSocketAddress serverAddr;
-
-            //serverAddr = new InetSocketAddress(context.getServerLoc().getAddr(),
-            //            context.getServerLoc().getPort());
-
             serverSession = new ServerSession(context.getServerLoc().getAddr(),
                     context.getServerLoc().getPort());
 
         }
-        System.out.println("[FogOSService] Finish: processInputFromProxy()");
+        System.out.println("[FogOSService] Finish: initService()");
     }
 
     // Processing of the service regarding service requests from a client
@@ -138,19 +119,19 @@ public abstract class Service {
     // Processing of the service regarding proxying
     // This should be overridden when the application is a proxy
     public void processInputFromServer() {
-        System.out.println("[FogOSService] Start: processInputFromProxy()");
+        System.out.println("[FogOSService] Start: processInputFromServer()");
         if (context.isProxy()) {
-            System.out.println("[FogOSService] Proxy: processInputFromProxy()");
+            System.out.println("[FogOSService] Proxy: processInputFromServer()");
         }
-        System.out.println("[FogOSService] Finish: processInputFromProxy()");
+        System.out.println("[FogOSService] Finish: processInputFromServer()");
     }
 
     public void processOutputToServer() {
-        System.out.println("[FogOSService] Start: processOutputToProxy()");
+        System.out.println("[FogOSService] Start: processOutputToServer()");
         if (context.isProxy()) {
-            System.out.println("[FogOSService] Proxy: processOutputToProxy()");
+            System.out.println("[FogOSService] Proxy: processOutputToServer()");
         }
-        System.out.println("[FogOSService] Finish: processOutputToProxy()");
+        System.out.println("[FogOSService] Finish: processOutputToServer()");
     }
 
     public ServiceContext getContext() {
@@ -168,41 +149,38 @@ public abstract class Service {
         return secureFlexIDSession;
     }
 
-    public ByteBuffer getInputFromPeer(byte[] buf) {
-        ByteBuffer ret = inputBufferFromPeer.get(buf);
+    public int getInputFromPeer(byte[] buf) {
+        int ret;
+        ret = inputBufferFromPeer.readFromBuffer(buf, buf.length);
+        System.out.println("[Service] Received in getInputFromPeer(): " + new String(buf));
         return ret;
-
-        //return inputBufferFromPeer.get(buf);
     }
 
-    public ByteBuffer getInputFromServer(byte[] buf) {
-        ByteBuffer ret = inputBufferFromServer.get(buf);
+    public int getInputFromServer(byte[] buf) {
+        int ret = inputBufferFromServer.readFromBuffer(buf, buf.length);
+        System.out.println("[Service] Received in getInputFromServer(): " + new String(buf));
         return ret;
-        //return inputBufferFromServer.get(buf);
     }
 
-    public ByteBuffer getOutputToPeer(byte[] buf) {
-        ByteBuffer ret = outputBufferToPeer.get(buf);
+    public int getOutputToPeer(byte[] buf) {
+        int ret = outputBufferToPeer.readFromBuffer(buf, buf.length);
         hasOutputToPeer = false;
         return ret;
-        //return outputBufferToPeer.get(buf);
     }
 
-    public ByteBuffer getOutputToServer(byte[] buf) {
-        ByteBuffer ret = outputBufferToServer.get(buf);
-
+    public int getOutputToServer(byte[] buf) {
+        int ret = outputBufferToServer.readFromBuffer(buf, buf.length);
         hasOutputToServer = false;
         return ret;
-        //return outputBufferToServer.get(buf);
     }
 
-    public void putOutputToPeer(ByteBuffer buf) {
-        outputBufferToPeer.put(buf.array());
+    public void putOutputToPeer(byte[] buf, int len) {
+        outputBufferToPeer.writeToBuffer(buf, len);
         hasOutputToPeer = true;
     }
 
-    public void putOutputToServer(ByteBuffer buf) {
-        outputBufferToServer.put(buf.array());
+    public void putOutputToServer(byte[] buf, int len) {
+        outputBufferToServer.writeToBuffer(buf, len);
         hasOutputToServer = true;
     }
 
@@ -231,8 +209,8 @@ public abstract class Service {
             outputStream.flush();
         }
 
-        public void read(byte[] buffer) throws IOException {
-            inputStream.read(buffer);
+        public int read(byte[] buffer) throws IOException {
+            return inputStream.read(buffer);
         }
 
 

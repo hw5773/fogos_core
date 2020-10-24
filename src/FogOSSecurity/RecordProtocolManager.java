@@ -38,9 +38,9 @@ public class RecordProtocolManager extends ProtocolManager {
      * @param len the length of the message
      * @return the length of the message
      */
-    public int send(byte[] msg, int len) {
+    public int send(byte[] msg, int len) throws UnsupportedEncodingException {
         java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Start: send()");
-        java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "msg: "/* + new String(msg, "UTF-8")*/);
+        //java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "msg: " + new String(msg, "UTF-8"));
         int ret;
         int sent;
         byte[] ciph = null;
@@ -69,7 +69,7 @@ public class RecordProtocolManager extends ProtocolManager {
      */
     public int recv(byte[] msg, int len) {
 
-        byte[] ciph = new byte[16384];
+        byte[] ciph = new byte[20000];
         int rcvd = this.flexIDSession.receive(ciph);
 
         //if (rcvd > 0)
@@ -114,6 +114,14 @@ public class RecordProtocolManager extends ProtocolManager {
         byte[] ret = null;
         byte[] buf = new byte[len];
         System.arraycopy(msg, 0, buf, 0, len);
+
+        System.out.println("[Service] Received in encrypt()");
+        System.out.print("First 5 bytes: " + buf[0] + " " + buf[1] + " " + buf[2] + " " + buf[3] + " " + buf[4]);
+        System.out.println();
+
+        System.out.print("Last 5 bytes: " + buf[len-5] + " " + buf[len-4] + " " + buf[len-3] + " " + buf[len-2] + " " + buf[len-1]);
+        System.out.println();
+
         try {
             Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
             //MessageDigest digest = MessageDigest.getInstance("SHA-256");
@@ -152,6 +160,14 @@ public class RecordProtocolManager extends ProtocolManager {
         } else {
             // System.out.println("encrypted value is not null");
             System.out.println("Encrypted Message (" + ret.length + " bytes)");
+
+            System.out.println("[Service] Received after encrypt() " + ret.length);
+            System.out.print("First 5 bytes: " + ret[0] + " " + ret[1] + " " + ret[2] + " " + ret[3] + " " + ret[4]);
+            System.out.println();
+
+            System.out.print("Last 5 bytes: " + ret[ret.length-5] + " " + ret[ret.length-4] + " " + ret[ret.length-3] + " " + ret[ret.length-2] + " " + ret[ret.length-1]);
+            System.out.println();
+
             //System.out.println(byteArrayToHex(ret, -1));
         }
         return ret;
@@ -170,7 +186,7 @@ public class RecordProtocolManager extends ProtocolManager {
         byte[] buf = new byte[len];
         System.arraycopy(ciph, 0, buf, 0, len);
 
-        System.out.println("[Service] Received in decrypt()");
+        System.out.println("[Service] Received in decrypt(): " + len);
         System.out.print("First 5 bytes: " + buf[0] + " " + buf[1] + " " + buf[2] + " " + buf[3] + " " + buf[4]);
         System.out.println();
 
@@ -217,6 +233,13 @@ public class RecordProtocolManager extends ProtocolManager {
             System.out.println("decrypted value is not null (" + ret.length + " bytes)");
 //            System.out.println("Decrypted Message (" + ret.length + " bytes): " + new String(ret));
 //            System.out.println(byteArrayToHex(ret, -1));
+
+            System.out.println("[Service] Received after decrypt() " + ret.length);
+            System.out.print("First 5 bytes: " + ret[0] + " " + ret[1] + " " + ret[2] + " " + ret[3] + " " + ret[4]);
+            System.out.println();
+
+            System.out.print("Last 5 bytes: " + ret[ret.length-5] + " " + ret[ret.length-4] + " " + ret[ret.length-3] + " " + ret[ret.length-2] + " " + ret[ret.length-1]);
+            System.out.println();
         }
         return ret;
     }

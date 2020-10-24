@@ -84,7 +84,7 @@ public class SecureFlexIDSession {
      * @param len the length of the message
      * @return the length of the message
      */
-    public int send(byte[] msg, int len) {
+    public int send(byte[] msg, int len) throws UnsupportedEncodingException {
         return this.recordManager.send(msg, len);
     }
 
@@ -93,7 +93,7 @@ public class SecureFlexIDSession {
      * @param msg the message
      * @return the length of the message
      */
-    public int send(String msg) {
+    public int send(String msg) throws UnsupportedEncodingException {
         //System.out.println("Send message (" + msg.length() + " bytes)");
         /*
         try {

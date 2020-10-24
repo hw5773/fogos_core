@@ -175,6 +175,12 @@ public abstract class Service {
 
     public int getOutputToPeer(byte[] buf) {
         int ret = outputBufferToPeer.readFromBuffer(buf, buf.length);
+        System.out.println("[Service] getOutputToPeer()");
+        System.out.print("First 5 bytes: " + buf[0] + " " + buf[1] + " " + buf[2] + " " + buf[3] + " " + buf[4]);
+        System.out.println();
+
+        System.out.print("Last 5 bytes: " + buf[ret-5] + " " + buf[ret-4] + " " + buf[ret-3] + " " + buf[ret-2] + " " + buf[ret-1]);
+        System.out.println();
         hasOutputToPeer = false;
         return ret;
     }

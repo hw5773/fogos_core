@@ -116,11 +116,11 @@ public class RecordProtocolManager extends ProtocolManager {
         System.arraycopy(msg, 0, buf, 0, len);
         try {
             Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            digest.reset();
-            digest.update((byte) this.securityParameters.getWriteSequence());
-            digest.update(this.securityParameters.getMasterSecret());
-            byte[] ivtmp = digest.digest();
+            //MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            //digest.reset();
+            //digest.update((byte) this.securityParameters.getWriteSequence());
+            //digest.update(this.securityParameters.getMasterSecret());
+            //byte[] ivtmp = digest.digest();
             byte[] iv = new byte[GCM_IV_LENGTH];
             //System.arraycopy(ivtmp, 0, iv, 0, GCM_IV_LENGTH);
             //System.out.println("Key");
@@ -150,7 +150,7 @@ public class RecordProtocolManager extends ProtocolManager {
         if (ret == null) {
             System.out.println("encrypted value is null");
         } else {
-            System.out.println("encrypted value is not null");
+            // System.out.println("encrypted value is not null");
             System.out.println("Encrypted Message (" + ret.length + " bytes)");
             //System.out.println(byteArrayToHex(ret, -1));
         }
@@ -169,13 +169,21 @@ public class RecordProtocolManager extends ProtocolManager {
         byte[] ret = null;
         byte[] buf = new byte[len];
         System.arraycopy(ciph, 0, buf, 0, len);
+
+        System.out.println("[Service] Received in decrypt()");
+        System.out.print("First 5 bytes: " + buf[0] + " " + buf[1] + " " + buf[2] + " " + buf[3] + " " + buf[4]);
+        System.out.println();
+
+        System.out.print("Last 5 bytes: " + buf[len-5] + " " + buf[len-4] + " " + buf[len-3] + " " + buf[len-2] + " " + buf[len-1]);
+        System.out.println();
+
         try {
             Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            digest.reset();
-            digest.update((byte) this.securityParameters.getReadSequence());
-            digest.update(this.securityParameters.getMasterSecret());
-            byte[] ivtmp = digest.digest();
+            //MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            //digest.reset();
+            //digest.update((byte) this.securityParameters.getReadSequence());
+            //digest.update(this.securityParameters.getMasterSecret());
+            //byte[] ivtmp = digest.digest();
             byte[] iv = new byte[GCM_IV_LENGTH];
             //System.arraycopy(ivtmp, 0, iv, 0, GCM_IV_LENGTH);
             //System.out.println("Key");
@@ -206,9 +214,9 @@ public class RecordProtocolManager extends ProtocolManager {
         if (ret == null) {
             System.out.println("decrypted value is null");
         } else {
-            System.out.println("decrypted value is not null");
-            System.out.println("Decrypted Message (" + ret.length + " bytes): " + new String(ret));
-            System.out.println(byteArrayToHex(ret, -1));
+            System.out.println("decrypted value is not null (" + ret.length + " bytes)");
+//            System.out.println("Decrypted Message (" + ret.length + " bytes): " + new String(ret));
+//            System.out.println(byteArrayToHex(ret, -1));
         }
         return ret;
     }

@@ -23,6 +23,7 @@ public abstract class Service {
     //private final int BUFFER_SIZE = 1024 * 1024;
     private final int BUFFER_SIZE = 16384;
 
+
     // Buffer with Peer
     private ServiceBuffer inputBufferFromPeer;
     private ServiceBuffer outputBufferToPeer;
@@ -63,12 +64,15 @@ public abstract class Service {
         boolean ret = (len > 0);
         if (ret) {
             inputBufferFromPeer.writeToBuffer(buf, len);
+            /*
             System.out.println("[Service] Received in hasInputFromPeer()");
             System.out.print("First 5 bytes: " + buf[0] + " " + buf[1] + " " + buf[2] + " " + buf[3] + " " + buf[4]);
             System.out.println();
 
             System.out.print("Last 5 bytes: " + buf[len-5] + " " + buf[len-4] + " " + buf[len-3] + " " + buf[len-2] + " " + buf[len-1]);
             System.out.println();
+
+             */
         }
 
         return ret;
@@ -159,11 +163,14 @@ public abstract class Service {
         ret = inputBufferFromPeer.readFromBuffer(buf, buf.length);
         //System.out.println("[Service] Received in getInputFromPeer(): " + new String(buf));
         System.out.println("[Service] Received in getInputFromPeer()");
+        /*
         System.out.print("First 5 bytes: " + buf[0] + " " + buf[1] + " " + buf[2] + " " + buf[3] + " " + buf[4]);
         System.out.println();
 
         System.out.print("Last 5 bytes: " + buf[ret-5] + " " + buf[ret-4] + " " + buf[ret-3] + " " + buf[ret-2] + " " + buf[ret-1]);
         System.out.println();
+
+         */
         return ret;
     }
 
@@ -176,11 +183,14 @@ public abstract class Service {
     public int getOutputToPeer(byte[] buf) {
         int ret = outputBufferToPeer.readFromBuffer(buf, buf.length);
         System.out.println("[Service] getOutputToPeer()");
+        /*
         System.out.print("First 5 bytes: " + buf[0] + " " + buf[1] + " " + buf[2] + " " + buf[3] + " " + buf[4]);
         System.out.println();
 
         System.out.print("Last 5 bytes: " + buf[ret-5] + " " + buf[ret-4] + " " + buf[ret-3] + " " + buf[ret-2] + " " + buf[ret-1]);
         System.out.println();
+
+         */
         hasOutputToPeer = false;
         return ret;
     }

@@ -706,7 +706,7 @@ public class FogOSCore {
             java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Make a test response message started.");
             java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Peer ID: " + new String(requestMessage.getPeerID().getIdentity()));
             ResponseMessage responseMessage;
-            Locator locator = new Locator(InterfaceType.WIFI, "127.0.0.1", 5551);
+            Locator locator = new Locator(InterfaceType.WIFI, "10.0.0.69", 5551);
             //Locator locator = new Locator(InterfaceType.ETH, "52.78.23.173", 5080);
 
             responseMessage = (ResponseMessage) generateMessage(MessageType.RESPONSE);

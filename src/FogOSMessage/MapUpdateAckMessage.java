@@ -28,6 +28,7 @@ public class MapUpdateAckMessage extends Message {
 
     // TODO: Implement processing the received message with AVPs (this.body)
     public MessageError process() {
+    	System.out.println("Mapupdate processing");
         return MessageError.NONE;
     }
 

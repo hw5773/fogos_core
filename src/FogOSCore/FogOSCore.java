@@ -71,6 +71,7 @@ public class FogOSCore {
 
     private boolean joinAckFlag = false;
     private boolean registerAckFlag = false;
+    private boolean mapupdateAckFlag = false;
     private int registerIDCounter = 0;
     private int queryIDCounter = 0;
     private HashMap<String, HashMap<String, String>> registerIndexMap;
@@ -218,6 +219,14 @@ public class FogOSCore {
     public void setRegisterAckFlag(boolean val) {
         this.registerAckFlag = val;
     }
+    public boolean getMapupdateAckFlag() {
+        System.out.print("");
+        return mapupdateAckFlag;
+    }
+
+    public void setMapupdateAckFlag(boolean val) {
+        this.mapupdateAckFlag = val;
+    }
 
     public void join() {
         JoinMessage msg = new JoinMessage(deviceID, resourceList, deviceID.getPub());
@@ -238,9 +247,24 @@ public class FogOSCore {
         registerTypeMap.put(contentRmsg.getRegisterID(), contentRmsg.getType());
 
         // wait Register message
-        setJoinAckFlag(false);
+        setRegisterAckFlag(false);
         while (true) {
             if (getRegisterAckFlag()) break;
+        }
+
+        // TODO: Service does not have FlexID?
+        //RegisterMessage serviceRmsg = new RegisterMessage(deviceID, serviceList);
+        //serviceRmsg.test(broker);
+    }
+    public void mapupdate(String type, String CurrLocate, String NextLocate) {
+        MapUpdateMessage mapupdatemsg = new MapUpdateMessage(deviceID,type,CurrLocate,NextLocate);
+        mapupdatemsg.send(broker); // This should be commented out after being generalized.
+       
+
+        // wait Register message
+        setMapupdateAckFlag(false);
+        while (true) {
+            if (getMapupdateAckFlag()) break;
         }
 
         // TODO: Service does not have FlexID?
@@ -527,7 +551,20 @@ public class FogOSCore {
                         System.out.println("MAP_UPDATE_ACK received");
                         System.out.println("Actual message: " + new String(mqttMessage.getPayload()));
                         MapUpdateAckMessage msg = new MapUpdateAckMessage(deviceID, mqttMessage.getPayload());
-                        msg.process();
+//                        msg.process();
+                        MessageError error = msg.process();
+                        if (error==MessageError.NONE) {
+                        	deviceID = msg.getDeviceID();
+                        }
+                        else {
+                        	System.out.println("MapupdateACK: Error");
+                        }
+                        System.out.println("MapUpAck Done");
+                        
+                        setMapupdateAckFlag(true);
+                        
+                        
+                        
                     } else if (s.startsWith(MessageType.REGISTER_ACK.getTopic())) {
                         java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "RegisterAckProcessing");
                         System.out.println("REGISTER_ACK received");
@@ -658,13 +695,13 @@ public class FogOSCore {
             replyMessage = (ReplyMessage) generateMessage(MessageType.REPLY);
             id = new FlexID("0x950FE925AA360933FCD2");
             java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "id 1: " + id + " / ID 1: " + new String(id.getIdentity()));
-            replyMessage.addReplyEntry("대중교통 공익광고", "대중교통을 이용합시다!", id);
+            replyMessage.addReplyEntry("��以묎탳�넻 怨듭씡愿묎퀬", "��以묎탳�넻�쓣 �씠�슜�빀�떆�떎!", id);
             id = new FlexID("public");
             java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "id 2: " + id + " / ID 2: " + new String(id.getIdentity()));
-            replyMessage.addReplyEntry("금연 실천 비디오", "모두의 건강을 지키는 것이 공익입니다", id);
+            replyMessage.addReplyEntry("湲덉뿰 �떎泥� 鍮꾨뵒�삤", "紐⑤몢�쓽 嫄닿컯�쓣 吏��궎�뒗 寃껋씠 怨듭씡�엯�땲�떎", id);
             id = new FlexID("test");
             java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "id 3: " + id + " / ID 3: " + new String(id.getIdentity()));
-            replyMessage.addReplyEntry("공익 실천 프로젝트", "너도 나도 함께하는 자그마한 공익 실천!", id);
+            replyMessage.addReplyEntry("怨듭씡 �떎泥� �봽濡쒖젥�듃", "�꼫�룄 �굹�룄 �븿猿섑븯�뒗 �옄洹몃쭏�븳 怨듭씡 �떎泥�!", id);
             receivedMessages.get(MessageType.REPLY.getTopic()).add(replyMessage);
             java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Make a test list finished.");
             java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Finish: testMessage()");

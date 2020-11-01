@@ -57,6 +57,10 @@ public class FogOSClient implements FogOSClientAPI {
         this.core.finalization();
     }
 
+    public void mapupdate(String type,String CurrLocate, String NextLocate) {
+    	core.mapupdate(type,CurrLocate,NextLocate);
+    }
+    
     public QueryMessage makeQueryMessage() {
         return (QueryMessage) core.generateMessage(MessageType.QUERY);
     }

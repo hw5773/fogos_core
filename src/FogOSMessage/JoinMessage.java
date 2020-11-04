@@ -11,6 +11,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.Base64;
 import java.util.Base64.Encoder;
+//import org.apache.commons.codec.binary.Base64;
 
 import java.security.PublicKey;
 import java.util.ArrayList;
@@ -77,7 +78,10 @@ public class JoinMessage extends Message {
             }
 
             Encoder encoder = Base64.getEncoder();
+
             String encodedPubkey = encoder.encodeToString(publicKey);
+
+            //String encodedPubkey = new String(Base64.encodeBase64(publicKey));
 
             this.addAttrValuePair("uniqueCodes", uniqueCodes.toString(), null);
             this.addAttrValuePair("pubKey", encodedPubkey, null);

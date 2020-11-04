@@ -5,9 +5,12 @@ import FlexID.InterfaceType;
 import FogOSSecurity.Role;
 import FogOSSecurity.SecureFlexIDSession;
 import FogOSSocket.FlexIDSession;
+import org.json.JSONObject;
+import sun.misc.Signal;
 
 import java.io.*;
 import java.net.InetSocketAddress;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
@@ -113,11 +116,13 @@ public abstract class Service {
         secureFlexIDSession = new SecureFlexIDSession(Role.RESPONDER, context.getServiceID());
         int ret = secureFlexIDSession.doHandshake(1);
 
+
         if (context.isProxy()) {
             serverSession = new ServerSession(context.getServerLoc().getAddr(),
                     context.getServerLoc().getPort());
 
         }
+        new SignalServer(secureFlexIDSession.getFlexIDSession()).start();
         System.out.println("[FogOSService] Finish: initService()");
     }
 
@@ -245,6 +250,58 @@ public abstract class Service {
             if (count == 0)
                 return false;
             return true;
+        }
+    }
+
+
+    static class SignalServer extends Thread {
+        FlexIDSession flexIDSession;
+        SignalServer (FlexIDSession flexIDSession) {
+            this.flexIDSession = flexIDSession;
+        }
+        @Override
+        public void run() {
+            try {
+                while(true) {
+                    System.out.println("Start the Signal Server");
+                    ServerSocket signal = new ServerSocket(3334);
+
+                    Socket socket = signal.accept();
+                    System.out.println("Accept the signal from the client");
+                    BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                    PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+
+                    JSONObject request = new JSONObject(input.readLine()); // Check the flex_id and resolve a new flex_id which serves the contents.
+
+                    String type = request.getString("type"); // reconnect or terminate
+                    String flex_id = request.getString("flex_id");
+
+                    JSONObject response = new JSONObject();
+                    if(type == "reconnect") {
+                        System.out.println("Received) ID: " + flex_id + " / Status: changed");
+                        int newport = 3337;
+
+                        response.put("type", "reconnectACK");
+                        response.put("flex_id", new String(flexIDSession.getDFID().getIdentity()));
+                        response.put("ip", "147.46.114.86");
+                        response.put("port", newport);
+                        out.println(response);
+
+                        flexIDSession.handleReconnect(newport);
+                    }
+                    else if(type == "terminate") {
+                        response.put("type", "terminateACK");
+                        response.put("flex_id",  new String(flexIDSession.getDFID().getIdentity()));
+                        out.println(response);
+
+                        flexIDSession.close();
+                    }
+
+                    signal.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }

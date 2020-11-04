@@ -157,11 +157,17 @@ public class FogOSCore {
     }
 
     private String getStringHwAddr (byte[] hwAddress) {
-        String[] hexadecimal = new String[hwAddress.length];
+        //String[] hexadecimal = new String[hwAddress.length];
+        String strAddr = "";
         for (int i = 0; i < hwAddress.length; i++) {
-            hexadecimal[i] = String.format("%02X", hwAddress[i]);
+            //hexadecimal[i] = String.format("%02X", hwAddress[i]);
+            if (i == hwAddress.length-1) {
+                strAddr = strAddr + String.format("%02X", hwAddress[i]);
+            } else {
+                strAddr = strAddr + String.format("%02X", hwAddress[i]) + "-";
+            }
         }
-        String strAddr = String.join("-", hexadecimal);
+        //String strAddr = String.join("-", hexadecimal);
         return strAddr;
     }
 
@@ -466,6 +472,12 @@ public class FogOSCore {
                 @Override
                 public void connectionLost(Throwable throwable) {
                     Logger.getLogger(TAG).log(Level.INFO, "Mqtt: connectionLost");
+                    try {
+                        Thread.sleep(10000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    connect(deviceID);
                 }
 
                 @Override
@@ -512,11 +524,13 @@ public class FogOSCore {
                         System.out.println("Actual message: " + new String(mqttMessage.getPayload()));
                         JoinAckMessage msg = new JoinAckMessage(deviceID, mqttMessage.getPayload());
                         MessageError error = msg.process();
+                        /*
                         if (error == MessageError.NONE) {
                             deviceID = msg.getDeviceID();
                         } else {
                             System.out.println("JoinACK: Error");
                         }
+                         */
                         setJoinAckFlag(true);
                     } else if (s.startsWith(MessageType.LEAVE_ACK.getTopic())) {
                         System.out.println("LEAVE_ACK received");
@@ -706,8 +720,8 @@ public class FogOSCore {
             java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Make a test response message started.");
             java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Peer ID: " + new String(requestMessage.getPeerID().getIdentity()));
             ResponseMessage responseMessage;
-            Locator locator = new Locator(InterfaceType.WIFI, "147.46.114.239", 5551);
-            //Locator locator = new Locator(InterfaceType.WIFI, "10.0.0.69", 5551);
+            //Locator locator = new Locator(InterfaceType.WIFI, "147.46.114.239", 5551);
+            Locator locator = new Locator(InterfaceType.WIFI, "147.46.114.86", 8080);
 
 
             responseMessage = (ResponseMessage) generateMessage(MessageType.RESPONSE);

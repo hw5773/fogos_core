@@ -415,7 +415,7 @@ public class FlexIDSession {
 
                     JSONObject response = new JSONObject(input.readLine());
                     String flex_id = response.getString("flex_id");
-                    if (type == "reconnectACK") {
+                    if (response.getString("type") == "reconnectACK") {
                         String ip = response.getString("ip");
                         int port = response.getInt("port");
 

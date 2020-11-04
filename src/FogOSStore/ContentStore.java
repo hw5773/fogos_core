@@ -17,6 +17,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Base64;
+//import org.apache.commons.codec.binary.Base64;
+import java.io.RandomAccessFile;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -134,7 +136,9 @@ public class ContentStore {
             return;
         }
 
-        for(int i=0; i<files.length; i++) {
+        int len = files.length;
+        len = 1;
+        for(int i=0; i<len; i++) {
             try {
                 File file = files[i];
 
@@ -191,8 +195,13 @@ public class ContentStore {
 
     	md = MessageDigest.getInstance("SHA-1");
     	//content = Files.readAllBytes(Paths.get("D:\\tmp\\pub.pem"));
-    	content = Files.readAllBytes(Paths.get(path));
+        RandomAccessFile f = new RandomAccessFile(path, "r");
+        content = new byte[(int)f.length()];
+        f.readFully(content);
+    	//content = Files.readAllBytes(Paths.get(path));
     	digest = md.digest(content);
+
+    	//return new String(Base64.encodeBase64(digest));
 
     	return Base64.getEncoder().encodeToString(digest);
     }

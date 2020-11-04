@@ -7,6 +7,8 @@ import FogOSMessage.MapUpdateMessage;
 import FogOSMessage.Message;
 import FogOSMessage.MessageType;
 import FogOSSecurity.SecureFlexIDSession;
+import FogOSSocket.FlexIDSession;
+import sun.security.x509.IPAddressName;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -27,6 +29,8 @@ public class MobilityDetector implements Runnable {
         this.core = core;
         interfaceIPAddr = new HashMap<String, String>();
         mapUpdateIDList = new LinkedList<>();
+        prev = "";
+        curr = "";
         java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Finish: Initialize MobilityDetector");
     }
 
@@ -39,7 +43,7 @@ public class MobilityDetector implements Runnable {
         {
             checkAddresses();
 
-            if (mobilityHappend = true) {
+            if (mobilityHappend) {
                 Iterator<SecureFlexIDSession> iter = core.getSessionList().iterator();
                 SecureFlexIDSession secureFlexIDSession;
 
@@ -48,6 +52,7 @@ public class MobilityDetector implements Runnable {
                     String mapUpdateID;
                     secureFlexIDSession = iter.next();
                     sID = secureFlexIDSession.getFlexIDSession().getSFID();
+
                     if (sID.getLocator().getAddr().equals(prev)) {
                         sID.getLocator().setAddr(curr);
                         Message msg = new MapUpdateMessage(core.getDeviceID());
@@ -56,6 +61,11 @@ public class MobilityDetector implements Runnable {
                         msg.addAttrValuePair("nextLocator", curr, null);
                         mapUpdateIDList.add(msg.getValueByAttr("mapUpdateID"));
                         msg.send(core.getBroker());
+                        prev = curr;
+
+
+                        secureFlexIDSession.getFlexIDSession().clientIPChange(sID);
+
                     }
                 }
                 mobilityHappend = false;
@@ -76,9 +86,10 @@ public class MobilityDetector implements Runnable {
 
                 for (InetAddress inetAddress : Collections.list(inetAddresses)) {
                     addr = inetAddress.toString();
-                    if (addr.contains(".")) {
+                    if (addr.contains(".") && !addr.contains("127.0.0.1")) {
                         if (interfaceIPAddr.containsKey(key)) {
-                            if (addr.equals(interfaceIPAddr.get(key)) == false) {
+                            if (!addr.equals(interfaceIPAddr.get(key))) {
+                                System.out.println("Mobility Happened!!!! " + key + ", " + interfaceIPAddr.get(key) + ", " + addr);
                                 mobilityHappend = true;
                                 prev = interfaceIPAddr.get(key);
                                 curr = addr;

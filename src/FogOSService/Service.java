@@ -277,7 +277,8 @@ public abstract class Service {
                     String flex_id = request.getString("flex_id");
 
                     JSONObject response = new JSONObject();
-                    if(type == "reconnect") {
+
+                    if(type.equals("reconnect")) {
                         System.out.println("Received) ID: " + flex_id + " / Status: changed");
                         int newport = 3337;
 
@@ -287,9 +288,10 @@ public abstract class Service {
                         response.put("port", newport);
                         out.println(response);
 
+
                         flexIDSession.handleReconnect(newport);
                     }
-                    else if(type == "terminate") {
+                    else if(type.equals("terminate")) {
                         response.put("type", "terminateACK");
                         response.put("flex_id",  new String(flexIDSession.getDFID().getIdentity()));
                         out.println(response);

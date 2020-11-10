@@ -52,8 +52,16 @@ public class MobilityDetector implements Runnable {
                     String mapUpdateID;
                     secureFlexIDSession = iter.next();
                     sID = secureFlexIDSession.getFlexIDSession().getSFID();
+                    secureFlexIDSession.getFlexIDSession().clientIPChange(sID);
+
+                    /*
+                    System.out.println("AAAAAAAAAAAAAA " + sID.getLocator().getAddr() + " " + sID.getLocator().getPort());
+                    System.out.println(prev);
+                    System.out.println("True? " + (prev == sID.getLocator().getAddr()));
+                    secureFlexIDSession.getFlexIDSession().clientIPChange(sID);
 
                     if (sID.getLocator().getAddr().equals(prev)) {
+                        System.out.println("BBBBBBBBBB");
                         sID.getLocator().setAddr(curr);
                         Message msg = new MapUpdateMessage(core.getDeviceID());
                         msg.addAttrValuePair("locatorType", sID.getLocator().getType().toString(), null);
@@ -63,10 +71,11 @@ public class MobilityDetector implements Runnable {
                         msg.send(core.getBroker());
                         prev = curr;
 
-
                         secureFlexIDSession.getFlexIDSession().clientIPChange(sID);
 
                     }
+
+                     */
                 }
                 mobilityHappend = false;
             }

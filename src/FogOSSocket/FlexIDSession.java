@@ -401,8 +401,10 @@ public class FlexIDSession {
                 int ssPort = 3334; // SignalServer's default port.
                 System.out.println("[FlexIDSession] Try to access IP: " + DFID.getLocator().getAddr() + "  Port: " + ssPort);
 
-                while (socket == null)
+                while (socket == null) {
                     socket = new Socket(DFID.getLocator().getAddr(), ssPort);
+
+                }
 
                 while (complete == false) {
                     BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -414,8 +416,11 @@ public class FlexIDSession {
                     out.println(request);
 
                     JSONObject response = new JSONObject(input.readLine());
+
                     String flex_id = response.getString("flex_id");
-                    if (response.getString("type") == "reconnectACK") {
+                    if (response.getString("type").equals("reconnectACK")) {
+                        System.out.println("??????????????~~???????????");
+
                         String ip = response.getString("ip");
                         int port = response.getInt("port");
 
@@ -424,12 +429,13 @@ public class FlexIDSession {
                         DFID.setLocator(locator);
                         setReadyToConnect(true);
                     }
-                    else if(type == "terminateACK") {
+                    else if(response.getString("type").equals("terminateACK")) {
                         System.out.println("[FlexIDSession] Received terminateACK from Signal Server.");
                     }
 
                     complete = true;
                 }
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -506,6 +512,7 @@ public class FlexIDSession {
      */
 
     public int clientIPChange(FlexID sFID) {
+        System.out.println("ClientIPChange");
         setClientIPChanged(true);
         try {
             ConnectToSignalServerThread connectToSignalServerThread = new ConnectToSignalServerThread("reconnect");

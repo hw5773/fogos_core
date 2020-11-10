@@ -18,6 +18,7 @@ import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 
 
@@ -93,6 +94,17 @@ public class FogOSClient implements FogOSClientAPI {
         RequestMessage requestMessage = (RequestMessage) core.generateMessage(MessageType.REQUEST);
         return requestMessage;
     }
+
+    public MapUpdateMessage makeMapUpdateMessage() {
+        MapUpdateMessage mapUpdateMessage = (MapUpdateMessage) core.generateMessage(MessageType.MAP_UPDATE);
+        mapUpdateMessage.setDeviceID(core.getDeviceID());
+        return mapUpdateMessage;
+    }
+
+    public void sendMapUpdateMessage(MapUpdateMessage mapUpdateMessage) {
+        core.sendMessage(mapUpdateMessage);
+    }
+
 
     public RequestMessage makeRequestMessage(FlexID id) {
         java.util.logging.Logger.getLogger(TAG).log(Level.INFO, "Start: makeRequestMessage()");

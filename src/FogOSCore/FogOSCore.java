@@ -265,7 +265,7 @@ public class FogOSCore {
     public void mapupdate(String type, String CurrLocate, String NextLocate) {
         MapUpdateMessage mapupdatemsg = new MapUpdateMessage(deviceID,type,CurrLocate,NextLocate);
         mapupdatemsg.send(broker); // This should be commented out after being generalized.
-       
+
 
         // wait Register message
         setMapupdateAckFlag(false);
@@ -694,6 +694,8 @@ public class FogOSCore {
             qosInterpreter.checkQueryMessage((QueryMessage) msg);
         } else if (msg.getMessageType() == MessageType.REQUEST) {
             qosInterpreter.checkRequestMessage((RequestMessage) msg);
+        } else if (msg.getMessageType() == MessageType.MAP_UPDATE) {
+
         }
         msg.send(broker);
     }

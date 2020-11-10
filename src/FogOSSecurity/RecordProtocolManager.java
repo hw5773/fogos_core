@@ -73,7 +73,6 @@ public class RecordProtocolManager extends ProtocolManager {
 
         byte[] ciph = new byte[16400];
         int rcvd = this.flexIDSession.receive(ciph);
-        System.out.println("recv " + rcvd);
 
         //if (rcvd > 0)
          //   System.out.println(new String(ciph).trim());
